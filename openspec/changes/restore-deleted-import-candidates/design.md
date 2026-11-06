@@ -37,6 +37,10 @@ A custom non-modal panel would avoid a dependency but would require recreating f
 
 Each waiting-roster card keeps its delete button. A separate control in the waiting-list heading opens the deleted-candidate Sheet and can show the deleted count. Each row in the Sheet restores only that candidate. Remove the shared last-item undo action because it conflicts with individual restoration.
 
+### Confirm before publishing the roster
+
+Use a centered Radix Dialog before calling the existing start endpoint. Show the count of waiting candidates and explain that confirming publishes the roster and enables voting. The dialog's cancel button and Escape dismissal leave the roster untouched and do not send the request. Reuse the already installed Radix Dialog dependency instead of adding a second dialog package.
+
 ## Risks / Trade-offs
 
 - [A local ID could accidentally be sent to the start API] → Map waiting entries back to candidate data when building the request body, and cover the payload with a test.

@@ -34,3 +34,18 @@ The system SHALL restore only the deleted candidate selected by the administrato
 #### Scenario: Administrator starts an election with deleted candidates remaining
 - **WHEN** the administrator starts an election while one or more candidates remain in the deleted list
 - **THEN** only candidates in the waiting roster are published as the official roster
+
+### Requirement: Administrator confirms before starting an election
+The system SHALL require an explicit administrator confirmation before publishing the waiting roster and enabling voting.
+
+#### Scenario: Administrator requests to start an election
+- **WHEN** the administrator activates the start-election button with a non-empty waiting roster
+- **THEN** the system shows a confirmation dialog with the number of candidates and does not start the election yet
+
+#### Scenario: Administrator confirms starting the election
+- **WHEN** the administrator confirms in the dialog
+- **THEN** the system starts the election using the waiting roster
+
+#### Scenario: Administrator cancels or dismisses the confirmation
+- **WHEN** the administrator cancels the dialog or dismisses it with Escape
+- **THEN** the system does not start the election and leaves both candidate lists unchanged

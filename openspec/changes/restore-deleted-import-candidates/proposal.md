@@ -10,6 +10,7 @@ The import page currently keeps only the most recently deleted candidate and off
 - Add a control for viewing deleted candidates in a shadcn/ui Sheet that opens from the right.
 - Give every waiting candidate a delete button and every deleted candidate its own restore button.
 - Publish only candidates remaining in the waiting roster when the election starts.
+- Require administrator confirmation before publishing the roster and enabling voting.
 
 ## Capabilities
 

@@ -9,4 +9,5 @@
 
 - [x] 2.1 Add the Radix Dialog dependency and the shadcn/ui Sheet primitive under `src/components/ui`; verify installation succeeds and the Sheet supports right-side entry, focus handling, Escape, and close controls.
 - [x] 2.2 Update the import page with a deleted-list trigger and count, empty state, and one restore button per deleted candidate while retaining a delete button on each waiting candidate; verify the Sheet opens from the right and restoring one candidate leaves other deleted rows available.
-- [ ] 2.3 Add UI coverage for delete, opening and closing the Sheet, restoring a specific candidate, and starting with only the waiting roster; verify the end-to-end flow through the import page.
+- [x] 2.3 Require explicit confirmation before calling the start endpoint; verify the dialog shows the waiting-candidate count and cancel/Escape do not start an election.
+- [ ] 2.4 Add UI coverage for delete, opening and closing the Sheet, restoring a specific candidate, and starting with only the waiting roster; verify the end-to-end flow through the import page.

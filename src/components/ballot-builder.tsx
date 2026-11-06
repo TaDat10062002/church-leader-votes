@@ -42,7 +42,7 @@ function DraggableCandidate({ candidate, index, selected }: { candidate: Candida
   return <div
     ref={setNodeRef}
     style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.35 : 1 }}
-    className="w-[4.5rem] shrink-0 text-center sm:w-[5rem]"
+    className="min-h-[6.5rem] w-[5.25rem] shrink-0 text-center sm:min-h-0 sm:w-24 lg:w-28"
   >
     <button
       ref={setActivatorNodeRef}
@@ -52,14 +52,14 @@ function DraggableCandidate({ candidate, index, selected }: { candidate: Candida
       aria-label={`Kéo ${candidate.name} vào ô phiếu`}
       aria-describedby="drag-instructions"
       aria-pressed={selected}
-      className="group relative mt-1 inline-flex h-10 w-10 touch-none items-center justify-center rounded-full outline-none transition hover:scale-[1.04] focus-visible:ring-2 focus-visible:ring-moss active:cursor-grabbing sm:h-12 sm:w-12"
+      className="group relative mt-1 inline-flex h-12 w-12 touch-pan-x items-center justify-center rounded-full outline-none transition hover:scale-[1.04] focus-visible:ring-2 focus-visible:ring-moss active:cursor-grabbing sm:h-14 sm:w-14 lg:h-16 lg:w-16"
     >
       <img src={candidate.image_url} alt="" className={`h-full w-full rounded-full border-2 object-cover ${selected ? "border-moss" : "border-white shadow-sm"}`}/>
       <span className="absolute -bottom-0.5 -right-1 grid h-5 w-5 place-items-center rounded-full border-2 border-cream bg-moss text-white shadow-sm"><GripVertical size={12} aria-hidden="true"/></span>
       {selected && <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-moss text-white shadow-sm"><Check size={10} aria-hidden="true"/></span>}
       <span className="sr-only">Ứng viên {index + 1}{selected ? ", đã có trong phiếu" : ", giữ và kéo icon vào ô phiếu"}</span>
     </button>
-    <div className="mt-1 line-clamp-2 min-h-6 w-full break-words text-[10px] font-semibold leading-3 text-ink sm:text-[11px] sm:leading-4">
+    <div className="mt-1 min-h-8 w-full break-words text-[11px] font-semibold leading-4 text-ink sm:text-xs lg:text-sm">
       {candidate.name}
     </div>
   </div>;
@@ -75,19 +75,19 @@ function BallotSlot({ index, candidate, onRemove, dragging }: { index: number; c
     ref={setNodeRef}
     aria-label={`Ô phiếu ${index + 1}${candidate ? `, ${candidate.name}` : ", còn trống"}`}
     aria-roledescription="vùng thả phiếu"
-    className={`relative flex min-h-[3.75rem] min-w-0 items-center gap-1 rounded-xl border p-1.5 text-left transition sm:min-h-[4.25rem] sm:gap-2 sm:p-2 ${candidate ? "border-moss/35 bg-moss/10" : isOver ? "border-moss bg-moss/15 ring-2 ring-moss/35" : dragging ? "border-moss/35 border-dashed bg-moss/[.04]" : "border-ink/15 border-dashed bg-white/60"}`}
+    className={`relative min-h-[4.5rem] min-w-0 rounded-xl border p-2 text-left transition sm:min-h-[4.25rem] sm:p-2 lg:min-h-[5.25rem] lg:p-3 ${candidate ? "grid grid-cols-[1.25rem_1.75rem_minmax(0,1fr)_1.5rem] grid-rows-[auto_auto] items-center gap-x-1 gap-y-1 sm:grid-rows-1 sm:gap-x-2 sm:gap-y-0 lg:gap-x-3" : `flex items-center gap-1 sm:gap-2 ${isOver ? "border-moss bg-moss/15 ring-2 ring-moss/35" : dragging ? "border-moss/35 border-dashed bg-moss/[.04]" : "border-ink/15 border-dashed bg-white/60"}`} ${candidate ? "border-moss/35 bg-moss/10" : ""}`}
   >
-    <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold sm:h-6 sm:w-6 sm:text-xs ${candidate ? "bg-moss text-white" : "bg-ink/5 text-ink/45"}`}>{index + 1}</span>
+    <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold sm:h-6 sm:w-6 sm:text-xs lg:h-7 lg:w-7 ${candidate ? "col-start-1 row-start-1 bg-moss text-white" : "bg-ink/5 text-ink/45"}`}>{index + 1}</span>
     {candidate ? <>
-      <img src={candidate.image_url} alt="" className="h-7 w-7 shrink-0 rounded-full object-cover sm:h-8 sm:w-8"/>
-      <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-ink sm:text-xs">{candidate.name}</span>
-      <button type="button" onClick={onRemove} aria-label={`Xóa ${candidate.name} khỏi ô ${index + 1}`} className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-ink/45 hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss sm:h-8 sm:w-8"><X size={14}/></button>
+      <img src={candidate.image_url} alt="" className="col-start-2 row-start-1 h-7 w-7 shrink-0 rounded-full object-cover sm:h-8 sm:w-8 lg:h-10 lg:w-10"/>
+      <span className="col-span-4 col-start-1 row-start-2 min-w-0 whitespace-normal break-words px-0.5 text-[11px] font-semibold leading-4 text-ink sm:col-span-1 sm:col-start-3 sm:row-start-1 sm:px-0 sm:text-xs lg:text-sm">{candidate.name}</span>
+      <button type="button" onClick={onRemove} aria-label={`Xóa ${candidate.name} khỏi ô ${index + 1}`} className="col-start-4 row-start-1 grid h-6 w-6 shrink-0 place-items-center rounded-full text-ink/45 hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss sm:h-8 sm:w-8 lg:h-9 lg:w-9"><X size={14}/></button>
     </> : <span className={`min-w-0 text-xs sm:text-sm ${isOver ? "font-semibold text-moss" : "text-ink/40"}`}>{isOver ? "Thả ứng viên vào đây" : dragging ? "Thả vào ô này" : "Thả ứng viên vào đây"}</span>}
   </div>;
 }
 
 function DragPreview({ candidate }: { candidate: Candidate }) {
-  return <div className="flex items-center gap-3 rounded-2xl border border-moss/25 bg-white p-3 shadow-2xl"><img src={candidate.image_url} alt="" className="h-12 w-12 rounded-full object-cover"/><span className="max-w-48 truncate text-sm font-semibold text-ink">{candidate.name}</span></div>;
+  return <div className="h-14 w-14 rounded-full border-2 border-white bg-white shadow-2xl sm:h-16 sm:w-16"><img src={candidate.image_url} alt="" className="h-full w-full rounded-full object-cover"/></div>;
 }
 
 export default function BallotBuilder({ candidates, error, setError, sending, onSubmit }: Props) {
@@ -128,15 +128,15 @@ export default function BallotBuilder({ candidates, error, setError, sending, on
     onDragCancel={() => setActiveCandidate(null)}
     onDragEnd={handleDragEnd}
   >
-    <section className="mx-auto mt-5 max-w-5xl">
-      <div className="mb-1.5 flex items-end justify-between gap-2"><div><h2 className="text-sm font-semibold text-ink sm:text-base">Danh sách ứng viên</h2><p className="mt-0.5 text-[11px] text-ink/45 sm:text-xs">Giữ icon tròn rồi kéo xuống phiếu</p></div><span className="text-[10px] text-ink/40 sm:text-xs">Kéo để chọn</span></div>
-      <div className="overflow-x-auto overscroll-x-contain pb-1"><div className="flex w-max min-w-full justify-start gap-1 sm:flex-wrap sm:justify-center sm:gap-2">{candidates.map((candidate, index) => <DraggableCandidate key={candidate.id} candidate={candidate} index={index} selected={selected.has(candidate.id)}/>)}</div></div>
+    <section className="mx-auto mt-5 max-w-5xl sm:mt-7 lg:max-w-6xl">
+      <div className="mb-2 flex items-end justify-between gap-2 lg:mb-3"><div><h2 className="text-sm font-semibold text-ink sm:text-base">Danh sách ứng viên</h2><p className="mt-0.5 text-[11px] text-ink/45 sm:text-xs">Giữ icon tròn rồi kéo xuống phiếu</p></div><span className="text-[10px] text-ink/40 sm:text-xs">Kéo để chọn</span></div>
+      <div className="overflow-x-auto overscroll-x-contain px-1 pb-2 pt-1"><div className="flex w-max min-w-full justify-start gap-1 sm:flex-wrap sm:justify-center sm:gap-3 lg:gap-4">{candidates.map((candidate, index) => <DraggableCandidate key={candidate.id} candidate={candidate} index={index} selected={selected.has(candidate.id)}/>)}</div></div>
     </section>
 
-    <section className="mx-auto mt-3 max-w-5xl rounded-2xl border border-ink/5 bg-white/55 p-2.5 sm:mt-5 sm:p-4">
-      <div className="mb-2 flex items-center justify-between gap-2"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-moss sm:text-xs">Phiếu của bạn</p><p className="mt-0.5 text-[11px] text-ink/50 sm:text-sm">Thả icon vào một ô còn trống</p></div><span aria-live="polite" className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-ink sm:px-3 sm:py-1.5 sm:text-sm">{selectedIds.length} / 9</span></div>
+    <section className="mx-auto mt-4 max-w-5xl rounded-2xl border border-ink/5 bg-white/55 p-3 sm:mt-6 sm:p-5 lg:max-w-6xl lg:rounded-3xl lg:p-6">
+      <div className="mb-3 flex items-center justify-between gap-2 lg:mb-4"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-moss sm:text-xs">Phiếu của bạn</p><p className="mt-0.5 text-[11px] text-ink/50 sm:text-sm">Thả icon vào một ô còn trống</p></div><span aria-live="polite" className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-ink sm:px-3 sm:py-1.5 sm:text-sm">{selectedIds.length} / 9</span></div>
       <p id="drag-instructions" className="mb-2 rounded-lg bg-moss/[.04] px-2 py-1.5 text-[10px] leading-4 text-ink/55 sm:text-xs">Kéo icon ở trên xuống ô trống. Bàn phím: Tab đến ứng viên, nhấn Space rồi dùng phím mũi tên.</p>
-      <div className="grid grid-cols-3 gap-1.5 sm:gap-2">{slots.map((id, index) => <BallotSlot key={index} index={index} candidate={id ? byId.get(id) : undefined} dragging={Boolean(activeCandidate)} onRemove={() => { setSlots((current) => current.map((value, i) => i === index ? null : value)); setError(""); }}/>)}</div>
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-3 lg:gap-4">{slots.map((id, index) => <BallotSlot key={index} index={index} candidate={id ? byId.get(id) : undefined} dragging={Boolean(activeCandidate)} onRemove={() => { setSlots((current) => current.map((value, i) => i === index ? null : value)); setError(""); }}/>)}</div>
     </section>
 
     <div className="fixed inset-x-0 bottom-0 z-20 border-t border-ink/10 bg-cream/95 p-3 backdrop-blur sm:static sm:mx-auto sm:mt-8 sm:max-w-6xl sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
