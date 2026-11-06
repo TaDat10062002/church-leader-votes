@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.next-isolated/
+.env*
+!.env.example
+coverage/
+playwright-report/
+test-results/

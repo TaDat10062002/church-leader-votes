@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #f7f7f2; color: #18332d; font-family: Arial, Helvetica, sans-serif; }
+button, input { font: inherit; }
+::selection { background: #d8ad5c55; }
+.thanks-card { animation: thanks-in .35s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes thanks-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
