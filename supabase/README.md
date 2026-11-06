@@ -1,9 +1,14 @@
 # Supabase setup
 
 1. Create a Supabase project and run `sql/001_schema.sql` in its SQL Editor. On a fresh project, optionally run `sql/002_smoke_test.sql`; it tests valid and invalid ballots and rolls back its fixture rows.
-2. The script creates the tables, constraints, private-by-default row access, the atomic `start_election` and `cast_vote` functions, and a public-read `candidate-images` Storage bucket. Upload and database write requests are made only by server Route Handlers using the service-role key.
-3. Copy `.env.example` to `.env.local` and fill in the project URL, anonymous key, service-role key, administrator passcode, and session signing secret. Never expose the service-role key or admin secrets with a `NEXT_PUBLIC_` prefix.
-4. Enable Realtime for the Supabase project. After the vote RPC commits, the server sends a REST Broadcast through `httpSend` to the election-specific public channel. The message contains only a change notification, never ballot selections. No `votes` table replication is needed. The dashboard fetches aggregate counts through an admin-protected Route Handler and refreshes after a new vote, after reconnecting, and when the administrator returns to the browser tab.
+2. Run `sql/003_reset_election.sql` after `001_schema.sql` to install the administrator reset function. Existing projects that already ran `001_schema.sql` only need to apply `003_reset_election.sql`.
+3. The scripts create the tables, constraints, private-by-default row access, the atomic `start_election`, `cast_vote`, and `reset_election` functions, and a public-read `candidate-images` Storage bucket. Upload and database write requests are made only by server Route Handlers using the service-role key.
+4. Copy `.env.example` to `.env.local` and fill in the project URL, anonymous key, service-role key, administrator passcode, and session signing secret. Never expose the service-role key or admin secrets with a `NEXT_PUBLIC_` prefix.
+5. Enable Realtime for the Supabase project. After the vote RPC commits, the server sends a REST Broadcast through `httpSend` to the election-specific public channel. The message contains only a change notification, never ballot selections. No `votes` table replication is needed. The dashboard fetches aggregate counts through an admin-protected Route Handler and refreshes after a new vote, after reconnecting, and when the administrator returns to the browser tab.
+
+## Resetting an election
+
+The administrator dashboard's **Bầu cử lại** action requires confirmation before it permanently deletes every row from `vote_selections`, `votes`, `candidates`, and `elections`. Apply `sql/003_reset_election.sql` after `001_schema.sql`; the server invokes the function only after validating the administrator session. The deletion cannot be undone, so export any records that must be retained before confirming. Candidate image objects in the `candidate-images` Storage bucket are not deleted by this reset and may remain after their database rows are removed.
 
 ## Excel workbook format
 
