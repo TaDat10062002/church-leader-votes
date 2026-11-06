@@ -42,6 +42,19 @@ describe("vote route", () => {
     expect(mocks.httpSend).not.toHaveBeenCalled();
   });
 
+  it("reports a closed-election rejection without publishing a vote notification", async () => {
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: "ELECTION_NOT_OPEN" } });
+    const response = await POST(new Request("http://localhost/api/votes", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ electionId: "election-1", candidateIds: ["candidate-1"] }),
+    }));
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: "Kỳ bầu chọn hiện không mở." });
+    expect(mocks.httpSend).not.toHaveBeenCalled();
+  });
+
   it("keeps the committed ballot successful if notification delivery fails", async () => {
     mocks.httpSend.mockRejectedValue(new Error("Realtime unavailable"));
     const error = vi.spyOn(console, "error").mockImplementation(() => {});

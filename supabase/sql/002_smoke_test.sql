@@ -13,7 +13,7 @@ begin
     raise exception 'Empty roster unexpectedly started an election';
   exception when sqlstate '22023' then null; end;
 
-  if exists (select 1 from public.elections where status = 'open') then raise exception 'Empty roster created an active election'; end if;
+  if exists (select 1 from public.elections where status = 'opened') then raise exception 'Empty roster created an active election'; end if;
 
   select public.start_election(jsonb_agg(jsonb_build_object(
     'name', 'Smoke candidate ' || n,
@@ -21,7 +21,7 @@ begin
   ) order by n)) into v_election
   from generate_series(1, 10) n;
 
-  if not exists (select 1 from public.elections where id = v_election and status = 'open') then raise exception 'Non-empty roster did not create an active election'; end if;
+  if not exists (select 1 from public.elections where id = v_election and status = 'opened') then raise exception 'Non-empty roster did not create an active election'; end if;
   if (select count(*) from public.candidates where election_id = v_election) <> 10 then raise exception 'Official candidate roster was not created'; end if;
 
   select array_agg(id order by display_order) into v_ids from public.candidates where election_id = v_election;

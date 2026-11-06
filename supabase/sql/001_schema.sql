@@ -1,14 +1,19 @@
 -- Run this file in the Supabase SQL Editor for a new project.
 create extension if not exists pgcrypto;
 
+do $$ begin
+  create type public.election_status as enum ('opened', 'closed');
+exception when duplicate_object then null;
+end $$;
+
 create table if not exists public.elections (
   id uuid primary key default gen_random_uuid(),
-  status text not null default 'open' check (status in ('open', 'closed')),
+  status public.election_status not null default 'opened',
   created_at timestamptz not null default now(),
   started_at timestamptz not null default now(),
   closed_at timestamptz
 );
-create unique index if not exists elections_one_open_idx on public.elections ((status)) where status = 'open';
+create unique index if not exists elections_one_open_idx on public.elections ((status)) where status = 'opened';
 
 create table if not exists public.candidates (
   id uuid primary key default gen_random_uuid(),
@@ -73,11 +78,11 @@ begin
   ) then
     raise exception 'CANDIDATE_NAME_AND_IMAGE_REQUIRED' using errcode = '22023';
   end if;
-  if exists (select 1 from public.elections where status = 'open') then
+  if exists (select 1 from public.elections where status = 'opened') then
     raise exception 'ELECTION_ALREADY_OPEN' using errcode = '23505';
   end if;
 
-  insert into public.elections(status) values ('open') returning id into v_election_id;
+  insert into public.elections(status) values ('opened') returning id into v_election_id;
   insert into public.candidates(election_id, name, image_url, display_order)
   select v_election_id, trim(c->>'name'), trim(c->>'image_url'), ordinality::integer
   from jsonb_array_elements(p_candidates) with ordinality as rows(c, ordinality);
@@ -108,7 +113,7 @@ begin
   if v_distinct <> v_count then
     raise exception 'DUPLICATE_CANDIDATE' using errcode = '22023';
   end if;
-  if not exists (select 1 from public.elections where id = p_election_id and status = 'open') then
+  if not exists (select 1 from public.elections where id = p_election_id and status = 'opened') then
     raise exception 'ELECTION_NOT_OPEN' using errcode = '22023';
   end if;
   select count(*)::integer into v_matches from public.candidates

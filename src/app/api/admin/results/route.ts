@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   if (denied) return denied;
   try {
     const supabase = getSupabaseAdmin();
-    const { data: election, error } = await supabase.from("elections").select("id").eq("status", "open").maybeSingle();
+    const { data: election, error } = await supabase.from("elections").select("id").eq("status", "opened").maybeSingle();
     if (error) throw error;
     if (!election) return NextResponse.json({ election: null, results: [] });
     const { data: candidates, error: candidateError } = await supabase.from("candidates").select("id,name,image_url,display_order").eq("election_id", election.id).order("display_order");

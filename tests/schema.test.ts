@@ -21,7 +21,9 @@ describe("Supabase PostgreSQL schema", () => {
       const schema = await readFile(path.join(process.cwd(), "supabase/sql/001_schema.sql"), "utf8");
       const smoke = await readFile(path.join(process.cwd(), "supabase/sql/002_smoke_test.sql"), "utf8");
       const reset = await readFile(path.join(process.cwd(), "supabase/sql/003_reset_election.sql"), "utf8");
+      const realtimeAccess = await readFile(path.join(process.cwd(), "supabase/sql/005_election_realtime_access.sql"), "utf8");
       await db.exec(schema);
+      await db.exec(realtimeAccess);
       await db.exec(smoke);
       await db.exec(reset);
       const grants = await db.query<{ anon: boolean; authenticated: boolean; service_role: boolean }>(`
@@ -33,12 +35,38 @@ describe("Supabase PostgreSQL schema", () => {
       expect(grants.rows[0]).toEqual({ anon: false, authenticated: false, service_role: true });
       const result = await db.query<{ count: number }>("select count(*)::int as count from public.votes");
       expect(result.rows[0].count).toBe(0);
+      const statusType = await db.query<{ labels: string[] }>(`
+        select array_agg(enumlabel order by enumsortorder) as labels
+        from pg_enum join pg_type on pg_type.oid = enumtypid
+        where pg_type.typname = 'election_status'
+      `);
+      expect(statusType.rows[0].labels).toEqual(["opened", "closed"]);
+      const access = await db.query<{ elections: boolean; candidates: boolean; votes: boolean; selections: boolean }>(`
+        select
+          has_table_privilege('anon', 'public.elections', 'SELECT') as elections,
+          has_table_privilege('anon', 'public.candidates', 'SELECT') as candidates,
+          has_table_privilege('anon', 'public.votes', 'SELECT') as votes,
+          has_table_privilege('anon', 'public.vote_selections', 'SELECT') as selections
+      `);
+      expect(access.rows[0]).toEqual({ elections: true, candidates: false, votes: false, selections: false });
+      const readPolicy = await db.query<{ count: number }>(`
+        select count(*)::int as count from pg_policies
+        where schemaname = 'public' and tablename = 'elections' and policyname = 'elections_realtime_read'
+      `);
+      expect(readPolicy.rows[0].count).toBe(1);
 
       const election = await db.query<{ id: string }>(`
         select public.start_election('[{"name":"Reset candidate","image_url":"https://example.invalid/candidate.png"}]'::jsonb) as id
       `);
       const candidate = await db.query<{ id: string }>("select id from public.candidates");
       await db.query("select public.cast_vote($1, $2::uuid[])", [election.rows[0].id, [candidate.rows[0].id]]);
+
+      await db.query("update public.elections set status = 'closed' where id = $1", [election.rows[0].id]);
+      await expect(db.query("select public.cast_vote($1, $2::uuid[])", [election.rows[0].id, [candidate.rows[0].id]])).rejects.toThrow("ELECTION_NOT_OPEN");
+      for (const [table, expected] of [["votes", 1], ["vote_selections", 1]] as const) {
+        const rows = await db.query<{ count: number }>(`select count(*)::int as count from public.${table}`);
+        expect(rows.rows[0].count, `${table} should not change after a closed-election rejection`).toBe(expected);
+      }
 
       await db.exec("select public.reset_election()");
       for (const table of ["elections", "candidates", "votes", "vote_selections"]) {
@@ -66,6 +94,35 @@ describe("Supabase PostgreSQL schema", () => {
       }
 
       await db.exec("drop trigger reject_candidate_delete on public.candidates; drop function public.reject_candidate_delete(); select public.reset_election()");
+    } finally {
+      await db.close();
+    }
+  });
+
+  it("migrates legacy open and closed election statuses to the enum", async () => {
+    const db = new PGlite();
+    try {
+      await db.exec(`
+        create table public.elections (
+          id integer primary key,
+          status text not null default 'open' check (status in ('open', 'closed')),
+          created_at timestamptz not null default now(),
+          started_at timestamptz not null default now(),
+          closed_at timestamptz
+        );
+        insert into public.elections(id, status) values (1, 'open'), (2, 'closed');
+        create unique index elections_one_open_idx on public.elections ((status)) where status = 'open';
+      `);
+      const migration = await readFile(path.join(process.cwd(), "supabase/sql/004_election_status_enum.sql"), "utf8");
+      await db.exec(migration);
+
+      const rows = await db.query<{ status: string }>("select status::text from public.elections order by id");
+      expect(rows.rows.map((row) => row.status)).toEqual(["opened", "closed"]);
+      const defaultStatus = await db.query<{ status: string }>("select column_default as status from information_schema.columns where table_schema = 'public' and table_name = 'elections' and column_name = 'status'");
+      expect(defaultStatus.rows[0].status).toContain("opened");
+      await db.exec("update public.elections set status = 'closed' where id = 1");
+      await expect(db.exec("insert into public.elections(id) values (3)")).resolves.toBeDefined();
+      await expect(db.exec("insert into public.elections(id) values (4)")).rejects.toThrow();
     } finally {
       await db.close();
     }
