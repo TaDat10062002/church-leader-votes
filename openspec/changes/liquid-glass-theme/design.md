@@ -34,7 +34,7 @@ Khởi tạo giao diện trước khi trang được vẽ để tránh lóe màu
 
 Cài gói `motion` và dùng API React từ `motion/react`. Dự án hiện dùng React 19.1.1; Motion hỗ trợ React 18.2 trở lên. Không dùng `AnimateView`, vì API đó yêu cầu React 19.3 trở lên. Tham khảo [hướng dẫn cài Motion cho React](https://motion.dev/docs/react-installation) và [yêu cầu của AnimateView](https://motion.dev/docs/react-animate-view).
 
-Khi người dùng đổi giao diện bằng công tắc, dùng một lớp giao diện mới phủ toàn màn hình và animate `clip-path: circle()` mở rộng từ tọa độ tâm công tắc đến phủ hết màn hình. Đồng thời chuyển mượt màu nền, chữ, viền và sắc kính sang bảng màu mới. Khi thay đổi đến từ thiết lập thiết bị, chuyển bảng màu mượt mà mà không chạy Circular Reveal vì không có điểm kích hoạt từ thao tác người dùng.
+Khi người dùng đổi giao diện bằng công tắc, dùng một lớp giao diện hình tròn đặt tại tâm công tắc và animate `transform: scale()` đến khi phủ hết màn hình. Dùng transform để giữ Circular Reveal trên compositor, tránh vẽ lại mặt nạ `clip-path` ở mỗi khung hình. Đồng thời chuyển mượt màu nền, chữ, viền và sắc kính sang bảng màu mới. Khi thay đổi đến từ thiết lập thiết bị, chuyển bảng màu mượt mà mà không chạy Circular Reveal vì không có điểm kích hoạt từ thao tác người dùng.
 
 Giữ lớp chuyển tiếp đơn nhất để hạn chế công việc vẽ lại. Khi `prefers-reduced-motion` được bật, bỏ Circular Reveal và chuyển các màu tức thì; không tạo state nghiệp vụ mới để điều phối hiệu ứng.
 

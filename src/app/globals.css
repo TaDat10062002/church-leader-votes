@@ -42,13 +42,13 @@
   --app-leaf: #9bbf9a;
   --app-cream: #1b2725;
   --app-gold: #e7c478;
-  --app-page-color: #151e1d;
+  --app-page-color: #111312;
   --app-page-bg: none;
   --glass-panel: rgba(231, 243, 236, .02);
   --glass-tint-rgb: 174,206,184;
-  --glass-fallback: rgba(34, 45, 43, .97);
-  --glass-border: rgba(194, 220, 204, .13);
-  --glass-specular: rgba(231, 243, 236, .18);
+  --glass-fallback: rgba(31, 34, 32, .97);
+  --glass-border: rgba(205, 212, 207, .13);
+  --glass-specular: rgba(231, 239, 234, .16);
   --app-line: rgba(225, 239, 232, .2);
   --app-focus: #a8d2b5;
   --app-danger: #ffc2b8;
@@ -75,14 +75,14 @@
   --app-moss: #a9bfd8;
   --app-leaf: #879fba;
   --app-focus: #a9bfd8;
-  --app-page-color: #151b23;
+  --app-page-color: #111214;
   --app-page-bg: none;
-  --glass-panel: rgba(221, 234, 249, .018);
-  --glass-tint-rgb: 160,186,216;
-  --glass-fallback: rgba(35, 44, 57, .97);
-  --glass-border: rgba(180, 204, 231, .12);
-  --glass-specular: rgba(212, 229, 248, .17);
-  --app-line: rgba(194, 213, 237, .16);
+  --glass-panel: rgba(232, 236, 243, .018);
+  --glass-tint-rgb: 177,187,202;
+  --glass-fallback: rgba(32, 34, 39, .97);
+  --glass-border: rgba(199, 205, 216, .12);
+  --glass-specular: rgba(224, 230, 240, .15);
+  --app-line: rgba(198, 204, 216, .15);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -177,10 +177,11 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .theme-reveal {
   position: fixed;
   z-index: -1;
-  inset: 0;
+  border-radius: 50%;
   pointer-events: none;
   background-color: var(--app-page-color);
   background-image: var(--app-page-bg);
+  will-change: transform;
 }
 .glass-surface {
   border-color: var(--glass-border);

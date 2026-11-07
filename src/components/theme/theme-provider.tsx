@@ -108,10 +108,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         key={reveal.key}
         aria-hidden="true"
         className="theme-reveal"
-        initial={{ clipPath: `circle(0px at ${reveal.x}px ${reveal.y}px)` }}
-        animate={{ clipPath: `circle(${reveal.radius}px at ${reveal.x}px ${reveal.y}px)` }}
+        style={{
+          left: reveal.x - reveal.radius,
+          top: reveal.y - reveal.radius,
+          width: reveal.radius * 2,
+          height: reveal.radius * 2,
+        }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         onAnimationComplete={() => setReveal(null)}
       />}
     </AnimatePresence>
