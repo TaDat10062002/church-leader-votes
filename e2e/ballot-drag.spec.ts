@@ -6,7 +6,7 @@ async function prepareVotePage(page: Page) {
   await page.route("**/api/elections/active", (route) => route.fulfill({
     status: 200,
     contentType: "application/json",
-    body: JSON.stringify({ election: { id: "test-election", candidates: [candidate("1", "Nguyễn An"), candidate("2", "Trần Bình"), candidate("3", "Lê Chi")] } }),
+    body: JSON.stringify({ election: { id: "test-election", status: "opened", candidates: [candidate("1", "Nguyễn An"), candidate("2", "Trần Bình"), candidate("3", "Lê Chi")] } }),
   }));
   await page.route("**/api/votes", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, voteId: "test-vote" }) }));
   await page.goto("/vote");

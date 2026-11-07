@@ -4,6 +4,8 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
@@ -15,7 +17,7 @@ export const SheetOverlay = forwardRef<
   ElementRef<typeof DialogPrimitive.Overlay>,
   ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(function SheetOverlay({ className, ...props }, ref) {
-  return <DialogPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-black/40", className)} {...props} />;
+  return <DialogPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-ink/30 backdrop-blur-xs", className)} {...props} />;
 });
 
 type SheetContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
@@ -37,18 +39,21 @@ export const SheetContent = forwardRef<
     <DialogPrimitive.Portal>
       <SheetOverlay />
       <DialogPrimitive.Content
+        asChild
         ref={ref}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 overflow-y-auto border-ink/10 bg-white p-6 text-ink shadow-xl outline-none transition-transform duration-300 ease-in-out data-[state=open]:translate-x-0 data-[state=open]:translate-y-0",
+          "glass-dialog fixed z-50 flex flex-col gap-4 overflow-y-auto border p-6 text-ink shadow-xl outline-none transition-transform duration-300 ease-in-out data-[state=open]:translate-x-0 data-[state=open]:translate-y-0",
           sideClasses[side],
           className,
         )}
         {...props}
       >
+        <Card tint={0.04} className="glass-overlay-panel" radius={0}>
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-lg text-ink/55 transition hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss" aria-label="Đóng">
+        <DialogPrimitive.Close asChild><Button variant="ghost" className="absolute right-4 top-4 size-11 rounded-full p-0" aria-label="Đóng">
           <X size={18} />
-        </DialogPrimitive.Close>
+        </Button></DialogPrimitive.Close>
+        </Card>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   );

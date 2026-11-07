@@ -29,6 +29,10 @@ The import page includes a **Tải Excel mẫu** download with the required colu
 
 ## Verification and build
 
+The interface uses WebsiteGlass source components and Tailwind CSS 4. See
+[the UI integration notes](docs/liquid-glass.md) for component coverage, local
+adaptations, and browser fallbacks.
+
 - `npm test` runs unit tests and applies the SQL schema plus rollback smoke test to a fresh local PGlite database.
 - `npm run build` creates the production build.
 - `npm run test:e2e` runs browser interaction tests against a running production server at `http://127.0.0.1:4173`; these tests stub election and vote APIs and do not write to Supabase. Set `PLAYWRIGHT_EXECUTABLE_PATH` if Playwright's bundled browser is unavailable.
