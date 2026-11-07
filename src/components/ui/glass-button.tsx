@@ -12,7 +12,7 @@ interface GlassButtonProps extends ComponentProps<"button"> {
 }
 
 export function GlassButton({
-  tint = 0.04, variant = "capsule", children, className, disabled,
+  tint = 0, variant = "capsule", children, className, disabled,
   onPointerDown, onPointerUp, onPointerLeave, onPointerCancel,
   onKeyDown, onKeyUp, onBlur, ...props
 }: GlassButtonProps) {

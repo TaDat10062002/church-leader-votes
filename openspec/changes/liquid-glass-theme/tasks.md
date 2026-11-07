@@ -24,3 +24,9 @@
 
 - [x] 4.1 Rà soát mọi trang ở chế độ sáng, tối, theo thiết bị, giảm độ trong suốt và giảm chuyển động; xác nhận nút toggle, Circular Reveal, độ trong suốt mới, hiệu ứng kính dự phòng, độ tương phản và trạng thái luồng nhất quán khi chuyển trang.
 - [x] 4.2 Rà soát toàn bộ thay đổi cuối cùng; xác nhận không sửa tệp bộ xử lý API trong route hoặc logic nghiệp vụ/trạng thái luồng hiện có.
+
+## 5. Tinh chỉnh kính và bảng màu nhấn
+
+- [x] 5.1 Giảm độ đục của viền trắng và hạ tint mặc định của các bề mặt Liquid Glass; giữ phản quang tiết chế, độ đọc rõ và fallback đục hơn cho chế độ giảm độ trong suốt.
+- [x] 5.2 Thêm lựa chọn xanh lá hiện tại và xanh navy dịu vào giao diện; lưu lựa chọn riêng với sáng/tối, khởi tạo màu trước khi vẽ trang và áp dụng nhất quán cho màu nhấn, viền và sắc kính.
+- [x] 5.3 Rà soát các trang với cả hai giao diện, hai bảng màu và chế độ giảm độ trong suốt; xác nhận lựa chọn còn hiệu lực sau điều hướng/tải lại, kính nhìn xuyên rõ và luồng nghiệp vụ không đổi.

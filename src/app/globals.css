@@ -19,16 +19,20 @@
   --app-cream: #f7f7f2;
   --app-gold: #d8ad5c;
   --app-page-color: #edf2e9;
-  --app-page-bg: radial-gradient(ellipse at 8% 8%, rgba(119, 174, 150, .5), transparent 44%), radial-gradient(ellipse at 96% 18%, rgba(229, 197, 130, .48), transparent 42%), radial-gradient(ellipse at 74% 88%, rgba(160, 195, 181, .58), transparent 45%);
-  --glass-panel: rgba(255, 255, 255, .07);
+  --app-page-bg: none;
+  --glass-panel: rgba(255, 255, 255, .58);
+  --glass-tint-rgb: 255,255,255;
   --glass-fallback: rgba(247, 250, 245, .94);
-  --glass-border: rgba(255, 255, 255, .72);
-  --glass-specular: rgba(255, 255, 255, .88);
+  --glass-border: rgba(72, 106, 83, .25);
+  --glass-specular: rgba(255, 255, 255, .42);
   --app-line: rgba(24, 51, 45, .14);
   --app-focus: #426b53;
   --app-danger: #9f3028;
   --app-danger-bg: rgba(255, 237, 233, .82);
-  --app-shadow: 0 18px 50px rgba(34, 58, 47, .09);
+  --modal-submit: #287545;
+  --modal-cancel: #9a6900;
+  --modal-delete: #b42318;
+  --app-shadow: 0 18px 50px rgba(34, 58, 47, .1);
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -39,16 +43,46 @@
   --app-cream: #1b2725;
   --app-gold: #e7c478;
   --app-page-color: #151e1d;
-  --app-page-bg: radial-gradient(ellipse at 8% 8%, rgba(61, 112, 106, .42), transparent 45%), radial-gradient(ellipse at 96% 18%, rgba(118, 91, 56, .32), transparent 44%), radial-gradient(ellipse at 74% 88%, rgba(50, 92, 83, .42), transparent 46%);
-  --glass-panel: rgba(231, 243, 236, .035);
+  --app-page-bg: none;
+  --glass-panel: rgba(231, 243, 236, .02);
+  --glass-tint-rgb: 174,206,184;
   --glass-fallback: rgba(34, 45, 43, .97);
-  --glass-border: rgba(220, 239, 230, .2);
-  --glass-specular: rgba(231, 243, 236, .28);
+  --glass-border: rgba(194, 220, 204, .13);
+  --glass-specular: rgba(231, 243, 236, .18);
   --app-line: rgba(225, 239, 232, .2);
   --app-focus: #a8d2b5;
   --app-danger: #ffc2b8;
   --app-danger-bg: rgba(95, 43, 39, .6);
+  --modal-submit: #9bd7a8;
+  --modal-cancel: #f0cf78;
+  --modal-delete: #ff9b91;
   --app-shadow: 0 18px 55px rgba(0, 0, 0, .32);
+}
+:root[data-theme="light"][data-palette="navy"] {
+  --app-moss: #526d8a;
+  --app-leaf: #91a8c1;
+  --app-focus: #526d8a;
+  --app-page-color: #edf2f7;
+  --app-page-bg: none;
+  --glass-panel: rgba(247, 250, 255, .6);
+  --glass-tint-rgb: 242,247,255;
+  --glass-fallback: rgba(244, 248, 253, .95);
+  --glass-border: rgba(72, 101, 132, .24);
+  --glass-specular: rgba(237, 244, 252, .38);
+  --app-line: rgba(55, 79, 107, .16);
+}
+:root[data-theme="dark"][data-palette="navy"] {
+  --app-moss: #a9bfd8;
+  --app-leaf: #879fba;
+  --app-focus: #a9bfd8;
+  --app-page-color: #151b23;
+  --app-page-bg: none;
+  --glass-panel: rgba(221, 234, 249, .018);
+  --glass-tint-rgb: 160,186,216;
+  --glass-fallback: rgba(35, 44, 57, .97);
+  --glass-border: rgba(180, 204, 231, .12);
+  --glass-specular: rgba(212, 229, 248, .17);
+  --app-line: rgba(194, 213, 237, .16);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -72,11 +106,11 @@ body::before, body::after {
   transition: opacity .36s ease;
 }
 body::before {
-  background-image: radial-gradient(ellipse at 8% 8%, rgba(119, 174, 150, .5), transparent 44%), radial-gradient(ellipse at 96% 18%, rgba(229, 197, 130, .48), transparent 42%), radial-gradient(ellipse at 74% 88%, rgba(160, 195, 181, .58), transparent 45%);
+  background-image: var(--app-page-bg);
   opacity: 1;
 }
 body::after {
-  background-image: radial-gradient(ellipse at 8% 8%, rgba(61, 112, 106, .42), transparent 45%), radial-gradient(ellipse at 96% 18%, rgba(118, 91, 56, .32), transparent 44%), radial-gradient(ellipse at 74% 88%, rgba(50, 92, 83, .42), transparent 46%);
+  background-image: var(--app-page-bg);
   opacity: 0;
 }
 :root[data-theme="dark"] body::before { opacity: 0; }
@@ -87,7 +121,7 @@ button:not(:disabled), a { -webkit-tap-highlight-color: transparent; }
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 3px; }
 ::selection { background: #d8ad5c55; }
 
-.theme-control {
+.icon-switch-control {
   position: relative;
   z-index: 2;
   display: inline-flex;
@@ -104,7 +138,9 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   cursor: pointer;
   transition: background-color .32s ease, border-color .32s ease, box-shadow .32s ease;
 }
-.theme-toggle-thumb {
+.icon-switch-thumb {
+  position: relative;
+  z-index: 1;
   display: grid;
   width: 1.48rem;
   height: 1.48rem;
@@ -116,8 +152,28 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   box-shadow: 0 1px 5px var(--app-shadow);
   transition: background-color .32s ease, color .32s ease, border-color .32s ease;
 }
+.icon-switch-mode-icon {
+  position: absolute;
+  top: 50%;
+  z-index: 0;
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  place-items: center;
+  color: var(--app-ink);
+  opacity: .45;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.icon-switch-mode-icon--left { left: .43rem; }
+.icon-switch-mode-icon--right { right: .43rem; }
 .theme-control--floating { position: absolute; right: 1rem; top: 1rem; }
 .theme-control--floating { z-index: 5; }
+.appearance-controls { display: inline-flex; align-items: center; gap: .5rem; }
+.palette-control { display: inline-flex; align-items: center; gap: .25rem; border: 1px solid var(--glass-border); border-radius: 999px; padding: .2rem; background: color-mix(in srgb, var(--glass-panel) 75%, transparent); }
+.palette-control button { display: grid; width: 1.45rem; height: 1.45rem; place-items: center; border: 1px solid transparent; border-radius: 50%; cursor: pointer; }
+.palette-control button[aria-pressed="true"] { border-color: var(--app-ink); box-shadow: 0 0 0 1px var(--glass-border); }
+.palette-swatch { width: .72rem; height: .72rem; border-radius: 50%; }
 .theme-reveal {
   position: fixed;
   z-index: -1;
@@ -142,7 +198,15 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 .glass-button-secondary { background-color: color-mix(in srgb, var(--glass-panel) 70%, var(--app-ink) 4%); }
 .glass-button-ghost { background-color: color-mix(in srgb, var(--glass-panel) 55%, transparent); }
 .glass-button-danger { background-color: color-mix(in srgb, #ef4444 20%, var(--glass-panel)); color: color-mix(in srgb, #ef4444 75%, var(--app-ink)); }
-.glass-overlay-panel { background-color: var(--glass-panel); }
+.modal-backdrop, .native-modal::backdrop {
+  background-color: rgba(10, 15, 16, .2);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+:root[data-theme="dark"] .modal-backdrop,
+:root[data-theme="dark"] .native-modal::backdrop {
+  background-color: rgba(4, 9, 9, .56);
+}
 .glass-chip {
   border-color: var(--glass-border);
   box-shadow: inset 0 1px 1px var(--glass-specular), inset 0 0 0 1px color-mix(in srgb, var(--glass-specular) 55%, transparent), 0 4px 12px -8px var(--app-shadow);
@@ -157,12 +221,46 @@ button.glass-button[class*="bg-white/"] { background-color: var(--glass-panel); 
   background: color-mix(in srgb, var(--app-moss) 12%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-moss) 22%, transparent), 0 6px 18px -8px var(--app-shadow);
 }
+.glass-overlay-panel .glass-button-primary {
+  background: transparent;
+  color: var(--modal-submit);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--modal-submit) 38%, transparent);
+}
+.glass-overlay-panel .glass-button-secondary {
+  background: transparent;
+  color: var(--modal-cancel);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--modal-cancel) 38%, transparent);
+}
+.glass-overlay-panel .glass-button-ghost {
+  background: transparent;
+  color: var(--modal-cancel);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--modal-cancel) 28%, transparent);
+}
+.glass-overlay-panel .glass-button-danger {
+  background: transparent;
+  color: var(--modal-delete);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--modal-delete) 38%, transparent);
+}
+.glass-overlay-panel .modal-action-submit {
+  background: transparent;
+  color: var(--modal-submit);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--modal-submit) 38%, transparent);
+}
 .glass-chip {
   -webkit-backdrop-filter: blur(10px) saturate(1.3);
   backdrop-filter: blur(10px) saturate(1.3);
   box-shadow: inset 0 1px 1px var(--glass-specular), inset 0 0 0 1px color-mix(in srgb, var(--glass-specular) 50%, transparent), 0 4px 12px -8px var(--app-shadow);
 }
-.glass-overlay-panel { background-color: var(--glass-panel); }
+.glass-overlay-panel {
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-panel);
+  box-shadow: var(--app-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+}
+:root[data-theme="dark"] .glass-overlay-panel [data-glass-tint] {
+  background: rgba(var(--glass-tint-rgb), .002) !important;
+}
 [role="alert"] {
   border: 1px solid color-mix(in srgb, var(--app-danger) 25%, transparent);
   background-color: var(--app-danger-bg);
@@ -191,6 +289,7 @@ button.glass-button[class*="bg-white/"] { background-color: var(--glass-panel); 
   .glass-chip, [role="alert"] { background-color: var(--glass-fallback); }
 }
 @media (prefers-reduced-transparency: reduce) {
+  .modal-backdrop, .native-modal::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .glass-surface { background-color: var(--glass-fallback); }
   .glass-button-primary .glass-surface { background-color: var(--glass-fallback); }
   .glass-card, .glass-header, .glass-dialog { background-color: var(--glass-fallback); }
@@ -199,7 +298,7 @@ button.glass-button[class*="bg-white/"] { background-color: var(--glass-panel); 
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  body, body::before, body::after, .glass-surface, .glass-chip, .glass-card, .glass-header, .glass-dialog, .glass-button-secondary, .glass-button-ghost, .glass-button-danger, .theme-control, .theme-toggle-thumb, .text-ink, .text-moss, .text-leaf, .text-cream, .text-gold { transition-duration: 0s !important; }
+  body, body::before, body::after, .glass-surface, .glass-chip, .glass-card, .glass-header, .glass-dialog, .glass-button-secondary, .glass-button-ghost, .glass-button-danger, .icon-switch-control, .icon-switch-thumb, .text-ink, .text-moss, .text-leaf, .text-cream, .text-gold { transition-duration: 0s !important; }
   .theme-reveal { display: none; }
   .thanks-card, .sheet-right[data-state="open"] { animation: none; }
   .glass-button { transition: none; }

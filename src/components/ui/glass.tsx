@@ -246,8 +246,8 @@ export function Glass({
   const [map, setMap] = useState<string | null>(null);
   const [box, setBox] = useState({ w: 0, h: 0 });
 
-  const t = tint ?? 0.04;
-  const rgb = tintColor ?? (dark ? "70,72,78" : "255,255,255");
+  const t = tint ?? 0.012;
+  const rgb = tintColor ?? "var(--glass-tint-rgb)";
   const displace = 8 + strength * 60;
 
   // Generate / refresh the single-lens map on resize.
@@ -343,7 +343,7 @@ export function Glass({
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 rounded-[inherit]"
-            style={{ background: `rgba(${rgb},${Math.max(t * 0.4, 0.04)})` }}
+            style={{ background: `rgba(${rgb},${Math.max(t * 0.4, 0.01)})` }}
           />
           <div
             aria-hidden
@@ -365,14 +365,14 @@ export function Glass({
 
 function rimShadow(dark: boolean): string {
   return dark
-    ? "inset 0 1px 1px rgba(255,255,255,0.5), inset 0 0 0 1px rgba(255,255,255,0.12), 0 16px 40px -14px rgba(0,0,0,0.6)"
-    : "inset 0 1px 1px rgba(255,255,255,0.9), inset 0 0 0 1px rgba(255,255,255,0.4), 0 14px 38px -16px rgba(24,51,45,0.18)";
+    ? "inset 0 1px 1px color-mix(in srgb, var(--glass-specular) 70%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--glass-specular) 45%, transparent), 0 16px 40px -14px rgba(0,0,0,0.45)"
+    : "inset 0 1px 1px color-mix(in srgb, var(--glass-specular) 80%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--glass-specular) 42%, transparent), 0 14px 38px -16px rgba(24,51,45,0.13)";
 }
 
 function sheen(dark: boolean): string {
   return dark
-    ? "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 36%, transparent 64%, rgba(255,255,255,0.025) 100%)"
-    : "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 38%, transparent 62%, rgba(255,255,255,0.05) 100%)";
+    ? "linear-gradient(135deg, color-mix(in srgb, var(--glass-specular) 28%, transparent) 0%, transparent 36%, transparent 64%, color-mix(in srgb, var(--glass-specular) 10%, transparent) 100%)"
+    : "linear-gradient(135deg, color-mix(in srgb, var(--glass-specular) 38%, transparent) 0%, transparent 38%, transparent 62%, color-mix(in srgb, var(--glass-specular) 12%, transparent) 100%)";
 }
 
 // ── GlassLens ─────────────────────────────────────────────────────────────────
@@ -503,7 +503,7 @@ export interface GlassSurfaceProps extends ComponentProps<"div"> {
 
 export function GlassSurface({
   refract = false,
-  tint = 0.02,
+  tint = 0.01,
   tintColor,
   blur = 20,
   saturation = 1.6,
@@ -518,7 +518,7 @@ export function GlassSurface({
 }: GlassSurfaceProps) {
   const dark = useGlassDark();
   const t = clamp01(tint);
-  const rgb = tintColor ?? (dark ? "174,206,184" : "255,255,255");
+  const rgb = tintColor ?? "var(--glass-tint-rgb)";
   const tintRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -527,7 +527,7 @@ export function GlassSurface({
       setTintLift(delta: number) {
         const el = tintRef.current;
         if (el)
-          el.style.background = `rgba(${rgb},${Math.max(0.04, Math.min(0.55, t * 0.42 + delta))})`;
+          el.style.background = `rgba(${rgb},${Math.max(0.002, Math.min(0.55, t * 0.42 + delta))})`;
       },
     };
   }, [handleRef, rgb, t]);
@@ -551,8 +551,9 @@ export function GlassSurface({
       <div
         aria-hidden
         ref={tintRef}
+        data-glass-tint=""
         className="pointer-events-none absolute inset-0 -z-10 rounded-[inherit]"
-        style={{ background: `rgba(${rgb},${Math.max(0.02, t * 0.42)})` }}
+        style={{ background: `rgba(${rgb},${Math.max(0.002, t * 0.42)})` }}
       />
       {specular && (
         <>

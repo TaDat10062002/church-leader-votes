@@ -8,13 +8,16 @@ Dự án đã có các thành phần WebsiteGlass, nhưng cách dùng hiệu ứ
 
 - Dùng nút toggle sáng/tối hai trạng thái; theo thiết bị cho đến lần bật/tắt đầu tiên, sau đó lưu chế độ người dùng chọn.
 - Tăng độ trong suốt mặc định của các bề mặt Liquid Glass để hậu cảnh hiện rõ hơn, đồng thời giữ độ đọc bằng viền, phản quang và màu chữ; chế độ giảm độ trong suốt vẫn dùng nền đục hơn.
+- Giảm độ trắng và độ nổi của viền kính, hạ tint mặc định để các bề mặt trong suốt hơn.
+- Cho phép chọn một trong hai bảng màu nhấn: xanh lá hiện tại hoặc xanh navy dịu; lưu lựa chọn độc lập với giao diện sáng/tối.
 
 - Mở rộng giao diện dựa trên WebsiteGlass cho các điều khiển dùng chung, thẻ, lớp phủ và bề mặt riêng của từng trang trong toàn ứng dụng.
 - Bổ sung giao diện sáng và tối đồng bộ; mặc định theo cài đặt thiết bị, đồng thời có công tắc để người dùng chọn và ghi nhớ giao diện.
 - Thêm chuyển theme bằng hiệu ứng Circular Reveal từ tâm công tắc, kết hợp chuyển màu nền và màu giao diện mượt; tôn trọng tùy chọn giảm chuyển động của hệ điều hành.
 - Định nghĩa màu kính, đường viền, màu chữ, bóng đổ và bề mặt dự phòng theo từng giao diện để nội dung trên lớp trong suốt vẫn dễ đọc.
+- Định nghĩa hai bảng màu nhấn dùng chung cho toàn ứng dụng mà không thay đổi lựa chọn sáng/tối.
 - Giữ khả năng hiển thị dự phòng trên trình duyệt không hỗ trợ khúc xạ và hỗ trợ cài đặt giảm độ trong suốt.
-- Giữ nguyên mọi quy tắc nghiệp vụ và hành vi trạng thái hiện có; không đổi logic hoặc hợp đồng của bộ xử lý API trong route. Trạng thái mới duy nhất là tùy chọn giao diện cục bộ, tách biệt và không tham gia luồng bầu chọn.
+- Giữ nguyên mọi quy tắc nghiệp vụ và hành vi trạng thái hiện có; không đổi logic hoặc hợp đồng của bộ xử lý API trong route. Các trạng thái trình bày cục bộ (giao diện sáng/tối và bảng màu nhấn) được lưu riêng, không tham gia luồng bầu chọn.
 
 ## Capabilities
 

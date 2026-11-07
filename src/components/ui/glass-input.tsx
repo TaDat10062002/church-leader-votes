@@ -13,7 +13,7 @@ interface GlassInputProps extends ComponentProps<"input"> {
 
 export function GlassInput({
   icon,
-  tint = 0.04,
+  tint = 0.012,
   radius = 9999,
   placeholder = "Search…",
   className,
@@ -54,14 +54,14 @@ export function GlassInput({
         className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-200"
         style={{
           opacity: 0,
-          boxShadow: "inset 0 0 0 2px rgba(66,107,83,0.7), 0 0 16px rgba(66,107,83,0.12)",
+          boxShadow: "inset 0 0 0 2px color-mix(in srgb, var(--app-focus) 70%, transparent), 0 0 16px color-mix(in srgb, var(--app-focus) 12%, transparent)",
         }}
       />
 
       <div className="relative flex items-center gap-2.5 px-4 py-2.5">
         {icon && (
           <span className="shrink-0 text-ink/50 transition-colors duration-150"
-            style={{ color: focused ? "#426b53" : undefined }}>
+            style={{ color: focused ? "var(--app-focus)" : undefined }}>
             {icon}
           </span>
         )}

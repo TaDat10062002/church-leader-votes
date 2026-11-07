@@ -9,7 +9,7 @@ interface GlassCardProps extends GlassSurfaceProps {
 }
 
 /** A frosted glass card surface with optional header/content/footer parts. */
-export function GlassCard({ tint = 0.04, className, contentClassName = "p-5", children, ...props }: GlassCardProps) {
+export function GlassCard({ tint = 0.012, className, contentClassName = "p-5", children, ...props }: GlassCardProps) {
   return (
     <GlassSurface
       tint={tint}

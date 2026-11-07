@@ -16,6 +16,7 @@ import {
 } from "@dnd-kit/core";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Check, GripVertical, LoaderCircle, RotateCcw, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -47,7 +48,7 @@ function DraggableCandidate({ candidate, index, selected }: { candidate: Candida
     style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.35 : 1 }}
     className="min-h-[6.5rem] w-[5.25rem] shrink-0 text-center sm:min-h-0 sm:w-24 lg:w-28"
   >
-    <GlassButton variant="icon" tint={0.04}
+    <GlassButton variant="icon" tint={0}
       ref={setActivatorNodeRef}
       type="button"
       {...attributes}
@@ -57,7 +58,7 @@ function DraggableCandidate({ candidate, index, selected }: { candidate: Candida
       aria-pressed={selected}
       className={`group relative mt-1 inline-flex h-12 w-12 touch-pan-x items-center justify-center rounded-full outline-none transition hover:scale-[1.04] focus-visible:ring-2 focus-visible:ring-moss active:cursor-grabbing sm:h-14 sm:w-14 lg:h-16 lg:w-16 ${selected ? "ring-2 ring-moss ring-offset-2 ring-offset-white/70" : ""}`}
     >
-      <img src={candidate.image_url} alt="" className={`h-full w-full rounded-full border-2 object-cover ${selected ? "border-moss" : "border-white shadow-sm"}`}/>
+      <img src={candidate.image_url} alt="" className={`h-full w-full rounded-full border-2 object-cover ${selected ? "border-moss" : "border-[var(--glass-border)] shadow-sm"}`}/>
       <span className="glass-chip absolute -bottom-0.5 -right-1 grid h-5 w-5 place-items-center rounded-full border-2 border-cream bg-moss text-white shadow-sm"><GripVertical size={12} aria-hidden="true"/></span>
       {selected && <span className="glass-chip absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-moss text-white shadow-sm"><Check size={10} aria-hidden="true"/></span>}
       <span className="sr-only">Ứng viên {index + 1}{selected ? ", đã có trong phiếu" : ", giữ và kéo icon vào ô phiếu"}</span>
@@ -74,7 +75,7 @@ function BallotSlot({ index, candidate, onRemove, dragging }: { index: number; c
     data: { slotIndex: index },
     disabled: Boolean(candidate),
   });
-  return <GlassSurface radius={14} tint={0.04} contentClassName="contents"
+  return <GlassSurface radius={14} tint={0.012} contentClassName="contents"
     ref={setNodeRef}
     aria-label={`Ô phiếu ${index + 1}${candidate ? `, ${candidate.name}` : ", còn trống"}`}
     aria-roledescription="vùng thả phiếu"
@@ -90,12 +91,13 @@ function BallotSlot({ index, candidate, onRemove, dragging }: { index: number; c
 }
 
 function DragPreview({ candidate }: { candidate: Candidate }) {
-  return <div className="glass-chip h-14 w-14 rounded-full border-2 border-white bg-white/35 shadow-2xl sm:h-16 sm:w-16"><img src={candidate.image_url} alt="" className="h-full w-full rounded-full object-cover"/></div>;
+  return <div className="glass-chip h-14 w-14 rounded-full border-2 border-[var(--glass-border)] bg-white/35 shadow-2xl sm:h-16 sm:w-16"><img src={candidate.image_url} alt="" className="h-full w-full rounded-full object-cover"/></div>;
 }
 
 export default function BallotBuilder({ candidates, error, setError, sending, onSubmit }: Props) {
   const [slots, setSlots] = useState<Array<string | null>>(() => Array(9).fill(null));
   const [activeCandidate, setActiveCandidate] = useState<Candidate | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } }),
@@ -119,10 +121,18 @@ export default function BallotBuilder({ candidates, error, setError, sending, on
     setError("");
   }
 
-  async function submit() {
+  function requestSubmit() {
     if (!selectedIds.length) { setError("Phiếu hợp lệ cần chọn ít nhất 1 ứng viên, tối đa 9 người và không được trùng."); return; }
+    setError("");
+    setConfirmOpen(true);
+  }
+
+  async function submit() {
+    setConfirmOpen(false);
     if (await onSubmit(selectedIds)) setSlots(Array(9).fill(null));
   }
+
+  const selectedNames = selectedIds.map((id) => byId.get(id)?.name).filter((name): name is string => Boolean(name));
 
   return <DndContext
     sensors={sensors}
@@ -144,7 +154,7 @@ export default function BallotBuilder({ candidates, error, setError, sending, on
 
     <Card refract className="ballot-actions fixed inset-x-3 bottom-3 z-20 p-3 sm:relative sm:inset-auto sm:mx-auto sm:mt-6 sm:max-w-2xl sm:p-4">
       {error && <p role="alert" className="mx-auto mb-2 max-w-3xl rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 sm:mb-3">{error}</p>}
-      <div className="mx-auto flex max-w-3xl gap-2 sm:justify-center"><Button variant="secondary" aria-label="Xóa lựa chọn" className="shrink-0" onClick={() => { setSlots(Array(9).fill(null)); setError(""); }} disabled={sending || selectedIds.length === 0}><RotateCcw size={16}/><span className="hidden sm:inline">Xóa lựa chọn</span></Button><Button className="flex-1 sm:flex-none sm:px-10" onClick={submit} disabled={sending || selectedIds.length === 0}>{sending ? <LoaderCircle size={17} className="animate-spin"/> : <Send size={16}/>}Gửi phiếu</Button></div>
+      <div className="mx-auto flex max-w-3xl gap-2 sm:justify-center"><Button variant="secondary" aria-label="Xóa lựa chọn" className="shrink-0" onClick={() => { setSlots(Array(9).fill(null)); setError(""); }} disabled={sending || selectedIds.length === 0}><RotateCcw size={16}/><span className="hidden sm:inline">Xóa lựa chọn</span></Button><DialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}><Button className="flex-1 sm:flex-none sm:px-10" onClick={requestSubmit} disabled={sending || selectedIds.length === 0}>{sending ? <LoaderCircle size={17} className="animate-spin"/> : <Send size={16}/>}Gửi phiếu</Button><DialogPrimitive.Portal><DialogPrimitive.Overlay className="modal-backdrop fixed inset-0 z-50"/><DialogPrimitive.Content asChild className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 text-ink shadow-xl outline-none"><Card className="glass-overlay-panel"><DialogPrimitive.Title className="text-lg font-semibold">Xác nhận gửi phiếu</DialogPrimitive.Title><DialogPrimitive.Description className="mt-2 text-sm leading-6 text-ink/65">Bạn sắp gửi phiếu gồm {selectedIds.length} ứng viên. Sau khi gửi, bạn không thể thay đổi lựa chọn.</DialogPrimitive.Description><p className="mt-3 rounded-xl bg-moss/[.06] px-3 py-2 text-sm font-medium text-ink">{selectedNames.join(" · ")}</p><div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end"><DialogPrimitive.Close asChild><Button variant="secondary" disabled={sending}>Quay lại chỉnh sửa</Button></DialogPrimitive.Close><Button onClick={() => void submit()} disabled={sending}>{sending ? <LoaderCircle size={16} className="animate-spin"/> : <Send size={15}/>}Xác nhận gửi</Button></div></Card></DialogPrimitive.Content></DialogPrimitive.Portal></DialogPrimitive.Root></div>
     </Card>
     <DragOverlay>{activeCandidate ? <DragPreview candidate={activeCandidate}/> : null}</DragOverlay>
   </DndContext>;

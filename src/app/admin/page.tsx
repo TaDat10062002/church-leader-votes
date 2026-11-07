@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
       <h1 className="mt-2 text-center text-2xl font-semibold text-ink">Nhập mã PIN quản trị</h1>
       <p className="mt-2 text-center text-sm text-ink/60">Dùng mã được ban tổ chức cung cấp để tiếp tục.</p>
       <form onSubmit={submit} className="mt-7 space-y-4">
-        <GlassInput icon={<KeyRound size={18}/>} radius={16} tint={0.04} autoComplete="one-time-code" inputMode="numeric" type="password" value={pin} onChange={(e) => setPin(e.target.value)} inputClassName="py-1 text-center tracking-[.4em]" placeholder="••••" aria-label="Mã PIN" required />
+        <GlassInput icon={<KeyRound size={18}/>} radius={16} tint={0.012} autoComplete="one-time-code" inputMode="numeric" type="password" value={pin} onChange={(e) => setPin(e.target.value)} inputClassName="py-1 text-center tracking-[.4em]" placeholder="••••" aria-label="Mã PIN" required />
         {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
         <Button type="submit" className="w-full" disabled={busy}>{busy ? "Đang xác thực…" : "Vào trang quản trị"}<ArrowRight size={16}/></Button>
       </form>

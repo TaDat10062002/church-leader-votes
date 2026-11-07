@@ -17,6 +17,12 @@ Xem `proposal.md` để biết lý do thực hiện. Ứng dụng đã có các 
 - Thêm gói phụ thuộc lúc chạy nào khác ngoài Motion cho chuyển theme.
 - Thay đổi quy tắc nghiệp vụ, logic hoặc hợp đồng API route handler, hay các chuyển trạng thái hiện có của phiếu bầu, danh sách ứng viên, xác thực, kỳ bầu chọn và kết quả.
 
+### Bảng màu nhấn độc lập với giao diện sáng/tối
+Giữ xanh lá hiện tại làm lựa chọn mặc định và thêm bảng màu xanh navy dịu. Lưu lựa chọn bảng màu trong khóa riêng với `appearance-theme`, áp dụng trên gốc tài liệu để các biến CSS và WebsiteGlass cùng cập nhật sau khi chọn, điều hướng hoặc tải lại. Bảng màu chỉ đổi màu nhấn, sắc kính và viền; không thay đổi chế độ sáng/tối hay trạng thái nghiệp vụ.
+
+### Giảm tint và độ nổi của viền kính
+Giảm đáng kể độ đục của viền trắng hiện tại và hạ tint ở các bề mặt dùng chung xuống mức thấp nhất vẫn giữ nội dung phân biệt được trên nền thực tế. Dùng biến viền theo giao diện và bảng màu, tránh viền trắng sáng mặc định; giữ phản quang nhẹ, còn chế độ giảm độ trong suốt và fallback tiếp tục dùng nền đục dễ đọc.
+
 ## Decisions
 
 ### Dùng giao diện theo thiết bị với nút toggle sáng/tối ghi nhớ lựa chọn

@@ -13,5 +13,5 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button({ cla
     ghost: "glass-button-ghost text-ink/80",
     danger: "glass-button-danger",
   };
-  return <GlassButton ref={ref} tint={0.04} className={cn(variants[variant], className)} {...props} />;
+  return <GlassButton ref={ref} tint={0} className={cn(variants[variant], className)} {...props} />;
 });

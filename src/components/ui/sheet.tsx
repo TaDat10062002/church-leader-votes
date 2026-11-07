@@ -17,7 +17,7 @@ export const SheetOverlay = forwardRef<
   ElementRef<typeof DialogPrimitive.Overlay>,
   ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(function SheetOverlay({ className, ...props }, ref) {
-  return <DialogPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-ink/30 backdrop-blur-xs", className)} {...props} />;
+  return <DialogPrimitive.Overlay ref={ref} className={cn("modal-backdrop fixed inset-0 z-50", className)} {...props} />;
 });
 
 type SheetContentProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
@@ -48,7 +48,7 @@ export const SheetContent = forwardRef<
         )}
         {...props}
       >
-        <Card tint={0.04} className="glass-overlay-panel" radius={0}>
+        <Card className="glass-overlay-panel" radius={0}>
         {children}
         <DialogPrimitive.Close asChild><Button variant="ghost" className="absolute right-4 top-4 size-11 rounded-full p-0" aria-label="Đóng">
           <X size={18} />
@@ -64,7 +64,7 @@ export function SheetHeader({ className, ...props }: HTMLAttributes<HTMLDivEleme
 }
 
 export function SheetFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mt-auto flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)} {...props} />;
+  return <div className={cn("mt-auto flex flex-col gap-2 sm:flex-row sm:justify-end", className)} {...props} />;
 }
 
 export const SheetTitle = forwardRef<

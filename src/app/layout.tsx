@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="vi" suppressHydrationWarning>
     <head>
-      <script dangerouslySetInnerHTML={{ __html: `(()=>{try{const p=localStorage.getItem("appearance-theme");const t=p==="light"||p==="dark"?p:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch{document.documentElement.dataset.theme="light"}})()` }} />
+      <script dangerouslySetInnerHTML={{ __html: `(()=>{const r=document.documentElement;try{const p=localStorage.getItem("appearance-theme");const t=p==="light"||p==="dark"?p:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");r.dataset.theme=t;r.style.colorScheme=t;const c=localStorage.getItem("appearance-palette");r.dataset.palette=c==="navy"?"navy":"green"}catch{r.dataset.theme="light";r.dataset.palette="green"}})()` }} />
     </head>
     <body><ThemeProvider>{children}</ThemeProvider></body>
   </html>;
