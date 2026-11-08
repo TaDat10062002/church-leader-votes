@@ -10,7 +10,7 @@ The church needs a simple way to collect leadership votes from attendees on mobi
 - Let an administrator import candidates with required name and image columns, remove a candidate with one-step undo, and publish the remaining list when starting an election.
 - Gate the administrator dashboard with the configured passcode and role; visitors without a valid administrator session go to the voting page.
 - Load official candidates from Supabase for voters and accept ballots containing one to nine distinct candidates.
-- Let voters build the ballot by dragging compact, circular candidate icons from a list above the nine ballot slots, with clear drag affordances and touch/keyboard support; preserve the existing ballot validation and submission rules.
+- Let voters build the ballot by tapping candidates once to add them to the next empty slot; provide a remove control in every filled slot and preserve the existing ballot validation and submission rules.
 - Reject invalid ballots without recording them, then route a successfully recorded ballot to a dedicated “Thanks for your voting” page without a return-to-ballot action, and update ranked dashboard totals in realtime.
 - Provide Supabase PostgreSQL schema SQL and environment variable examples for deployment configuration.
 

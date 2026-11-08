@@ -21,8 +21,8 @@
 
 ## 4. Public ballot voting
 
-- [x] 4.1 Implement the mobile-first voter page loading official candidates from the active election, with a compact row of small circular candidate icons above the ballot and readable names; verify no provisional candidates appear and the no-active-election state is clear on mobile and desktop.
-- [x] 4.2 Implement the compact 3-by-3 drag-and-drop ballot with visible drag instructions, touch/keyboard support, highlighted drop targets, and server-side validation for one to nine distinct active-election candidates; verify mouse/touch/keyboard interactions and reject empty, duplicate, oversized, and unknown-candidate ballots without database writes.
+- [x] 4.1 Implement the mobile-first voter page loading official candidates from the active election, with a compact wrapping grid of tappable candidate buttons above the ballot; verify no provisional candidates appear and the no-active-election state is clear on mobile and desktop.
+- [x] 4.2 Implement the compact 3-by-3 ballot with single-tap candidate selection, first-empty-slot placement, a persistent mobile ballot summary, bottom-sheet review and removal controls, and server-side validation for one to nine distinct active-election candidates; verify the selection flow and reject empty, duplicate, oversized, and unknown-candidate ballots without database writes.
 - [x] 4.3 Connect valid ballot submission to the atomic database RPC and navigate with history replacement to a dedicated “Thanks for your voting” page only after commit; verify a successful ballot stores one vote with its selections, the thank-you page has no return action, and browser Back does not restore the submitted ballot.
 - [x] 4.4 Add automated coverage for valid/invalid submissions and document that anonymous voting does not enforce one vote per person; verify these behaviors match the voter-facing flow.
 

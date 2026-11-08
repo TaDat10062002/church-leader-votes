@@ -7,7 +7,7 @@ Defines the public voting experience, including the official candidate list, the
 ## ADDED Requirements
 
 ### Requirement: Voters see official candidates from the active election
-The system SHALL show voters the candidate names and images stored for the active election. On mobile, the candidate list SHALL use a compact row of small circular avatars above the ballot, with each candidate's name still readable.
+The system SHALL show voters the candidate names and images stored for the active election. On mobile, the candidate list SHALL use a compact, wrapping grid above the ballot, with each candidate's name still readable and no horizontal scrolling required.
 
 #### Scenario: An election is active
 - **WHEN** a voter opens the voting page while an election is active
@@ -15,7 +15,11 @@ The system SHALL show voters the candidate names and images stored for the activ
 
 #### Scenario: Voter opens the ballot on a mobile screen
 - **WHEN** a voter opens an active election on a mobile screen
-- **THEN** the system places a compact row of small circular candidate icons above a compact 3-by-3 ballot grid
+- **THEN** the system places a compact, wrapping grid of candidate buttons above the ballot, without requiring horizontal scrolling, and keeps a ballot summary available while the candidate list scrolls
+
+#### Scenario: Voter reviews the ballot on a mobile screen
+- **WHEN** a voter opens the ballot summary on a mobile screen
+- **THEN** the system shows the 3-by-3 ballot in a bottom sheet with remove controls, without requiring the voter to scroll back to the ballot section
 
 #### Scenario: No election is active
 - **WHEN** a voter opens the voting page and no election is active
@@ -32,24 +36,28 @@ The system SHALL accept a ballot only when it contains at least one and no more 
 - **WHEN** a voter submits a ballot with no selection, a repeated candidate, more than nine selections, or a candidate outside the active election
 - **THEN** the system explains the ballot validity rules and records no vote or selections
 
-### Requirement: Voters place candidates onto the ballot with drag and drop
-The system SHALL let voters drag compact circular candidate icons into the nine ballot slots, clearly communicate the drag action, and support touch and keyboard interaction without requiring numeric entry.
+### Requirement: Voters select candidates with a single tap
+The system SHALL let voters add an unselected candidate to the first empty ballot slot with one activation. The candidate list SHALL expose the selected state, and filled ballot slots SHALL provide a labeled remove control. Selection SHALL not require drag-and-drop or horizontal scrolling on mobile.
 
-#### Scenario: Voter can identify how to fill an empty slot
+#### Scenario: Voter can identify how to select a candidate
 - **WHEN** a voter views an active ballot
-- **THEN** the system shows a visible instruction to drag a candidate icon into an empty numbered slot and visually distinguishes the icons as draggable
+- **THEN** the system shows a visible instruction to tap a candidate once and visually distinguishes available and selected candidates
 
-#### Scenario: Voter drags a candidate into an empty slot
-- **WHEN** a voter drags an unselected candidate card onto an empty ballot slot using a mouse, touch, or keyboard
-- **THEN** the system places that candidate in the target slot and updates the selected state in the candidate list
+#### Scenario: Voter selects a candidate
+- **WHEN** a voter activates an unselected candidate button
+- **THEN** the system places that candidate in the first empty ballot slot and updates the selected state in the candidate list
 
-#### Scenario: Voter tries to add a duplicate candidate
-- **WHEN** a voter drags a candidate already present in another slot onto the ballot
-- **THEN** the system does not add a duplicate and explains that candidates may only appear once
+#### Scenario: Voter activates a candidate already on the ballot
+- **WHEN** a voter activates a candidate already selected in another slot
+- **THEN** the system does not add a duplicate candidate
 
 #### Scenario: Voter removes a candidate from a slot
 - **WHEN** a voter activates the remove control for a filled ballot slot
-- **THEN** the system clears that slot and makes the candidate available to drag into a slot again
+- **THEN** the system clears that slot and makes the candidate available to select again
+
+#### Scenario: Voter selects while all ballot slots are filled
+- **WHEN** a voter attempts to select another candidate after all nine slots are filled
+- **THEN** the system keeps the ballot unchanged and explains that a selection must be removed first
 
 ### Requirement: Successful ballot submission navigates to a thank-you page
 After a valid ballot has been recorded, the system SHALL replace the current ballot history entry with a dedicated “Thanks for your voting” page. The thank-you page SHALL not provide a control to return to the submitted ballot.
