@@ -31,7 +31,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-heading: Arial, Helvetica, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter Variable", "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --font-heading: var(--font-sans);
   --shadow-soft: var(--app-shadow);
 }
 
@@ -122,6 +124,19 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3 { letter-spacing: -0.02em; }
+  button, input, select, textarea { font-family: inherit; }
+  code, pre, kbd { font-family: var(--font-mono); }
+}
+
 body {
   position: relative;
   isolation: isolate;
@@ -129,11 +144,10 @@ body {
   min-height: 100dvh;
   background-color: var(--app-page-color);
   color: var(--app-ink);
-  font-family: Arial, Helvetica, sans-serif;
   transition: background-color .36s ease, color .36s ease;
 }
 
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button:not(:disabled), a { -webkit-tap-highlight-color: transparent; }
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 2px solid var(--app-focus);
