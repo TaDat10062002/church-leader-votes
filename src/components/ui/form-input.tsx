@@ -21,7 +21,7 @@ export function FormInput({
   const [focused, setFocused] = useState(false);
 
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn("relative w-full rounded-2xl transition-shadow", focused && "ring-2 ring-moss/50", className)}>
       {icon && (
         <span
           aria-hidden="true"
@@ -34,7 +34,7 @@ export function FormInput({
         </span>
       )}
       <RegistryGlassInput
-        glassVariant="liquid-refract"
+        glassVariant="liquid"
         surfaceClassName={cn("w-full rounded-2xl transition-shadow", focused && "ring-2 ring-moss/30")}
         className={cn(
           "h-12 rounded-2xl border-0 bg-transparent px-4 text-base text-ink outline-none placeholder:text-ink/45 focus-visible:border-0 focus-visible:ring-0",

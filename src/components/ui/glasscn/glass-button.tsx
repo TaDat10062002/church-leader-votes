@@ -1,6 +1,6 @@
 "use client";
 
-import { FrostGlassVariantProp, glassVariantStyles } from "@/lib/glass-variants";
+import { FrostGlassVariantProp, glassClassName } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
 
 import { Button } from "../button-base";
@@ -8,7 +8,7 @@ import { LiquidGlass } from "./liquid-glass";
 
 type GlassButtonProps = React.ComponentProps<typeof Button> & FrostGlassVariantProp & { surfaceClassName?: string };
 
-function GlassButton({ className, glassVariant = "liquid-refract", surfaceClassName, ...props }: GlassButtonProps) {
+function GlassButton({ className, glassVariant = "liquid", surfaceClassName, ...props }: GlassButtonProps) {
   if (glassVariant === "liquid-refract") {
     return (
         <LiquidGlass className={cn("glasscn-surface rounded-2xl", surfaceClassName)}>
@@ -26,7 +26,7 @@ function GlassButton({ className, glassVariant = "liquid-refract", surfaceClassN
     <Button
       data-slot="glass-button"
       data-glass-variant={glassVariant}
-      className={cn("text-foreground cursor-pointer", glassVariantStyles[glassVariant], className)}
+      className={glassClassName(glassVariant, "text-foreground cursor-pointer", className)}
       {...props}
     />
   );

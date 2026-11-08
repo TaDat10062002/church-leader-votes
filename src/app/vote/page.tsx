@@ -6,6 +6,8 @@ import { Church, LoaderCircle, ShieldCheck, Vote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GlassHeader } from "@/components/ui/glass-header";
+import { GlassChip } from "@/components/ui/glass-chip";
+import { glassClassName } from "@/lib/glass-variants";
 import BallotBuilder from "@/components/ballot-builder";
 import ElectionClosedNotice from "@/components/election-closed-notice";
 import { subscribeToElectionChanges } from "@/lib/election-realtime";
@@ -56,8 +58,18 @@ export default function VotePage() {
   }
 
   return <main className="mx-auto min-h-dvh max-w-7xl px-3 pb-32 pt-3 sm:px-6 sm:pb-12 sm:pt-8 lg:px-8">
-    <GlassHeader className="flex items-center justify-between"><a href="/vote" className="flex items-center gap-2"><span className="glass-chip grid h-10 w-10 place-items-center rounded-full bg-moss/10 text-moss"><Church size={19}/></span><span><span className="block text-sm font-semibold text-ink">Nhà thờ</span><span className="block text-[11px] text-ink/65">Bầu chọn Ban Điều Hành</span></span></a><a href="/admin" className="glass-chip grid size-11 place-items-center rounded-full text-ink/65 hover:text-ink" aria-label="Trang quản trị"><ShieldCheck size={20}/></a></GlassHeader>
-    <section className="mx-auto mt-4 max-w-4xl text-center sm:mt-12"><span className="glass-chip inline-flex items-center gap-2 rounded-full bg-gold/15 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-ink sm:text-xs"><Vote size={14}/> Phiếu bầu chọn</span><h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink sm:mt-4 sm:text-4xl lg:text-5xl">Chọn người bạn tín nhiệm</h1><p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-ink/60 sm:mt-3 sm:text-base sm:leading-6">Chạm để chọn từ 1 đến 9 người. Bạn có thể xóa lựa chọn ngay trong phiếu.</p></section>
-    {loading ? <div className="grid min-h-64 place-items-center text-moss"><LoaderCircle size={28} className="animate-spin"/></div> : error && !election ? <Card className="mx-auto mt-8 max-w-xl p-6 text-center"><p role="alert" className="text-red-700">{error}</p><Button className="mt-4" variant="secondary" onClick={loadElection}>Thử tải lại</Button></Card> : electionViewStatus === "closed" ? <ElectionClosedNotice/> : electionViewStatus === "unavailable" ? <Card className="mx-auto mt-8 max-w-xl p-8 text-center"><span className="glass-chip mx-auto grid h-12 w-12 place-items-center rounded-full bg-gold/15"><Vote/></span><h2 className="mt-4 text-xl font-semibold">Chưa mở kỳ bầu chọn</h2><p className="mt-2 text-sm text-ink/60">Vui lòng chờ ban tổ chức bắt đầu.</p></Card> : election?.status === "opened" ? <BallotBuilder candidates={election.candidates ?? []} error={error} setError={setError} sending={sending} onSubmit={submitVote}/> : null}
+    <GlassHeader className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
+      <a href="/vote" className="flex min-w-[10rem] flex-1 items-center gap-2">
+        <GlassChip className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-moss"><Church size={19} aria-hidden="true"/></GlassChip>
+        <span><span className="block text-sm font-semibold text-ink">Nhà thờ</span><span className="block text-[11px] text-ink/75">Bầu chọn Ban Điều Hành</span></span>
+      </a>
+      <a href="/admin" className={glassClassName("clear", "grid size-11 shrink-0 place-items-center rounded-full text-ink/75 hover:text-ink")} aria-label="Trang quản trị"><ShieldCheck size={20} aria-hidden="true"/></a>
+    </GlassHeader>
+    <section className="mx-auto mt-4 max-w-4xl text-center sm:mt-12">
+      <GlassChip className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-ink sm:text-xs"><Vote size={14} aria-hidden="true"/> Phiếu bầu chọn</GlassChip>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink sm:mt-4 sm:text-4xl lg:text-5xl">Chọn người bạn tín nhiệm</h1>
+      <p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-ink/75 sm:mt-3 sm:text-base sm:leading-6">Chạm để chọn từ 1 đến 9 người. Bạn có thể xóa lựa chọn ngay trong phiếu.</p>
+    </section>
+    {loading ? <Card glassVariant="subtle" role="status" className="mx-auto mt-8 grid min-h-48 max-w-xl place-items-center p-6 text-moss"><LoaderCircle size={28} className="animate-spin" aria-hidden="true"/><span className="sr-only">Đang tải danh sách ứng viên</span></Card> : error && !election ? <Card className="mx-auto mt-8 max-w-xl p-6 text-center"><p role="alert">{error}</p><Button className="mt-4" variant="secondary" onClick={loadElection}>Thử tải lại</Button></Card> : electionViewStatus === "closed" ? <ElectionClosedNotice/> : electionViewStatus === "unavailable" ? <Card className="mx-auto mt-8 max-w-xl p-8 text-center"><GlassChip className="mx-auto grid h-12 w-12 place-items-center rounded-full text-moss"><Vote aria-hidden="true"/></GlassChip><h2 className="mt-4 text-xl font-semibold">Chưa mở kỳ bầu chọn</h2><p className="mt-2 text-sm text-ink/75">Vui lòng chờ ban tổ chức bắt đầu.</p></Card> : election?.status === "opened" ? <BallotBuilder candidates={election.candidates ?? []} error={error} setError={setError} sending={sending} onSubmit={submitVote}/> : null}
   </main>;
 }

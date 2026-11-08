@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { GlassChip } from "@/components/ui/glass-chip";
 import { GlassHeader } from "@/components/ui/glass-header";
 import {
   DashboardChartOrientationSwitch,
@@ -133,9 +134,9 @@ export default function Dashboard() {
     <main className="mx-auto min-h-dvh max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
       <GlassHeader className="flex flex-wrap items-center justify-between gap-3">
         <a href="/dashboard" className="flex items-center gap-3">
-          <span className="glass-chip grid h-10 w-10 place-items-center rounded-full bg-moss/10 text-moss">
+          <GlassChip className="grid h-10 w-10 place-items-center rounded-full bg-moss/10 text-moss">
             <Church size={19} />
-          </span>
+          </GlassChip>
           <span>
             <span className="block text-sm font-semibold text-ink">
               Bảng điều hành
@@ -184,8 +185,8 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-2 text-xs text-ink/65">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="glass-chip absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-60" />
-            <span className="glass-chip relative inline-flex h-2.5 w-2.5 rounded-full bg-moss" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-60 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-moss" />
           </span>
           {updated
             ? `Cập nhật ${updated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
@@ -213,7 +214,7 @@ export default function Dashboard() {
           <RefreshCw className="animate-spin" />
         </Card>
       ) : !data.election ? (
-        <Card className="mt-8 p-8 text-center">
+        <Card glassVariant="frosted" className="mt-8 p-8 text-center">
           <p className="font-semibold">Chưa có kỳ bầu chọn đang mở</p>
           <Button className="mt-4" onClick={() => router.push("/import-file")}>
             Import danh sách
@@ -223,25 +224,25 @@ export default function Dashboard() {
         <>
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <Card className="p-4 sm:p-5">
-              <span className="glass-chip grid h-9 w-9 place-items-center rounded-xl bg-moss/10 text-moss">
+              <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-moss/10 text-moss">
                 <Users size={18} />
-              </span>
+              </GlassChip>
               <p className="mt-4 text-2xl font-semibold">
                 {data.results.length}
               </p>
               <p className="mt-1 text-xs text-ink/65">Ứng viên</p>
             </Card>
             <Card className="p-4 sm:p-5">
-              <span className="glass-chip grid h-9 w-9 place-items-center rounded-xl bg-gold/20 text-ink">
+              <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-gold/20 text-ink">
                 <Vote size={18} />
-              </span>
+              </GlassChip>
               <p className="mt-4 text-2xl font-semibold">{totalSelections}</p>
               <p className="mt-1 text-xs text-ink/65">Lượt chọn hợp lệ</p>
             </Card>
             <Card className="col-span-2 p-4 sm:col-span-1 sm:p-5">
-              <span className="glass-chip grid h-9 w-9 place-items-center rounded-xl bg-blue-50 text-blue-700">
+              <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-moss/10 text-moss">
                 <Activity size={18} />
-              </span>
+              </GlassChip>
               <p className="mt-4 flex items-center gap-2 text-lg font-semibold">
                 Realtime <ArrowUpRight size={16} />
               </p>
@@ -250,7 +251,7 @@ export default function Dashboard() {
               </p>
             </Card>
           </div>
-          <Card className="mt-5 overflow-hidden p-4 sm:p-6">
+          <Card glassVariant="liquid-refract" className="dashboard-chart-glass mt-5 overflow-hidden p-4 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="font-semibold text-ink">
@@ -261,9 +262,9 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <span className="glass-chip rounded-full bg-moss/10 px-3 py-1.5 text-xs font-semibold text-moss">
+                <GlassChip className="rounded-full bg-moss/10 px-3 py-1.5 text-xs font-semibold text-moss">
                   {data.results.length} ứng viên
-                </span>
+                </GlassChip>
                 <DashboardChartOrientationSwitch
                   orientation={chartOrientation}
                   onChange={setChartOrientation}
@@ -298,8 +299,8 @@ export default function Dashboard() {
             <h2 className="mb-3 font-semibold">Thứ hạng hiện tại</h2>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {data.results.map((row, index) => (
-                <Card key={row.id} className="flex items-center gap-3 p-3">
-                  <span className="w-7 text-center text-sm font-bold text-ink/35">
+                <Card key={row.id} glassVariant="subtle" className="flex items-center gap-3 p-3">
+                  <span className="w-7 shrink-0 text-center text-sm font-bold text-ink/65">
                     {index + 1}
                   </span>
                   <img
@@ -307,12 +308,12 @@ export default function Dashboard() {
                     alt=""
                     className="h-11 w-11 rounded-full object-cover"
                   />
-                  <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+                  <span className="min-w-0 flex-1 break-words text-sm font-semibold">
                     {row.name}
                   </span>
-                  <span className="glass-chip rounded-lg bg-cream px-3 py-2 text-sm font-bold">
+                  <GlassChip className="shrink-0 rounded-lg px-3 py-2 text-sm font-bold">
                     {row.total}
-                  </span>
+                  </GlassChip>
                 </Card>
               ))}
             </div>
@@ -323,18 +324,18 @@ export default function Dashboard() {
         ref={resetDialog}
         aria-labelledby="reset-election-title"
         aria-describedby="reset-election-description"
-        className="m-auto w-[calc(100%-2rem)] max-w-lg native-modal border-0 bg-transparent p-0 text-ink"
+        className="native-modal m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-2xl border-0 bg-transparent p-0 text-ink"
         onCancel={(event) => {
           event.preventDefault();
           if (!resetBusy) setResetOpen(false);
         }}
         onClose={() => setResetOpen(false)}
       >
-        <Card className="glass-overlay-panel p-6 sm:p-7">
+        <Card glassVariant="frosted" className="glass-overlay-panel p-6 sm:p-7">
           <div className="flex items-start gap-4">
-            <span className="glass-chip grid h-11 w-11 shrink-0 place-items-center rounded-full bg-red-50 text-red-700">
+            <GlassChip className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--app-danger-bg)] text-[var(--app-danger)]">
               <AlertTriangle size={21} />
-            </span>
+            </GlassChip>
             <div>
               <h2 id="reset-election-title" className="text-lg font-semibold">
                 Xác nhận bầu cử lại

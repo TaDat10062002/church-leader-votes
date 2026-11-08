@@ -18,7 +18,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { GlassChip } from "@/components/ui/glass-chip";
 import { GlassHeader } from "@/components/ui/glass-header";
+import { glassClassName } from "@/lib/glass-variants";
 import {
   Sheet,
   SheetContent,
@@ -151,7 +153,7 @@ export default function ImportRoster() {
 
   return (
     <main className="mx-auto min-h-dvh max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
-      <GlassHeader className="mb-8 flex items-center justify-between">
+      <GlassHeader className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <a
           href="/admin"
           className="inline-flex items-center gap-2 text-sm font-medium text-ink/60 hover:text-ink"
@@ -159,9 +161,9 @@ export default function ImportRoster() {
           <ArrowLeft size={17} />
           Quản trị
         </a>
-        <span className="glass-chip rounded-full bg-moss/10 px-3 py-1.5 text-xs font-bold text-moss">
+        <GlassChip className="order-last w-full justify-center rounded-full bg-moss/10 px-3 py-1.5 text-center text-xs font-bold text-moss sm:order-none sm:w-auto">
           BƯỚC 1 · DANH SÁCH ỨNG VIÊN
-        </span>
+        </GlassChip>
       </GlassHeader>
       <div className="max-w-3xl">
         <p className="text-sm font-bold uppercase tracking-[.2em] text-moss">
@@ -178,9 +180,9 @@ export default function ImportRoster() {
       <Card className="mt-8 p-5 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-4">
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/15 text-ink">
+            <GlassChip className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/15 text-ink">
               <FileSpreadsheet size={22} />
-            </div>
+            </GlassChip>
             <div>
               <h2 className="font-semibold">Import file Excel</h2>
               <p className="mt-1 text-sm text-ink/65">
@@ -199,7 +201,7 @@ export default function ImportRoster() {
             <a
               href="/api/admin/template"
               download
-              className="glass-chip inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[var(--glass-border)] bg-white/30 px-4 py-2 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-moss/5"
+              className={glassClassName("clear", "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-moss/5")}
             >
               <FileDown size={17} />
               Tải Excel mẫu
@@ -214,14 +216,14 @@ export default function ImportRoster() {
             </Button>
           </div>
         </div>
-        <div className="glass-chip mt-5 rounded-xl border border-dashed border-moss/25 bg-white/15 px-4 py-5 text-center text-sm text-ink/65 sm:py-7">
+        <div className={glassClassName("subtle", "mt-5 rounded-xl border-dashed border-moss/25 px-4 py-5 text-center text-sm text-ink/65 sm:py-7")}>
           Hình ảnh nhúng trong Excel sẽ được tải lên Supabase khi bắt đầu kỳ bầu
           chọn.
         </div>
       </Card>
       {(message || error) && (
         <div
-          className={`glass-chip mt-5 rounded-xl px-4 py-3 text-sm ${error ? "bg-red-50 text-red-700" : "bg-moss/10 text-moss"}`}
+          className={glassClassName("frosted", `mt-5 rounded-xl px-4 py-3 text-sm ${error ? "text-[var(--app-danger)]" : "bg-moss/10 text-moss"}`)}
           role={error ? "alert" : "status"}
         >
           {error || message}
@@ -244,9 +246,9 @@ export default function ImportRoster() {
                 >
                   <RotateCcw size={16} />
                   Xem ứng viên đã xóa{" "}
-                  <span className="glass-chip rounded-full bg-moss/10 px-2 py-0.5 text-xs text-moss">
+                  <GlassChip className="rounded-full bg-moss/10 px-2 py-0.5 text-xs text-moss">
                     {deleted.length}
-                  </span>
+                  </GlassChip>
                 </Button>
               </SheetTrigger>
               <SheetContent
@@ -261,7 +263,7 @@ export default function ImportRoster() {
                   </SheetDescription>
                 </SheetHeader>
                 {deleted.length === 0 ? (
-                  <div className="glass-chip grid min-h-48 place-items-center rounded-xl border border-dashed border-moss/25 bg-white/20 px-5 text-center text-sm text-ink/65">
+                  <div className={glassClassName("subtle", "grid min-h-48 place-items-center rounded-xl border-dashed border-moss/25 px-5 text-center text-sm text-ink/65")}>
                     Chưa có ứng viên nào bị xóa.
                   </div>
                 ) : (
@@ -275,14 +277,14 @@ export default function ImportRoster() {
                       <motion.li
                         key={draft.id}
                         variants={listItemVariants}
-                        className="glass-chip flex items-center gap-3 rounded-xl border border-[var(--glass-border)] p-3"
+                        className={glassClassName("subtle", "flex items-center gap-3 rounded-xl p-3")}
                       >
                         <img
                           src={draft.candidate.image}
                           alt=""
                           className="h-12 w-12 shrink-0 rounded-full object-cover"
                         />
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-ink">
+                        <span className="min-w-0 flex-1 break-words text-sm font-medium text-ink">
                           {draft.candidate.name}
                         </span>
                         <Button
@@ -300,14 +302,14 @@ export default function ImportRoster() {
                 )}
               </SheetContent>
             </Sheet>
-            <span className="glass-chip inline-flex items-center gap-2 rounded-full bg-white/35 px-3 py-2 text-sm text-ink/65">
+            <GlassChip className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm text-ink/65">
               <Users size={16} />
               {waiting.length} ứng viên
-            </span>
+            </GlassChip>
           </div>
         </div>
         {waiting.length === 0 ? (
-          <Card className="grid min-h-52 place-items-center border-dashed p-7 text-center shadow-none">
+          <Card glassVariant="frosted" className="grid min-h-52 place-items-center border-dashed p-7 text-center shadow-none">
             <div>
               <ImagePlus className="mx-auto text-moss/50" size={32} />
               <p className="mt-3 font-medium">Chưa có ứng viên</p>
@@ -333,12 +335,12 @@ export default function ImportRoster() {
                 variants={listItemVariants}
                 onAnimationStart={() => followListLoading(draft.id)}
               >
-                <Card className="group relative p-3 text-center transition duration-200 hover:scale-[1.025] sm:p-4">
+                <Card glassVariant="subtle" className="group relative p-3 text-center transition-shadow duration-200 hover:shadow-soft sm:p-4">
                   <Button
                     variant="ghost"
                     aria-label={`Xóa ${draft.candidate.name}`}
                     onClick={() => remove(draft.id)}
-                    className="absolute right-2 top-2 grid size-11 min-h-0 place-items-center rounded-full bg-white/40 p-0 text-ink/65 shadow-sm transition hover:bg-red-50 hover:text-red-600"
+                    className="absolute right-2 top-2 grid size-11 min-h-0 place-items-center rounded-full p-0 text-ink/65 transition hover:text-[var(--app-danger)]"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -361,7 +363,7 @@ export default function ImportRoster() {
         )}
       </section>
       <Card
-        refract
+        glassVariant="liquid-refract"
         className="sticky bottom-3 z-10 mt-8 flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-5"
       >
         <p className="px-2 text-sm text-ink/60">
@@ -388,9 +390,9 @@ export default function ImportRoster() {
             <DialogPrimitive.Overlay className="modal-backdrop fixed inset-0 z-50" />
             <DialogPrimitive.Content
               asChild
-              className="fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 text-ink shadow-xl outline-none"
+              className="fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl p-6 text-ink shadow-xl outline-none"
             >
-              <Card className="glass-overlay-panel">
+              <Card glassVariant="frosted" className="glass-overlay-panel">
                 <DialogPrimitive.Title className="text-xl font-semibold">
                   Xác nhận bắt đầu bầu cử
                 </DialogPrimitive.Title>

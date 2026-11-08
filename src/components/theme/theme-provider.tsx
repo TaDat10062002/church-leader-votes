@@ -56,6 +56,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-transparency: reduce)");
+    const applyTransparency = () => {
+      document.documentElement.dataset.reducedTransparency = media.matches ? "reduce" : "no-preference";
+    };
+    applyTransparency();
+    document.documentElement.dataset.backdropSupported = String(
+      typeof CSS !== "undefined" && typeof CSS.supports === "function" &&
+      (CSS.supports("backdrop-filter", "blur(1px)") || CSS.supports("-webkit-backdrop-filter", "blur(1px)")),
+    );
+    media.addEventListener("change", applyTransparency);
+    return () => media.removeEventListener("change", applyTransparency);
+  }, []);
+
+  useEffect(() => {
     if (preference !== "system") return;
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const handleSystemChange = () => setResolvedTheme(applyTheme("system"));

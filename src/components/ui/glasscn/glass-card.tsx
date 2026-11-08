@@ -1,62 +1,33 @@
 "use client";
 
-import { FrostGlassVariant, FrostGlassVariantProp, glassVariantStyles } from "@/lib/glass-variants";
+import { forwardRef, type HTMLAttributes } from "react";
+import { type FrostGlassVariantProp, glassClassName } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
-
-import { Card, CardFooter } from "../card-base";
+import { CardFooter } from "../card-base";
 import { LiquidGlass, type LiquidGlassProps } from "./liquid-glass";
 
-type GlassCardProps = React.ComponentProps<typeof Card> &
-  FrostGlassVariantProp & { liquidProps?: Omit<LiquidGlassProps, "children">; surfaceClassName?: string };
-
-type GlassCardFooterProps = React.ComponentProps<typeof CardFooter> & FrostGlassVariantProp;
-
-function GlassCard({
-  className,
-  glassVariant = "liquid-refract",
-  liquidProps,
-  surfaceClassName,
-  ...props
-}: GlassCardProps) {
-  if (glassVariant === "liquid-refract") {
-    return (
-      <LiquidGlass {...liquidProps} className={cn("glasscn-surface rounded-2xl", surfaceClassName, liquidProps?.className)}>
-        <Card
-          data-slot="glass-card"
-          data-glass-variant={glassVariant}
-          className={cn("bg-transparent border-0 shadow-none ring-0", className)}
-          {...props}
-        />
-      </LiquidGlass>
-    );
-  }
-
-  return (
-    <Card
-      data-slot="glass-card"
-      data-glass-variant={glassVariant}
-      className={cn(glassVariantStyles[glassVariant], className)}
-      {...props}
-    />
-  );
-}
-
-const footerVariantStyles: Record<FrostGlassVariant, string> = {
-  clear: "bg-white/10 dark:bg-black/10",
-  frosted: "bg-white/20 dark:bg-black/20",
-  subtle: "bg-white/15 dark:bg-white/[0.04]",
-  liquid: "bg-white/15 dark:bg-white/[0.06] [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.45)]",
-  "liquid-refract": "bg-white/10 dark:bg-white/[0.04]",
+export type GlassCardProps = HTMLAttributes<HTMLDivElement> & FrostGlassVariantProp & {
+  liquidProps?: Pick<LiquidGlassProps, "blur" | "refraction" | "bezel" | "saturation">;
+  contentClassName?: string;
 };
 
-function GlassCardFooter({ className, glassVariant = "liquid-refract", ...props }: GlassCardFooterProps) {
-  return (
-    <CardFooter
-      data-glass-variant={glassVariant}
-      className={cn(footerVariantStyles[glassVariant], className)}
-      {...props}
-    />
-  );
-}
+// Registry adaptation: semantic/layout props and ref belong to the same outer
+// host in every variant. Radix asChild depends on this contract.
+export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(function GlassCard({
+  className, glassVariant = "liquid", liquidProps, contentClassName, children, ...props
+}, ref) {
+  const content = contentClassName ? <div className={contentClassName}>{children}</div> : children;
+  const rootClass = glassClassName(glassVariant, "rounded-2xl text-foreground", className);
+  if (glassVariant === "liquid-refract") {
+    return <LiquidGlass {...liquidProps} {...props} ref={ref} data-slot="glass-card"
+      data-glass-variant={glassVariant} className={cn("overflow-visible", rootClass)}>{content}</LiquidGlass>;
+  }
+  return <div {...props} ref={ref} data-slot="glass-card" data-glass-variant={glassVariant}
+    className={rootClass}>{content}</div>;
+});
 
-export { GlassCard, GlassCardFooter };
+export function GlassCardFooter({ className, glassVariant = "subtle", ...props }:
+  React.ComponentProps<typeof CardFooter> & FrostGlassVariantProp) {
+  return <CardFooter {...props} data-glass-variant={glassVariant}
+    className={glassClassName(glassVariant, className)} />;
+}

@@ -2,7 +2,7 @@
 
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { FrostGlassVariantProp, glassVariantStyles } from "@/lib/glass-variants";
+import { FrostGlassVariantProp, glassClassName } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
 
 import { LiquidGlass, type LiquidGlassProps } from "./liquid-glass";
@@ -43,7 +43,7 @@ type GlassIconProps = React.ComponentProps<"button"> &
  */
 function GlassIcon({
   className,
-  glassVariant = "liquid-refract",
+  glassVariant = "clear",
   size = "md",
   liquidProps,
   surfaceClassName,
@@ -76,9 +76,8 @@ function GlassIcon({
       type="button"
       data-slot="glass-icon"
       data-glass-variant={glassVariant}
-      className={cn(
+      className={glassClassName(glassVariant,
         glassIconVariants({ size }),
-        glassVariantStyles[glassVariant],
         "transition-transform duration-150 active:scale-95 motion-reduce:transition-none",
         className,
       )}

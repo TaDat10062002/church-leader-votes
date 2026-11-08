@@ -141,7 +141,7 @@ export type LiquidGlassProps = HTMLAttributes<HTMLDivElement> & {
 
 export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(function LiquidGlass(
   {
-    blur = 2,
+    blur = 1,
     refraction = 15,
     mapSize: _mapSize,
     bezel = 0.34,
@@ -217,14 +217,14 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(function
   const refractionActive = supported && mapUrl !== "";
   const backdropFilter = refractionActive
     ? `url(#${filterId}) blur(${blur}px) saturate(${saturation})`
-    : `blur(${blur + 2}px) saturate(${saturation})`;
+    : `blur(${blur + 1}px) saturate(${saturation})`;
 
   return (
     <>
       <div
         ref={setRefs}
         className={cn(
-          "relative overflow-hidden rounded-full bg-white/[0.08]",
+          "glasscn-material glasscn-variant-liquid-refract relative overflow-hidden rounded-full bg-white/[0.02]",
           className,
         )}
         style={{ ...style, backdropFilter, WebkitBackdropFilter: backdropFilter } as CSSProperties}
@@ -233,6 +233,7 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(function
         {children}
         <span
           aria-hidden
+          data-glass-decoration
           className="pointer-events-none absolute inset-0 rounded-[inherit]"
           style={{
             // Rim thickness, overridable per-consumer via --liquid-glass-rim-width.
@@ -256,7 +257,7 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(function
       </div>
 
       {refractionActive && (
-        <svg className="absolute size-0 overflow-hidden" aria-hidden>
+        <svg className="absolute size-0 overflow-hidden" aria-hidden data-glass-decoration>
           <filter id={filterId} x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
             <feImage href={mapUrl} x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
             <feDisplacementMap

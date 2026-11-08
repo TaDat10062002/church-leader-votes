@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAppearanceTheme } from "@/components/theme/theme-provider";
+import { glassClassName } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
 
 export function ThemeControl({ className }: { className?: string }) {
@@ -12,12 +13,12 @@ export function ThemeControl({ className }: { className?: string }) {
   const Icon = isDark ? Moon : Sun;
 
   return <div className={cn("appearance-controls", className)}>
-    <div className="palette-control glass-chip" role="group" aria-label="Màu nhấn">
-      <button type="button" aria-label="Màu xanh lá" title="Màu xanh lá" aria-pressed={palette === "green"} onClick={() => setPalette("green")}>
-        <span aria-hidden="true" className="palette-swatch" style={{ backgroundColor: "#426b53" }} />
+    <div className={glassClassName("subtle", "palette-control")} role="group" aria-label="Chọn nền giao diện">
+      <button type="button" aria-label="Nền Jade xanh lá champagne" title="Nền Jade" aria-pressed={palette === "green"} className="palette-option" onClick={() => setPalette("green")}>
+        <span aria-hidden="true" className="palette-swatch" style={{ background: "linear-gradient(135deg, #347a54, #91b780 52%, #d3ad68)" }} />
       </button>
-      <button type="button" aria-label="Màu xanh navy dịu" title="Màu xanh navy dịu" aria-pressed={palette === "navy"} onClick={() => setPalette("navy")}>
-        <span aria-hidden="true" className="palette-swatch" style={{ backgroundColor: "#526d8a" }} />
+      <button type="button" aria-label="Nền Aurora tím xanh cyan" title="Nền Aurora" aria-pressed={palette === "navy"} className="palette-option" onClick={() => setPalette("navy")}>
+        <span aria-hidden="true" className="palette-swatch" style={{ background: "linear-gradient(135deg, #6366f1, #38bdf8 60%, #22d3ee)" }} />
       </button>
     </div>
     <motion.button
@@ -26,11 +27,9 @@ export function ThemeControl({ className }: { className?: string }) {
       aria-label="Giao diện tối"
       aria-checked={isDark}
       title={`Giao diện ${isDark ? "tối" : "sáng"}. Bấm để chuyển.`}
-      className="icon-switch-control glass-chip"
+      className={glassClassName("clear", "icon-switch-control")}
       initial={false}
       onClick={(event) => toggleTheme(event.currentTarget)}
-      animate={{ backgroundColor: isDark ? (palette === "navy" ? "rgba(75, 103, 137, 0.42)" : "rgba(104, 153, 119, 0.42)") : (palette === "navy" ? "rgba(82, 109, 138, 0.08)" : "rgba(24, 51, 45, 0.08)") }}
-      transition={reduceMotion ? { duration: 0 } : { backgroundColor: { duration: 0.24, ease: "easeInOut" } }}
     >
       <span aria-hidden="true" className="icon-switch-mode-icon icon-switch-mode-icon--left">
         <Sun size={14} />
@@ -42,7 +41,7 @@ export function ThemeControl({ className }: { className?: string }) {
         aria-hidden="true"
         className="icon-switch-thumb"
         initial={false}
-        animate={{ x: isDark ? 22.88 : 0 }}
+        animate={{ x: isDark ? 16 : 0 }}
         whileTap={reduceMotion ? undefined : { scale: 0.9 }}
         transition={reduceMotion ? { duration: 0 } : {
           x: { type: "spring", stiffness: 500, damping: 32, mass: 0.5 },
@@ -58,7 +57,7 @@ export function ThemeControl({ className }: { className?: string }) {
             exit={reduceMotion ? undefined : { opacity: 0, rotate: 45, scale: 0.7 }}
             transition={{ duration: reduceMotion ? 0 : 0.16, ease: "easeOut" }}
           >
-            <Icon size={14} />
+            <Icon size={12} />
           </motion.span>
         </AnimatePresence>
       </motion.span>

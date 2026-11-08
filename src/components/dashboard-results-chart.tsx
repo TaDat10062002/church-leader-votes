@@ -13,6 +13,7 @@ import { graphic, init, use, type EChartsType } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
 import type { ResultRow } from "@/lib/types";
+import { glassClassName } from "@/lib/glass-variants";
 
 use([BarChart, AriaComponent, GridComponent, TooltipComponent, CanvasRenderer]);
 
@@ -43,7 +44,8 @@ export function DashboardChartOrientationSwitch({
       aria-label="Hướng biểu đồ"
       aria-checked={isVertical}
       title={`Biểu đồ ${isVertical ? "dọc" : "ngang"}. Bấm để đổi.`}
-      className="icon-switch-control glass-chip"
+      className={glassClassName("clear", "icon-switch-control")}
+      data-glass-variant="clear"
       initial={false}
       onClick={() => onChange(isVertical ? "horizontal" : "vertical")}
     >
@@ -57,7 +59,7 @@ export function DashboardChartOrientationSwitch({
         aria-hidden="true"
         className="icon-switch-thumb"
         initial={false}
-        animate={{ x: isVertical ? 22.88 : 0 }}
+        animate={{ x: isVertical ? 16 : 0 }}
         whileTap={reduceMotion ? undefined : { scale: 0.9 }}
         transition={
           reduceMotion
@@ -127,25 +129,28 @@ function chartOption(
   reducedMotion: boolean,
   orientation: DashboardChartOrientation,
 ): EChartsOption {
-  const ink = cssVariable(element, "--app-ink", "#18332d");
-  const moss = cssVariable(element, "--app-moss", "#426b53");
-  const leaf = cssVariable(element, "--app-leaf", "#7c9d72");
-  const line = cssVariable(element, "--app-line", "rgba(24, 51, 45, .14)");
+  const ink = cssVariable(element, "--app-ink", "#26382f");
+  const chartStart = cssVariable(element, "--app-chart-start", "rgba(101,171,123,.58)");
+  const chartMid = cssVariable(element, "--app-chart-mid", "rgba(190,174,119,.5)");
+  const chartEnd = cssVariable(element, "--app-chart-end", "rgba(211,158,91,.46)");
+  const chartBorder = cssVariable(element, "--app-chart-border", "rgba(255,255,255,.72)");
+  const chartShadow = cssVariable(element, "--app-chart-shadow", "rgba(46,74,53,.16)");
+  const line = cssVariable(element, "--app-line", "rgba(47, 82, 57, .2)");
   const glassPanel = cssVariable(
     element,
     "--glass-panel",
     "rgba(255,255,255,.2)",
   );
-  const glassFallback = cssVariable(element, "--glass-fallback", "#f7faf5");
+  const glassFallback = cssVariable(element, "--glass-fallback", "#f8fbf7");
   const glassBorder = cssVariable(
     element,
     "--glass-border",
-    "rgba(91,125,103,.24)",
+    "rgba(255,255,255,.62)",
   );
   const shadow = cssVariable(
     element,
     "--app-shadow",
-    "0 18px 50px rgba(34,58,47,.09)",
+    "0 18px 50px rgba(70,43,84,.14)",
   );
   const swapDelay = reducedMotion ? 0 : 400;
   const swapDuration = reducedMotion ? 0 : 800;
@@ -167,6 +172,7 @@ function chartOption(
     : 0;
 
   return {
+    backgroundColor: "transparent",
     animation: !reducedMotion,
     animationDuration: 0,
     animationDurationUpdate: 0,
@@ -258,13 +264,14 @@ function chartOption(
           },
     tooltip: {
       trigger: "item",
+      className: glassClassName("frosted", "glasscn-chart-tooltip"),
       backgroundColor: glassFallback,
       borderColor: glassBorder,
       borderWidth: 1,
       borderRadius: 16,
       padding: 12,
       textStyle: { color: ink },
-      extraCssText: `backdrop-filter: blur(18px); box-shadow: ${shadow};`,
+      extraCssText: `box-shadow: ${shadow};`,
       formatter: (params) => {
         const item = Array.isArray(params) ? params[0] : params;
         const row = rowsById.get(String(item?.name ?? ""));
@@ -284,7 +291,7 @@ function chartOption(
           id: row.id,
           name: row.id,
           value: row.total,
-          itemStyle: { borderColor: glassBorder, borderWidth: 1.5 },
+          itemStyle: { borderColor: chartBorder, borderWidth: 1 },
         })),
         itemStyle: {
           color: new graphic.LinearGradient(
@@ -293,13 +300,18 @@ function chartOption(
             orientation === "vertical" ? 0 : 1,
             orientation === "vertical" ? 1 : 0,
             [
-              { offset: 0, color: leaf },
-              { offset: 0.45, color: moss },
-              { offset: 1, color: ink },
+              { offset: 0, color: chartStart },
+              { offset: 0.45, color: chartMid },
+              { offset: 1, color: chartEnd },
             ],
           ),
           borderRadius:
             orientation === "vertical" ? [8, 8, 0, 0] : [0, 8, 8, 0],
+          borderColor: chartBorder,
+          borderWidth: 1,
+          shadowBlur: 12,
+          shadowColor: chartShadow,
+          shadowOffsetY: 3,
         },
         label: {
           show: true,

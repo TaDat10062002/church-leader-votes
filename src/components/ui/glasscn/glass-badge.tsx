@@ -1,6 +1,6 @@
 "use client";
 
-import { FrostGlassVariantProp, glassVariantStyles } from "@/lib/glass-variants";
+import { FrostGlassVariantProp, glassClassName, glassVariantStyles } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "../badge";
@@ -8,7 +8,7 @@ import { LiquidGlass } from "./liquid-glass";
 
 type GlassBadgeProps = React.ComponentProps<typeof Badge> & FrostGlassVariantProp;
 
-function GlassBadge({ className, glassVariant = "liquid-refract", ...props }: GlassBadgeProps) {
+function GlassBadge({ className, glassVariant = "subtle", ...props }: GlassBadgeProps) {
   if (glassVariant === "liquid-refract") {
     return (
       <LiquidGlass className={cn("glasscn-surface inline-flex rounded-full", className)}>
@@ -26,7 +26,7 @@ function GlassBadge({ className, glassVariant = "liquid-refract", ...props }: Gl
     <Badge
       data-slot="glass-badge"
       data-glass-variant={glassVariant}
-      className={cn("text-foreground", glassVariantStyles[glassVariant], className)}
+      className={glassClassName(glassVariant, "text-foreground", className)}
       {...props}
     />
   );

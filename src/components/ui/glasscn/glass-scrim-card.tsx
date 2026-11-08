@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-import { Card } from "../card";
+import { Card } from "../card-base";
 import { LiquidGlass, type LiquidGlassProps } from "./liquid-glass";
 
 type GlassScrimSide = "top" | "bottom" | "both";

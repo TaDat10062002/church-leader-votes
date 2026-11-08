@@ -48,7 +48,7 @@ export const SheetContent = forwardRef<
         )}
         {...props}
       >
-        <Card className="glass-overlay-panel" radius={0}>
+        <Card glassVariant="frosted" className="glass-overlay-panel rounded-none">
         {children}
         <DialogPrimitive.Close asChild><Button variant="ghost" className="absolute right-4 top-4 size-11 rounded-full p-0" aria-label="Đóng">
           <X size={18} />
