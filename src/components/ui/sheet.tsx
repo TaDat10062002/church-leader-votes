@@ -6,6 +6,7 @@ import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAt
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/components/locale/locale-provider";
 
 export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
@@ -35,6 +36,7 @@ export const SheetContent = forwardRef<
   ElementRef<typeof DialogPrimitive.Content>,
   SheetContentProps
 >(function SheetContent({ side = "right", className, children, ...props }, ref) {
+  const { t } = useLocale();
   return (
     <DialogPrimitive.Portal>
       <SheetOverlay />
@@ -50,7 +52,7 @@ export const SheetContent = forwardRef<
       >
         <Card glassVariant="frosted" className="glass-overlay-panel rounded-none">
         {children}
-        <DialogPrimitive.Close asChild><Button variant="ghost" className="absolute right-4 top-4 size-11 rounded-full p-0" aria-label="Đóng">
+        <DialogPrimitive.Close asChild><Button variant="ghost" className="absolute right-4 top-4 size-11 rounded-full p-0" aria-label={t("close")}>
           <X size={18} />
         </Button></DialogPrimitive.Close>
         </Card>

@@ -30,6 +30,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import type { CandidateDraft } from "@/lib/types";
+import { useLocale } from "@/components/locale/locale-provider";
+import { apiErrorMessage } from "@/lib/i18n";
 import {
   createProvisionalDrafts,
   removeProvisionalDraft,
@@ -43,6 +45,7 @@ type RosterState = { waiting: ProvisionalDraft[]; deleted: DeletedDraft[] };
 
 export default function ImportRoster() {
   const router = useRouter();
+  const { locale, t, number } = useLocale();
   const prefersReducedMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
   const waitingItemRefs = useRef(new Map<string, HTMLDivElement>());
@@ -68,16 +71,16 @@ export default function ImportRoster() {
         body: form,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) throw new Error(apiErrorMessage(locale, data.code, data.values));
       setRoster({
         waiting: createProvisionalDrafts(data.candidates as CandidateDraft[]),
         deleted: [],
       });
       setMessage(
-        `Đã tải ${data.candidates.length} ứng viên vào danh sách tạm.`,
+        t("importedCount", { count: number(data.candidates.length) }),
       );
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không đọc được file.");
+      setError(e instanceof Error ? e.message : t("cannotReadFile"));
     } finally {
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -115,11 +118,11 @@ export default function ImportRoster() {
         body: JSON.stringify({ candidates: toCandidateDrafts(roster.waiting) }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      if (!response.ok) throw new Error(apiErrorMessage(locale, data.code, data.values));
       router.push("/dashboard");
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "Không thể bắt đầu kỳ bầu chọn.",
+        e instanceof Error ? e.message : t("cannotStartElection"),
       );
     } finally {
       setBusy(false);
@@ -156,27 +159,26 @@ export default function ImportRoster() {
       <GlassHeader className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <a
           href="/admin"
-          aria-label="Quay lại quản trị"
+          aria-label={t("adminBack")}
           className="inline-flex size-10 shrink-0 items-center justify-center gap-2 rounded-full text-sm font-medium text-ink/60 hover:text-ink sm:size-auto sm:justify-start sm:rounded-none"
         >
           <ArrowLeft size={17} />
-          <span className="hidden sm:inline">Quản trị</span>
+          <span className="hidden sm:inline">{t("adminTitle")}</span>
         </a>
-        <GlassChip role="img" aria-label="Bước 1: Danh sách ứng viên" className="grid size-10 shrink-0 place-items-center rounded-full bg-moss/10 text-xs font-bold text-moss sm:flex sm:size-auto sm:justify-center sm:px-3 sm:py-1.5 sm:text-center">
+        <GlassChip role="img" aria-label={t("importStep")} className="grid size-10 shrink-0 place-items-center rounded-full bg-moss/10 text-xs font-bold text-moss sm:flex sm:size-auto sm:justify-center sm:px-3 sm:py-1.5 sm:text-center">
           <Users size={16} aria-hidden="true" className="sm:hidden" />
-          <span className="hidden sm:inline">BƯỚC 1 · DANH SÁCH ỨNG VIÊN</span>
+          <span className="hidden sm:inline">{t("importStep")}</span>
         </GlassChip>
       </GlassHeader>
       <div className="max-w-3xl">
         <p className="text-sm font-bold uppercase tracking-[.2em] text-moss">
-          Chuẩn bị bầu chọn
+          {t("prepareElection")}
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-          Tải danh sách ứng viên
+          {t("importHeading")}
         </h1>
         <p className="mt-3 text-ink/60">
-          Danh sách vẫn là bản tạm cho đến khi bạn bấm bắt đầu. Hãy kiểm tra ảnh
-          và họ tên trước khi công bố.
+          {t("importDescription")}
         </p>
       </div>
       <Card className="mt-8 p-5 sm:p-7">
@@ -186,9 +188,9 @@ export default function ImportRoster() {
               <FileSpreadsheet size={22} />
             </GlassChip>
             <div>
-              <h2 className="font-semibold">Import file Excel</h2>
+              <h2 className="font-semibold">{t("importExcel")}</h2>
               <p className="mt-1 text-sm text-ink/65">
-                File .xlsx có cột “Họ tên” và “Hình ảnh” (ảnh nhúng hoặc URL).
+                {t("importExcelDescription")}
               </p>
             </div>
           </div>
@@ -206,7 +208,7 @@ export default function ImportRoster() {
               className={glassClassName("clear", "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-moss/5")}
             >
               <FileDown size={17} />
-              Tải Excel mẫu
+              {t("downloadTemplate")}
             </a>
             <Button
               variant="secondary"
@@ -214,13 +216,12 @@ export default function ImportRoster() {
               disabled={busy}
             >
               <Upload size={17} />
-              {busy ? "Đang xử lý…" : "Chọn file Excel"}
+              {busy ? t("processing") : t("chooseExcel")}
             </Button>
           </div>
         </div>
         <div className={glassClassName("subtle", "mt-5 rounded-xl border-dashed border-moss/25 px-4 py-5 text-center text-sm text-ink/65 sm:py-7")}>
-          Hình ảnh nhúng trong Excel sẽ được tải lên Supabase khi bắt đầu kỳ bầu
-          chọn.
+          {t("embeddedImageNote")}
         </div>
       </Card>
       {(message || error) && (
@@ -234,9 +235,9 @@ export default function ImportRoster() {
       <section className="mt-8">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold text-ink">Danh sách chờ</h2>
+            <h2 className="text-xl font-semibold text-ink">{t("waitingList")}</h2>
             <p className="mt-1 text-sm text-ink/65">
-              Ứng viên được lưu vào database sau khi bắt đầu.
+              {t("savedWhenStarted")}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -244,10 +245,10 @@ export default function ImportRoster() {
               <SheetTrigger asChild>
                 <Button
                   variant="secondary"
-                  aria-label={`Xem ứng viên đã xóa, ${deleted.length} ứng viên`}
+                  aria-label={t("deletedCandidatesCount", { count: number(deleted.length) })}
                 >
                   <RotateCcw size={16} />
-                  Xem ứng viên đã xóa{" "}
+                  {t("deletedCandidates")}{" "}
                   <GlassChip className="rounded-full bg-moss/10 px-2 py-0.5 text-xs text-moss">
                     {deleted.length}
                   </GlassChip>
@@ -258,15 +259,14 @@ export default function ImportRoster() {
                 aria-describedby="deleted-candidates-description"
               >
                 <SheetHeader>
-                  <SheetTitle>Ứng viên đã xóa</SheetTitle>
+                  <SheetTitle>{t("deletedTitle")}</SheetTitle>
                   <SheetDescription id="deleted-candidates-description">
-                    Khôi phục riêng từng ứng viên để đưa họ trở lại danh sách
-                    chờ.
+                    {t("restoreDescription")}
                   </SheetDescription>
                 </SheetHeader>
                 {deleted.length === 0 ? (
                   <div className={glassClassName("subtle", "grid min-h-48 place-items-center rounded-xl border-dashed border-moss/25 px-5 text-center text-sm text-ink/65")}>
-                    Chưa có ứng viên nào bị xóa.
+                    {t("noDeletedCandidates")}
                   </div>
                 ) : (
                   <motion.ul
@@ -292,11 +292,11 @@ export default function ImportRoster() {
                         <Button
                           variant="secondary"
                           className="shrink-0 px-3 modal-action-submit"
-                          aria-label={`Khôi phục ${draft.candidate.name}`}
+                          aria-label={t("restoreCandidate", { name: draft.candidate.name })}
                           onClick={() => restore(draft.id)}
                         >
                           <RotateCcw size={15} />
-                          Khôi phục
+                          {t("restore")}
                         </Button>
                       </motion.li>
                     ))}
@@ -306,7 +306,7 @@ export default function ImportRoster() {
             </Sheet>
             <GlassChip className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm text-ink/65">
               <Users size={16} />
-              {waiting.length} ứng viên
+              {t("candidateCount", { count: number(waiting.length) })}
             </GlassChip>
           </div>
         </div>
@@ -314,9 +314,9 @@ export default function ImportRoster() {
           <Card glassVariant="frosted" className="grid min-h-52 place-items-center border-dashed p-7 text-center shadow-none">
             <div>
               <ImagePlus className="mx-auto text-moss/50" size={32} />
-              <p className="mt-3 font-medium">Chưa có ứng viên</p>
+              <p className="mt-3 font-medium">{t("noCandidates")}</p>
               <p className="mt-1 text-sm text-ink/65">
-                Chọn file Excel để xem danh sách tại đây.
+                {t("chooseExcelToPreview")}
               </p>
             </div>
           </Card>
@@ -340,7 +340,7 @@ export default function ImportRoster() {
                 <Card glassVariant="subtle" className="group relative p-3 text-center transition-shadow duration-200 hover:shadow-soft sm:p-4">
                   <Button
                     variant="ghost"
-                    aria-label={`Xóa ${draft.candidate.name}`}
+                    aria-label={t("removeCandidateNamed", { name: draft.candidate.name })}
                     onClick={() => remove(draft.id)}
                     className="absolute right-2 top-2 grid size-11 min-h-0 place-items-center rounded-full p-0 text-ink/65 transition hover:text-[var(--app-danger)]"
                   >
@@ -356,7 +356,7 @@ export default function ImportRoster() {
                   </p>
                   <span className="mt-2 inline-flex items-center gap-1 text-xs text-moss">
                     <Check size={13} />
-                    Bản tạm
+                    {t("provisional")}
                   </span>
                 </Card>
               </motion.div>
@@ -370,9 +370,9 @@ export default function ImportRoster() {
       >
         <p className="px-2 text-sm text-ink/60">
           {waiting.length
-            ? `${waiting.length} ứng viên sẽ được công bố.`
-            : "Import danh sách trước khi bắt đầu."}
-          {deleted.length > 0 ? ` ${deleted.length} ứng viên đã xóa.` : ""}
+            ? t("willPublish", { count: number(waiting.length) })
+            : t("importBeforeStart")}
+          {deleted.length > 0 ? ` ${t("deletedSummary", { count: number(deleted.length) })}` : ""}
         </p>
         <DialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}>
           <DialogPrimitive.Trigger asChild>
@@ -385,7 +385,7 @@ export default function ImportRoster() {
               ) : (
                 <Check size={17} />
               )}
-              Bắt đầu bầu chọn
+              {t("startVoting")}
             </Button>
           </DialogPrimitive.Trigger>
           <DialogPrimitive.Portal>
@@ -396,18 +396,17 @@ export default function ImportRoster() {
             >
               <Card glassVariant="frosted" className="glass-overlay-panel">
                 <DialogPrimitive.Title className="text-xl font-semibold">
-                  Xác nhận bắt đầu bầu cử
+                  {t("confirmStartElection")}
                 </DialogPrimitive.Title>
                 <DialogPrimitive.Description className="mt-3 text-sm leading-6 text-ink/65">
-                  Bạn sắp công bố danh sách gồm {waiting.length} ứng viên và cho
-                  phép cử tri bắt đầu bỏ phiếu. Bạn có muốn tiếp tục không?
+                  {t("startElectionDescription", { count: number(waiting.length) })}
                 </DialogPrimitive.Description>
                 <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
                   <DialogPrimitive.Close asChild>
-                    <Button variant="secondary">Hủy</Button>
+                    <Button variant="secondary">{t("cancel")}</Button>
                   </DialogPrimitive.Close>
                   <DialogPrimitive.Close asChild>
-                    <Button onClick={startElection}>Xác nhận bắt đầu</Button>
+                    <Button onClick={startElection}>{t("confirmStart")}</Button>
                   </DialogPrimitive.Close>
                 </div>
               </Card>

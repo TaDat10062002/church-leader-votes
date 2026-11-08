@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { apiError } from "@/lib/http";
 
 export async function GET() {
   try {
@@ -20,6 +21,7 @@ export async function GET() {
     if (candidatesError) throw candidatesError;
     return NextResponse.json({ election: { id: election.id, status: election.status, candidates: candidates ?? [] } });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Không tải được danh sách." }, { status: 503 });
+    console.error("Active election load failed", error);
+    return apiError("ELECTION_LOAD_FAILED", 503);
   }
 }

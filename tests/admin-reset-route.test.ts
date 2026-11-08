@@ -5,7 +5,10 @@ const { requireAdmin, rpc } = vi.hoisted(() => ({
   rpc: vi.fn(),
 }));
 
-vi.mock("@/lib/http", () => ({ requireAdmin }));
+vi.mock("@/lib/http", () => ({
+  requireAdmin,
+  apiError: (code: string, status: number) => new Response(JSON.stringify({ code }), { status, headers: { "content-type": "application/json" } }),
+}));
 vi.mock("@/lib/supabase", () => ({ getSupabaseAdmin: () => ({ rpc }) }));
 
 import { POST } from "@/app/api/admin/reset/route";
@@ -42,6 +45,6 @@ describe("POST /api/admin/reset", () => {
     const response = await POST(new Request("http://localhost/api/admin/reset", { method: "POST" }));
 
     expect(response.status).toBe(503);
-    await expect(response.json()).resolves.toEqual({ error: "Không thể đặt lại dữ liệu bầu cử. Vui lòng thử lại." });
+    await expect(response.json()).resolves.toEqual({ code: "ELECTION_RESET_FAILED" });
   });
 });

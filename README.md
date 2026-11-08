@@ -2,6 +2,10 @@
 
 A mobile-first church election app built with Next.js App Router and Supabase. Admins import an `.xlsx` roster, review and edit the provisional list, and start the election. Voters drag one to nine distinct candidates into a 3-by-3 ballot. The dashboard shows descending totals and refreshes from election-specific Realtime Broadcast notifications.
 
+## Languages
+
+The interface supports Vietnamese and Traditional Chinese. Vietnamese is the default; use the language control beside the appearance controls to switch languages. The selection is stored in a browser cookie and applies across routes and reloads. Candidate names and other election data remain as entered.
+
 ## Local setup
 
 1. Install Node.js 20 or later, then install dependencies with `npm install`.

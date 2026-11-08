@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/http";
+import { apiError, requireAdmin } from "@/lib/http";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
 export async function POST(request: Request) {
@@ -10,10 +10,8 @@ export async function POST(request: Request) {
     const { error } = await getSupabaseAdmin().rpc("reset_election");
     if (error) throw error;
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json(
-      { error: "Không thể đặt lại dữ liệu bầu cử. Vui lòng thử lại." },
-      { status: 503 },
-    );
+  } catch (error) {
+    console.error("Election reset failed", error);
+    return apiError("ELECTION_RESET_FAILED", 503);
   }
 }

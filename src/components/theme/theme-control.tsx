@@ -5,28 +5,22 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useAppearanceTheme } from "@/components/theme/theme-provider";
 import { glassClassName } from "@/lib/glass-variants";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/locale/locale-provider";
 
 export function ThemeControl({ className }: { className?: string }) {
-  const { resolvedTheme, palette, setPalette, toggleTheme } = useAppearanceTheme();
+  const { resolvedTheme, toggleTheme } = useAppearanceTheme();
+  const { locale, setLocale, t } = useLocale();
   const reduceMotion = useReducedMotion();
   const isDark = resolvedTheme === "dark";
   const Icon = isDark ? Moon : Sun;
 
   return <div className={cn("appearance-controls", className)}>
-    <div className={glassClassName("subtle", "palette-control")} role="group" aria-label="Chọn nền giao diện">
-      <button type="button" aria-label="Nền Jade xanh lá champagne" title="Nền Jade" aria-pressed={palette === "green"} className="palette-option" onClick={() => setPalette("green")}>
-        <span aria-hidden="true" className="palette-swatch" style={{ background: "linear-gradient(135deg, #347a54, #91b780 52%, #d3ad68)" }} />
-      </button>
-      <button type="button" aria-label="Nền Aurora tím xanh cyan" title="Nền Aurora" aria-pressed={palette === "navy"} className="palette-option" onClick={() => setPalette("navy")}>
-        <span aria-hidden="true" className="palette-swatch" style={{ background: "linear-gradient(135deg, #6366f1, #38bdf8 60%, #22d3ee)" }} />
-      </button>
-    </div>
     <motion.button
       type="button"
       role="switch"
-      aria-label="Giao diện tối"
+      aria-label={t("themeDark")}
       aria-checked={isDark}
-      title={`Giao diện ${isDark ? "tối" : "sáng"}. Bấm để chuyển.`}
+      title={t("themeTitle", { mode: t(isDark ? "dark" : "light") })}
       className={glassClassName("clear", "icon-switch-control")}
       initial={false}
       onClick={(event) => toggleTheme(event.currentTarget)}
@@ -61,6 +55,10 @@ export function ThemeControl({ className }: { className?: string }) {
           </motion.span>
         </AnimatePresence>
       </motion.span>
-    </motion.button>
+  </motion.button>
+    <div className={glassClassName("subtle", "flex items-center gap-0.5 rounded-full p-0.5")} role="group" aria-label={t("language")}>
+      <button type="button" aria-label={t("languageVi")} aria-pressed={locale === "vi"} onClick={() => setLocale("vi")} className="rounded-full px-2 py-1 text-[10px] font-semibold text-ink aria-pressed:bg-white/60 sm:text-xs">VI</button>
+      <button type="button" aria-label={t("languageZhTw")} aria-pressed={locale === "zh-TW"} onClick={() => setLocale("zh-TW")} className="rounded-full px-2 py-1 text-[10px] font-semibold text-ink aria-pressed:bg-white/60 sm:text-xs">繁中</button>
+    </div>
   </div>;
 }

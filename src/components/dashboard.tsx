@@ -26,11 +26,18 @@ import {
 } from "@/components/dashboard-results-chart";
 import type { ResultRow } from "@/lib/types";
 import { shouldRefreshResults } from "@/lib/results";
+import { useLocale } from "@/components/locale/locale-provider";
+import { apiErrorMessage } from "@/lib/i18n";
 
 type Results = { election: { id: string } | null; results: ResultRow[] };
 
 export default function Dashboard() {
   const router = useRouter();
+  const { locale, t, number, time } = useLocale();
+  const localeRef = useRef(locale);
+  const translateRef = useRef(t);
+  localeRef.current = locale;
+  translateRef.current = t;
   const [data, setData] = useState<Results>({ election: null, results: [] });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -54,12 +61,15 @@ export default function Dashboard() {
         router.replace("/vote");
         return;
       }
-      if (!response.ok) throw new Error(json.error);
+      if (!response.ok)
+        throw new Error(apiErrorMessage(localeRef.current, json.code));
       setData(json);
       setError("");
       setUpdated(new Date());
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không tải được kết quả.");
+      setError(
+        e instanceof Error ? e.message : translateRef.current("cannotLoadResults"),
+      );
     } finally {
       setLoading(false);
     }
@@ -105,7 +115,7 @@ export default function Dashboard() {
     try {
       const response = await fetch("/api/admin/reset", { method: "POST" });
       const result = (await response.json().catch(() => null)) as {
-        error?: string;
+        code?: string;
       } | null;
       if (response.status === 401) {
         router.replace("/vote");
@@ -113,8 +123,7 @@ export default function Dashboard() {
       }
       if (!response.ok)
         throw new Error(
-          result?.error ||
-            "Không thể đặt lại dữ liệu bầu cử. Vui lòng thử lại.",
+          apiErrorMessage(locale, result?.code || "ELECTION_RESET_FAILED"),
         );
       setData({ election: null, results: [] });
       setUpdated(null);
@@ -124,7 +133,7 @@ export default function Dashboard() {
       setResetError(
         e instanceof Error
           ? e.message
-          : "Không thể đặt lại dữ liệu bầu cử. Vui lòng thử lại.",
+          : t("cannotResetElection"),
       );
     } finally {
       setResetBusy(false);
@@ -133,23 +142,23 @@ export default function Dashboard() {
   return (
     <main className="mx-auto min-h-dvh max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
       <GlassHeader className="flex flex-nowrap items-center justify-between gap-2 sm:flex-wrap sm:gap-3">
-        <a href="/dashboard" aria-label="Bảng điều hành" className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <a href="/dashboard" aria-label={t("dashboard")} className="flex shrink-0 items-center gap-2 sm:gap-3">
           <GlassChip className="grid size-9 shrink-0 place-items-center rounded-full bg-moss/10 text-moss sm:size-10">
             <Church size={19} />
           </GlassChip>
           <span className="hidden sm:block">
             <span className="block text-sm font-semibold text-ink">
-              Bảng điều hành
+              {t("dashboard")}
             </span>
             <span className="block text-[11px] text-ink/65">
-              Kết quả bầu chọn trực tiếp
+              {t("liveResults")}
             </span>
           </span>
         </a>
         <div className="flex shrink-0 flex-nowrap justify-end gap-1 sm:gap-2">
           <Button
             variant="danger"
-            aria-label="Bầu cử lại"
+            aria-label={t("rerunElection")}
             onClick={() => {
               setResetError("");
               setResetOpen(true);
@@ -158,33 +167,33 @@ export default function Dashboard() {
             className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5"
           >
             <Trash2 size={16} />
-            <span className="hidden sm:inline">Bầu cử lại</span>
+            <span className="hidden sm:inline">{t("rerunElection")}</span>
           </Button>
           <Button
             variant="secondary"
-            aria-label="Danh sách ứng viên"
+            aria-label={t("candidateList")}
             onClick={() => router.push("/import-file")}
             className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5"
           >
             <Users size={16} />
-            <span className="hidden sm:inline">Danh sách</span>
+            <span className="hidden sm:inline">{t("candidateListShort")}</span>
           </Button>
-          <Button variant="ghost" onClick={logout} aria-label="Đăng xuất" className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5">
+          <Button variant="ghost" onClick={logout} aria-label={t("logout")} className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5">
             <LogOut size={17} />
-            <span className="hidden sm:inline">Thoát</span>
+            <span className="hidden sm:inline">{t("logout")}</span>
           </Button>
         </div>
       </GlassHeader>
       <section className="mt-8 flex flex-col justify-between gap-4 sm:mt-12 sm:flex-row sm:items-end">
         <div>
           <p className="text-xs font-bold uppercase tracking-[.2em] text-moss">
-            Đang diễn ra
+            {t("inProgress")}
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Tổng hợp phiếu bầu
+            {t("voteSummary")}
           </h1>
           <p className="mt-2 text-sm text-ink/65">
-            Biểu đồ tự cập nhật khi có phiếu hợp lệ mới.
+            {t("chartAutoUpdate")}
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-ink/65">
@@ -193,13 +202,13 @@ export default function Dashboard() {
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-moss" />
           </span>
           {updated
-            ? `Cập nhật ${updated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
-            : "Đang kết nối"}
+            ? t("updatedAt", { time: time(updated) })
+            : t("connecting")}
           <Button
             variant="ghost"
             onClick={refresh}
             className="size-11 rounded-full p-0"
-            aria-label="Tải lại"
+            aria-label={t("reloadResults")}
           >
             <RefreshCw size={15} />
           </Button>
@@ -219,9 +228,9 @@ export default function Dashboard() {
         </Card>
       ) : !data.election ? (
         <Card glassVariant="frosted" className="mt-8 p-8 text-center">
-          <p className="font-semibold">Chưa có kỳ bầu chọn đang mở</p>
+          <p className="font-semibold">{t("noOpenElection")}</p>
           <Button className="mt-4" onClick={() => router.push("/import-file")}>
-            Import danh sách
+            {t("importList")}
           </Button>
         </Card>
       ) : (
@@ -234,24 +243,24 @@ export default function Dashboard() {
               <p className="mt-4 text-2xl font-semibold">
                 {data.results.length}
               </p>
-              <p className="mt-1 text-xs text-ink/65">Ứng viên</p>
+              <p className="mt-1 text-xs text-ink/65">{t("candidates")}</p>
             </Card>
             <Card className="p-4 sm:p-5">
               <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-gold/20 text-ink">
                 <Vote size={18} />
               </GlassChip>
-              <p className="mt-4 text-2xl font-semibold">{totalSelections}</p>
-              <p className="mt-1 text-xs text-ink/65">Lượt chọn hợp lệ</p>
+              <p className="mt-4 text-2xl font-semibold">{number(totalSelections)}</p>
+              <p className="mt-1 text-xs text-ink/65">{t("validSelections")}</p>
             </Card>
             <Card className="col-span-2 p-4 sm:col-span-1 sm:p-5">
               <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-moss/10 text-moss">
                 <Activity size={18} />
               </GlassChip>
               <p className="mt-4 flex items-center gap-2 text-lg font-semibold">
-                Realtime <ArrowUpRight size={16} />
+                {t("realtime")} <ArrowUpRight size={16} />
               </p>
               <p className="mt-1 text-xs text-ink/65">
-                Tổng phiếu đang được cập nhật
+                {t("totalsUpdating")}
               </p>
             </Card>
           </div>
@@ -259,15 +268,15 @@ export default function Dashboard() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="font-semibold text-ink">
-                  Số lượt chọn theo ứng viên
+                  {t("selectionsByCandidate")}
                 </h2>
                 <p className="mt-1 text-xs text-ink/65">
-                  Sắp xếp từ cao xuống thấp
+                  {t("descendingOrder")}
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-2">
                 <GlassChip className="rounded-full bg-moss/10 px-3 py-1.5 text-xs font-semibold text-moss">
-                  {data.results.length} ứng viên
+                  {t("candidateCount", { count: number(data.results.length) })}
                 </GlassChip>
                 <DashboardChartOrientationSwitch
                   orientation={chartOrientation}
@@ -295,17 +304,17 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="grid h-64 place-items-center text-sm text-ink/65">
-                Chưa có phiếu hợp lệ nào.
+                {t("noValidBallots")}
               </div>
             )}
           </Card>
           <section className="mt-7">
-            <h2 className="mb-3 font-semibold">Thứ hạng hiện tại</h2>
+            <h2 className="mb-3 font-semibold">{t("currentRanking")}</h2>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {data.results.map((row, index) => (
                 <Card key={row.id} glassVariant="subtle" className="flex items-center gap-3 p-3">
                   <span className="w-7 shrink-0 text-center text-sm font-bold text-ink/65">
-                    {index + 1}
+                    {number(index + 1)}
                   </span>
                   <img
                     src={row.image_url}
@@ -316,7 +325,7 @@ export default function Dashboard() {
                     {row.name}
                   </span>
                   <GlassChip className="shrink-0 rounded-lg px-3 py-2 text-sm font-bold">
-                    {row.total}
+                    {number(row.total)}
                   </GlassChip>
                 </Card>
               ))}
@@ -342,14 +351,13 @@ export default function Dashboard() {
             </GlassChip>
             <div>
               <h2 id="reset-election-title" className="text-lg font-semibold">
-                Xác nhận bầu cử lại
+                {t("confirmRerun")}
               </h2>
               <p
                 id="reset-election-description"
                 className="mt-2 text-sm leading-6 text-ink/65"
               >
-                Mọi dữ liệu bầu cử hiện tại sẽ bị xóa vĩnh viễn và không thể
-                hoàn tác. Xác nhận khi bạn muốn thực hiện lại cuộc bầu cử.
+                {t("rerunWarning")}
               </p>
             </div>
           </div>
@@ -369,7 +377,7 @@ export default function Dashboard() {
               autoFocus
               onClick={() => setResetOpen(false)}
             >
-              Hủy
+              {t("cancel")}
             </Button>
             <Button
               type="button"
@@ -383,7 +391,7 @@ export default function Dashboard() {
               ) : (
                 <Trash2 size={16} />
               )}{" "}
-              {resetBusy ? "Đang xóa dữ liệu…" : "Xác nhận"}
+              {resetBusy ? t("deleting") : t("confirm")}
             </Button>
           </div>
         </Card>

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/http";
+import { apiError, requireAdmin } from "@/lib/http";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { aggregateResults } from "@/lib/results";
 
@@ -18,6 +18,7 @@ export async function GET(request: Request) {
     const results = aggregateResults(candidates ?? [], (selections ?? []).map((row) => row.candidate_id));
     return NextResponse.json({ election, results });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Không tải được kết quả." }, { status: 503 });
+    console.error("Election results load failed", error);
+    return apiError("RESULTS_LOAD_FAILED", 503);
   }
 }

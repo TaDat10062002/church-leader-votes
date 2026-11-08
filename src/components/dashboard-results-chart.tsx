@@ -14,6 +14,8 @@ import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
 import type { ResultRow } from "@/lib/types";
 import { glassClassName } from "@/lib/glass-variants";
+import { useLocale } from "@/components/locale/locale-provider";
+import { formatNumber, translate, type Locale } from "@/lib/i18n";
 
 use([BarChart, AriaComponent, GridComponent, TooltipComponent, CanvasRenderer]);
 
@@ -33,6 +35,7 @@ export function DashboardChartOrientationSwitch({
   orientation,
   onChange,
 }: DashboardChartOrientationSwitchProps) {
+  const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const isVertical = orientation === "vertical";
   const Icon = isVertical ? ChartColumn : ChartBar;
@@ -41,9 +44,9 @@ export function DashboardChartOrientationSwitch({
     <motion.button
       type="button"
       role="switch"
-      aria-label="Hướng biểu đồ"
+      aria-label={t("chartOrientation")}
       aria-checked={isVertical}
-      title={`Biểu đồ ${isVertical ? "dọc" : "ngang"}. Bấm để đổi.`}
+      title={t("chartSwitchTitle", { orientation: t(isVertical ? "chartVertical" : "chartHorizontal") })}
       className={glassClassName("clear", "icon-switch-control")}
       data-glass-variant="clear"
       initial={false}
@@ -128,6 +131,7 @@ function chartOption(
   element: HTMLElement,
   reducedMotion: boolean,
   orientation: DashboardChartOrientation,
+  locale: Locale,
 ): EChartsOption {
   const ink = cssVariable(element, "--app-ink", "#26382f");
   const chartStart = cssVariable(element, "--app-chart-start", "rgba(101,171,123,.58)");
@@ -224,7 +228,7 @@ function chartOption(
             minInterval: 1,
             axisLine: { show: false },
             axisTick: { show: false },
-            axisLabel: { color: ink, fontSize: 12 },
+            axisLabel: { color: ink, fontSize: 12, formatter: (value: number) => formatNumber(locale, value) },
             splitLine: { lineStyle: { color: line } },
           },
     yAxis:
@@ -236,7 +240,7 @@ function chartOption(
             minInterval: 1,
             axisLine: { show: false },
             axisTick: { show: false },
-            axisLabel: { color: ink, fontSize: 12 },
+            axisLabel: { color: ink, fontSize: 12, formatter: (value: number) => formatNumber(locale, value) },
             splitLine: { lineStyle: { color: line } },
           }
         : {
@@ -276,7 +280,7 @@ function chartOption(
         const item = Array.isArray(params) ? params[0] : params;
         const row = rowsById.get(String(item?.name ?? ""));
         if (!row) return "";
-        return `<strong>${escapeHtml(row.name)}</strong><br/><span>${row.total} lượt chọn</span>`;
+        return `<strong>${escapeHtml(row.name)}</strong><br/><span>${escapeHtml(formatNumber(locale, row.total))} ${escapeHtml(translate(locale, "chartSelections"))}</span>`;
       },
       axisPointer: { type: "shadow", shadowStyle: { color: glassPanel } },
     },
@@ -332,6 +336,9 @@ export function DashboardResultsChart({
   results,
   orientation,
 }: DashboardResultsChartProps) {
+  const { locale, t } = useLocale();
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<EChartsType | null>(null);
   const resultsRef = useRef(results);
@@ -357,6 +364,7 @@ export function DashboardResultsChart({
           element,
           reducedMotionRef.current,
           orientationRef.current,
+          localeRef.current,
         ),
       );
     };
@@ -379,7 +387,7 @@ export function DashboardResultsChart({
     const themeRoot = document.documentElement;
     themeObserver.observe(themeRoot, {
       attributes: true,
-      attributeFilter: ["class", "data-theme", "data-palette"],
+      attributeFilter: ["class", "data-theme"],
     });
 
     return () => {
@@ -396,15 +404,15 @@ export function DashboardResultsChart({
     const element = containerRef.current;
     if (!chart || !element || chart.isDisposed()) return;
     chart.setOption(
-      chartOption(results, element, reducedMotionRef.current, orientation),
+      chartOption(results, element, reducedMotionRef.current, orientation, locale),
     );
-  }, [results, orientation]);
+  }, [results, orientation, locale]);
 
   return (
     <div
       ref={containerRef}
       role="img"
-      aria-label={`Biểu đồ ${orientation === "vertical" ? "cột" : "thanh"} lượt chọn theo ứng viên, xếp từ cao xuống thấp`}
+      aria-label={t("chartAria", { type: t(orientation === "vertical" ? "chartVerticalType" : "chartHorizontalType") })}
       style={{
         width: "100%",
         height:

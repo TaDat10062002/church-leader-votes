@@ -3,6 +3,7 @@
 import { type ComponentProps, type ReactNode, useState } from "react";
 import { GlassInput as RegistryGlassInput } from "@/components/ui/glasscn/glass-input";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/components/locale/locale-provider";
 
 type Props = ComponentProps<"input"> & {
   inputClassName?: string;
@@ -11,13 +12,14 @@ type Props = ComponentProps<"input"> & {
 
 export function FormInput({
   icon,
-  placeholder = "Nhập thông tin",
+  placeholder,
   className,
   inputClassName,
   onFocus,
   onBlur,
   ...props
 }: Props) {
+  const { t } = useLocale();
   const [focused, setFocused] = useState(false);
 
   return (
@@ -41,7 +43,7 @@ export function FormInput({
           icon && "pl-12",
           inputClassName,
         )}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("inputPlaceholder")}
         onFocus={(event) => {
           setFocused(true);
           onFocus?.(event);

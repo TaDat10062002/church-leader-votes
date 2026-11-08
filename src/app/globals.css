@@ -49,8 +49,7 @@
   --app-chart-shadow: rgba(141, 66, 129, .18);
   --app-cream: #f7f7f2;
   --app-gold: #a97938;
-  --app-page-color: #eff4ee;
-  --app-page-bg: radial-gradient(ellipse at 13% 17%, rgba(57, 151, 98, .3) 0%, transparent 52%), radial-gradient(ellipse at 88% 20%, rgba(219, 177, 99, .3) 0%, transparent 51%), radial-gradient(ellipse at 50% 92%, rgba(115, 170, 130, .22) 0%, transparent 56%), linear-gradient(145deg, #e9f2eb 0%, #eef1e6 54%, #f5ecd9 100%);
+  --app-page-color: #ffffff;
   --glass-panel: rgba(255, 255, 255, .24);
   --glass-fallback: #f8fbf7;
   --glass-border: rgba(255, 255, 255, .62);
@@ -103,8 +102,7 @@
   --app-chart-shadow: rgba(92, 150, 105, .2);
   --app-cream: #1c2921;
   --app-gold: #f0cf83;
-  --app-page-color: #111a15;
-  --app-page-bg: radial-gradient(ellipse at 13% 17%, rgba(31, 118, 70, .38) 0%, transparent 52%), radial-gradient(ellipse at 88% 20%, rgba(157, 119, 48, .24) 0%, transparent 51%), radial-gradient(ellipse at 50% 92%, rgba(76, 124, 83, .22) 0%, transparent 56%), linear-gradient(145deg, #101b14 0%, #152019 54%, #242218 100%);
+  --app-page-color: #111111;
   --glass-panel: rgba(231, 239, 250, .085);
   --glass-fallback: #202b24;
   --glass-border: rgba(232, 241, 255, .2);
@@ -122,58 +120,6 @@
   --liquid-glass-rim-dark: rgba(0, 0, 0, .22);
 }
 
-:root[data-theme="light"][data-palette="navy"] {
-  --app-ink: #24304c;
-  --app-muted: #53627e;
-  --app-moss: #5145d9;
-  --app-leaf: #0e7490;
-  --app-chart-start: rgba(99, 102, 241, .6);
-  --app-chart-mid: rgba(56, 189, 248, .56);
-  --app-chart-end: rgba(8, 145, 178, .5);
-  --app-chart-border: rgba(255, 255, 255, .82);
-  --app-chart-shadow: rgba(47, 100, 192, .18);
-  --app-gold: #0e7490;
-  --app-focus: #5145d9;
-  --app-page-color: #edf2fc;
-  --app-page-bg: radial-gradient(ellipse at 15% 18%, rgba(99, 102, 241, .3) 0%, transparent 52%), radial-gradient(ellipse at 88% 16%, rgba(34, 211, 238, .28) 0%, transparent 51%), radial-gradient(ellipse at 48% 92%, rgba(59, 130, 246, .24) 0%, transparent 57%), linear-gradient(145deg, #e9edfa 0%, #e8f1f8 52%, #e5f2f6 100%);
-  --glass-panel: rgba(255, 255, 255, .24);
-  --glass-fallback: #f4f8fd;
-  --glass-border: rgba(255, 255, 255, .62);
-  --glass-specular: rgba(255, 255, 255, .68);
-  --app-line: rgba(64, 80, 139, .2);
-  --app-control-border: rgba(52, 72, 130, .42);
-  --liquid-glass-rim-dark: rgba(16, 30, 62, .16);
-  --modal-submit: #5145d9;
-  --modal-cancel: #a34589;
-}
-
-:root[data-theme="dark"][data-palette="navy"] {
-  --app-ink: #edf6ff;
-  --app-muted: #bfcee1;
-  --app-moss: #a5b4fc;
-  --app-on-moss: #1a2140;
-  --app-leaf: #67e8f9;
-  --app-chart-start: rgba(165, 180, 252, .62);
-  --app-chart-mid: rgba(125, 211, 252, .56);
-  --app-chart-end: rgba(103, 232, 249, .52);
-  --app-chart-border: rgba(230, 248, 255, .42);
-  --app-chart-shadow: rgba(56, 189, 248, .2);
-  --app-gold: #67e8f9;
-  --app-focus: #a5b4fc;
-  --app-page-color: #101528;
-  --app-page-bg: radial-gradient(ellipse at 15% 18%, rgba(99, 102, 241, .32) 0%, transparent 52%), radial-gradient(ellipse at 88% 16%, rgba(34, 211, 238, .26) 0%, transparent 51%), radial-gradient(ellipse at 48% 92%, rgba(59, 130, 246, .25) 0%, transparent 57%), linear-gradient(145deg, #101528 0%, #111b2b 52%, #10212c 100%);
-  --glass-panel: rgba(231, 239, 250, .085);
-  --glass-fallback: #202b3a;
-  --glass-border: rgba(232, 241, 255, .2);
-  --glass-specular: rgba(232, 241, 255, .3);
-  --app-control-border: rgba(210, 225, 255, .42);
-  --app-line: rgba(191, 211, 255, .22);
-  --liquid-glass-rim-light: rgba(225, 238, 255, .2);
-  --liquid-glass-rim-dark: rgba(10, 28, 56, .22);
-  --modal-submit: #a5b4fc;
-  --modal-cancel: #f0a6d3;
-}
-
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -182,8 +128,6 @@ body {
   margin: 0;
   min-height: 100dvh;
   background-color: var(--app-page-color);
-  background-image: var(--app-page-bg);
-  background-attachment: fixed;
   color: var(--app-ink);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color .36s ease, color .36s ease;
@@ -264,30 +208,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 
 .appearance-controls { display: inline-flex; flex-shrink: 0; align-items: center; gap: .25rem; }
-@media (max-width: 639px) {
-  .glasscn-header .palette-option { width: 1.5rem; height: 1.5rem; }
-}
 .theme-control--floating { position: absolute; z-index: 5; right: 1rem; top: 1rem; }
-.palette-control { display: inline-flex; align-items: center; gap: .125rem; border-radius: 999px; padding: .125rem; }
-.palette-option {
-  display: grid;
-  width: 1.75rem;
-  height: 1.75rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  color: var(--app-ink);
-  background: transparent;
-  cursor: pointer;
-  transition: background-color .16s ease;
-}
-.palette-option:hover { background-color: color-mix(in srgb, var(--app-ink) 7%, transparent); }
-.palette-option:focus-visible { outline-offset: -2px; }
-.palette-option[aria-pressed="true"] .palette-swatch {
-  box-shadow: 0 0 0 2px var(--glass-fallback), 0 0 0 3px var(--app-focus);
-}
-.palette-swatch { width: .625rem; height: .625rem; border-radius: 50%; transition: box-shadow .16s ease; }
 .icon-switch-control {
   position: relative;
   z-index: 2;

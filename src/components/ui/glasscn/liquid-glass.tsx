@@ -137,16 +137,21 @@ export type LiquidGlassProps = HTMLAttributes<HTMLDivElement> & {
   bezel?: number;
   /** Backdrop saturation. */
   saturation?: number;
+  /** Show the soft specular glare in the top-left corner. */
+  glare?: boolean;
 };
 
 export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(
   function LiquidGlass(
     {
-      blur = 3,
-      refraction = 15,
+      // Tuned to resemble Apple's iOS 26 "Liquid Glass":
+      // strong edge refraction, thick curved bezel, light blur, vivid backdrop.
+      blur = 1.5,
+      refraction = 55,
       mapSize: _mapSize,
-      bezel = 0.34,
-      saturation = 1.28,
+      bezel = 0.5,
+      saturation = 1.6,
+      glare = true,
       className,
       style,
       children,
@@ -234,14 +239,18 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(
     const refractionActive = supported && mapUrl !== "";
     const backdropFilter = refractionActive
       ? `url(#${filterId}) blur(${blur}px) saturate(${saturation})`
-      : `blur(${blur + 1}px) saturate(${saturation})`;
+      : `blur(${blur + 6}px) saturate(${saturation})`;
 
     return (
       <>
         <div
           ref={setRefs}
           className={cn(
-            "glasscn-material glasscn-variant-liquid-refract relative overflow-hidden rounded-full bg-white/[0.02]",
+            "glasscn-material glasscn-variant-liquid-refract relative overflow-hidden rounded-full",
+            // Body tint + soft drop shadow + inner top/bottom highlights
+            // give the glass real "volume" instead of a flat transparent layer.
+            "bg-white/10",
+            "shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_6px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-1px_0_rgba(255,255,255,0.1)]",
             className,
           )}
           style={
@@ -254,24 +263,36 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(
           {...props}
         >
           {children}
+
+          {/* Soft specular glare near the top-left, like light hitting a curved surface. */}
+          {glare && (
+            <span
+              aria-hidden
+              data-glass-decoration
+              className="pointer-events-none absolute inset-0 rounded-[inherit]"
+              style={{
+                background:
+                  "radial-gradient(120% 90% at 18% 0%, var(--liquid-glass-glare, rgba(255,255,255,0.22)) 0%, rgba(255,255,255,0) 55%)",
+                mixBlendMode: "soft-light",
+              }}
+            />
+          )}
+
+          {/* Rim: a thin diagonal specular edge. Bright at top-left and bottom-right,
+              fading to nothing along the other diagonal (Apple's signature highlight). */}
           <span
             aria-hidden
             data-glass-decoration
             className="pointer-events-none absolute inset-0 rounded-[inherit]"
             style={{
               // Rim thickness, overridable per-consumer via --liquid-glass-rim-width.
-              padding: "var(--liquid-glass-rim-width, 0.5px)",
+              padding: "var(--liquid-glass-rim-width, 1px)",
               background:
-                // iOS 27 liquid-glass rim. Each gradient runs ALONG its edges and
-                // fades to nothing at the corners, uniform in between:
-                //   - to right  → white streak on the top + bottom runs
-                //   - to bottom → dark streak on the left + right runs
-                // Streak colors are overridable per-consumer via the
-                // --liquid-glass-rim-light / --liquid-glass-rim-dark variables;
-                // --liquid-glass-rim-fade sets how far from each corner the
-                // streak takes to reach full strength (smaller = longer streak).
-                "linear-gradient(to right, rgba(255,255,255,0), var(--liquid-glass-rim-light, rgba(255,255,255,0.25)) var(--liquid-glass-rim-fade, 18%), var(--liquid-glass-rim-light, rgba(255,255,255,0.25)) calc(100% - var(--liquid-glass-rim-fade, 18%)), rgba(255,255,255,0)), " +
-                "linear-gradient(to bottom, rgba(0,0,0,0), var(--liquid-glass-rim-dark, rgba(0,0,0,0.2)) var(--liquid-glass-rim-fade, 18%), var(--liquid-glass-rim-dark, rgba(0,0,0,0.2)) calc(100% - var(--liquid-glass-rim-fade, 18%)), rgba(0,0,0,0))",
+                // Overridable via --liquid-glass-rim-light / --liquid-glass-rim-dark.
+                // --liquid-glass-rim-fade sets how far the bright streak extends
+                // from each lit corner (larger = longer streak).
+                "linear-gradient(135deg, var(--liquid-glass-rim-light, rgba(255,255,255,0.6)) 0%, rgba(255,255,255,0) var(--liquid-glass-rim-fade, 30%), rgba(255,255,255,0) calc(100% - var(--liquid-glass-rim-fade, 30%)), var(--liquid-glass-rim-light, rgba(255,255,255,0.6)) 100%), " +
+                "linear-gradient(315deg, rgba(0,0,0,0) 40%, var(--liquid-glass-rim-dark, rgba(0,0,0,0.12)) 100%)",
               WebkitMask:
                 "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               WebkitMaskComposite: "xor",

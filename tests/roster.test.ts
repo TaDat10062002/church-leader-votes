@@ -27,8 +27,15 @@ describe("Excel roster import", () => {
     await expect(parseRoster(buffer)).resolves.toMatchObject([{ name: "Nguyễn An", image: expect.stringMatching(/^data:image\/png;base64,/) }]);
   });
   it("reports missing required columns and incomplete candidate rows", async () => {
-    await expect(parseRoster(await workbookBuffer([["Tên", "Ảnh"], ["Nguyễn An", "https://example.org/an.png"]]))).rejects.toThrow("Họ tên và Hình ảnh");
-    await expect(parseRoster(await workbookBuffer([["Họ tên", "Hình ảnh"], ["Nguyễn An", ""]]))).rejects.toThrow("thiếu hình ảnh");
+    await expect(parseRoster(await workbookBuffer([["Tên", "Ảnh"], ["Nguyễn An", "https://example.org/an.png"]]))).rejects.toMatchObject({ code: "ROSTER_COLUMNS_MISSING" });
+    await expect(parseRoster(await workbookBuffer([["Họ tên", "Hình ảnh"], ["Nguyễn An", ""]]))).rejects.toMatchObject({
+      code: "ROSTER_ROW_ERRORS",
+      values: { problems: [{ code: "ROSTER_ROW_REQUIRED", values: { field: "image" } }] },
+    });
+  });
+  it("reads Traditional Chinese roster headings", async () => {
+    const buffer = await workbookBuffer([["姓名", "照片"], ["王小明", "https://example.org/wang.png"]]);
+    await expect(parseRoster(buffer)).resolves.toEqual([{ name: "王小明", image: "https://example.org/wang.png" }]);
   });
 });
 

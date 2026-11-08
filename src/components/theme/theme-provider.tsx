@@ -4,20 +4,15 @@ import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type AppearancePreference = "system" | "light" | "dark";
-export type AccentPalette = "green" | "navy";
-
 type Reveal = { x: number; y: number; radius: number; key: number };
 type ThemeContextValue = {
   preference: AppearancePreference;
   resolvedTheme: "light" | "dark";
-  palette: AccentPalette;
   setPreference: (preference: AppearancePreference, origin?: HTMLElement) => void;
   toggleTheme: (origin?: HTMLElement) => void;
-  setPalette: (palette: AccentPalette) => void;
 };
 
 const STORAGE_KEY = "appearance-theme";
-const PALETTE_STORAGE_KEY = "appearance-palette";
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function systemTheme(): "light" | "dark" {
@@ -32,14 +27,9 @@ function applyTheme(preference: AppearancePreference): "light" | "dark" {
   return resolved;
 }
 
-function applyPalette(palette: AccentPalette) {
-  document.documentElement.dataset.palette = palette;
-}
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPreferenceState] = useState<AppearancePreference>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
-  const [palette, setPaletteState] = useState<AccentPalette>("green");
   const [reveal, setReveal] = useState<Reveal | null>(null);
 
   useEffect(() => {
@@ -48,11 +38,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const initial = saved === "light" || saved === "dark" ? saved : "system";
     setPreferenceState(initial);
     setResolvedTheme(applyTheme(initial));
-    let savedPalette: string | null = null;
-    try { savedPalette = localStorage.getItem(PALETTE_STORAGE_KEY); } catch { /* Green is the default without storage access. */ }
-    const initialPalette: AccentPalette = savedPalette === "navy" ? "navy" : "green";
-    setPaletteState(initialPalette);
-    applyPalette(initialPalette);
   }, []);
 
   useEffect(() => {
@@ -108,12 +93,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
     setPreference(current === "dark" ? "light" : "dark", origin);
   }, [setPreference]);
-  const setPalette = useCallback((next: AccentPalette) => {
-    setPaletteState(next);
-    applyPalette(next);
-    try { localStorage.setItem(PALETTE_STORAGE_KEY, next); } catch { /* Palette remains usable when storage is unavailable. */ }
-  }, []);
-  const context = useMemo(() => ({ preference, resolvedTheme, palette, setPreference, toggleTheme, setPalette }), [preference, resolvedTheme, palette, setPreference, toggleTheme, setPalette]);
+  const context = useMemo(() => ({ preference, resolvedTheme, setPreference, toggleTheme }), [preference, resolvedTheme, setPreference, toggleTheme]);
 
   return <ThemeContext.Provider value={context}>
     {children}

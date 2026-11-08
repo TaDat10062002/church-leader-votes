@@ -64,7 +64,7 @@ test("confirmation sends the selected candidates once and opens the thank-you pa
   await expect(page).toHaveURL(/\/thanks$/);
   expect(submissions).toBe(1);
   expect(submittedBody).toEqual({ electionId: "test-election", candidateIds: ["1"] });
-  await expect(page.getByRole("heading", { name: "Thanks for your voting" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cảm ơn bạn đã bỏ phiếu" })).toBeVisible();
   await expect(page.getByRole("switch", { name: "Giao diện tối" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Gửi phiếu", exact: true })).toHaveCount(0);
 });
@@ -76,7 +76,7 @@ test("pending and failed submissions keep the ballot and block repeat requests",
   await page.route("**/api/votes", async (route) => {
     submissions++;
     await responseGate;
-    return route.fulfill({ status: 503, json: { error: "Không gửi được phiếu thử nghiệm." } });
+    return route.fulfill({ status: 503, json: { code: "VOTE_SAVE_FAILED" } });
   });
   await prepareVotePage(page);
   await page.getByRole("button", { name: "Nguyễn An, chạm để chọn", exact: true }).click();
@@ -89,7 +89,7 @@ test("pending and failed submissions keep the ballot and block repeat requests",
   await send.evaluate((element) => (element as HTMLButtonElement).click());
   expect(submissions).toBe(1);
   finishResponse();
-  await expect(page.getByRole("alert").filter({ hasText: "Không gửi được phiếu thử nghiệm." })).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "Không lưu được phiếu. Vui lòng thử lại." })).toBeVisible();
   await expect(send).toBeEnabled();
   await expect(page.locator('[aria-label="Ô phiếu 1, Nguyễn An"]')).toBeVisible();
   await send.click();
@@ -157,7 +157,7 @@ test("PIN submission by Enter shows pending and error states without repeat requ
   await page.route("**/api/admin/session", async (route) => {
     submissions++;
     await responseGate;
-    return route.fulfill({ status: 401, json: { error: "Mã PIN thử nghiệm không hợp lệ." } });
+    return route.fulfill({ status: 401, json: { code: "ADMIN_LOGIN_REJECTED" } });
   });
   await page.goto("/admin");
   const pin = page.getByLabel("Mã PIN", { exact: true });
@@ -170,7 +170,7 @@ test("PIN submission by Enter shows pending and error states without repeat requ
   await page.keyboard.press("Enter");
   expect(submissions).toBe(1);
   finishResponse();
-  await expect(page.getByRole("alert").filter({ hasText: "Mã PIN thử nghiệm không hợp lệ." })).toBeVisible();
+  await expect(page.getByRole("alert").filter({ hasText: "Mã PIN không đúng hoặc đã thử quá nhiều lần." })).toBeVisible();
   await expect(pin).toHaveValue("incorrect-pin");
   await expect(page.getByRole("button", { name: "Vào trang quản trị", exact: true })).toBeEnabled();
 });

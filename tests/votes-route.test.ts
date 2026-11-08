@@ -51,7 +51,7 @@ describe("vote route", () => {
     }));
 
     expect(response.status).toBe(400);
-    expect(await response.json()).toEqual({ error: "Kỳ bầu chọn hiện không mở." });
+    expect(await response.json()).toEqual({ code: "ELECTION_NOT_OPEN" });
     expect(mocks.httpSend).not.toHaveBeenCalled();
   });
 

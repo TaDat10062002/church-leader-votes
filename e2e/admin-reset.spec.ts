@@ -69,7 +69,7 @@ test("reset failure stays in the dashboard and reports the error", async ({ page
   await page.route("**/api/admin/reset", (route) => route.fulfill({
     status: 503,
     contentType: "application/json",
-    body: JSON.stringify({ error: "Không thể đặt lại dữ liệu bầu cử. Vui lòng thử lại." }),
+    body: JSON.stringify({ code: "ELECTION_RESET_FAILED" }),
   }));
   await openDashboard(page);
 
