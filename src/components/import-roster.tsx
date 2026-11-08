@@ -156,13 +156,15 @@ export default function ImportRoster() {
       <GlassHeader className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <a
           href="/admin"
-          className="inline-flex items-center gap-2 text-sm font-medium text-ink/60 hover:text-ink"
+          aria-label="Quay lại quản trị"
+          className="inline-flex size-10 shrink-0 items-center justify-center gap-2 rounded-full text-sm font-medium text-ink/60 hover:text-ink sm:size-auto sm:justify-start sm:rounded-none"
         >
           <ArrowLeft size={17} />
-          Quản trị
+          <span className="hidden sm:inline">Quản trị</span>
         </a>
-        <GlassChip className="order-last w-full justify-center rounded-full bg-moss/10 px-3 py-1.5 text-center text-xs font-bold text-moss sm:order-none sm:w-auto">
-          BƯỚC 1 · DANH SÁCH ỨNG VIÊN
+        <GlassChip role="img" aria-label="Bước 1: Danh sách ứng viên" className="grid size-10 shrink-0 place-items-center rounded-full bg-moss/10 text-xs font-bold text-moss sm:flex sm:size-auto sm:justify-center sm:px-3 sm:py-1.5 sm:text-center">
+          <Users size={16} aria-hidden="true" className="sm:hidden" />
+          <span className="hidden sm:inline">BƯỚC 1 · DANH SÁCH ỨNG VIÊN</span>
         </GlassChip>
       </GlassHeader>
       <div className="max-w-3xl">

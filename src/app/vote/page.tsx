@@ -2,12 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Church, LoaderCircle, ShieldCheck, Vote } from "lucide-react";
+import { Church, LoaderCircle, Vote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GlassHeader } from "@/components/ui/glass-header";
 import { GlassChip } from "@/components/ui/glass-chip";
-import { glassClassName } from "@/lib/glass-variants";
 import BallotBuilder from "@/components/ballot-builder";
 import ElectionClosedNotice from "@/components/election-closed-notice";
 import { subscribeToElectionChanges } from "@/lib/election-realtime";
@@ -59,11 +58,10 @@ export default function VotePage() {
 
   return <main className="mx-auto min-h-dvh max-w-7xl px-3 pb-32 pt-3 sm:px-6 sm:pb-12 sm:pt-8 lg:px-8">
     <GlassHeader className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
-      <a href="/vote" className="flex min-w-[10rem] flex-1 items-center gap-2">
+      <a href="/vote" aria-label="Nhà thờ, bầu chọn Ban Điều Hành" className="flex min-w-0 shrink items-center gap-2">
         <GlassChip className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-moss"><Church size={19} aria-hidden="true"/></GlassChip>
-        <span><span className="block text-sm font-semibold text-ink">Nhà thờ</span><span className="block text-[11px] text-ink/75">Bầu chọn Ban Điều Hành</span></span>
+        <span className="hidden sm:block"><span className="block text-sm font-semibold text-ink">Nhà thờ</span><span className="block text-[11px] text-ink/75">Bầu chọn Ban Điều Hành</span></span>
       </a>
-      <a href="/admin" className={glassClassName("clear", "grid size-11 shrink-0 place-items-center rounded-full text-ink/75 hover:text-ink")} aria-label="Trang quản trị"><ShieldCheck size={20} aria-hidden="true"/></a>
     </GlassHeader>
     <section className="mx-auto mt-4 max-w-4xl text-center sm:mt-12">
       <GlassChip className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-ink sm:text-xs"><Vote size={14} aria-hidden="true"/> Phiếu bầu chọn</GlassChip>

@@ -131,13 +131,13 @@ export default function Dashboard() {
     }
   }
   return (
-    <main className="mx-auto min-h-dvh max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
-      <GlassHeader className="flex flex-wrap items-center justify-between gap-3">
-        <a href="/dashboard" className="flex items-center gap-3">
-          <GlassChip className="grid h-10 w-10 place-items-center rounded-full bg-moss/10 text-moss">
+    <main className="mx-auto min-h-dvh max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
+      <GlassHeader className="flex flex-nowrap items-center justify-between gap-2 sm:flex-wrap sm:gap-3">
+        <a href="/dashboard" aria-label="Bảng điều hành" className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <GlassChip className="grid size-9 shrink-0 place-items-center rounded-full bg-moss/10 text-moss sm:size-10">
             <Church size={19} />
           </GlassChip>
-          <span>
+          <span className="hidden sm:block">
             <span className="block text-sm font-semibold text-ink">
               Bảng điều hành
             </span>
@@ -146,26 +146,30 @@ export default function Dashboard() {
             </span>
           </span>
         </a>
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex shrink-0 flex-nowrap justify-end gap-1 sm:gap-2">
           <Button
             variant="danger"
+            aria-label="Bầu cử lại"
             onClick={() => {
               setResetError("");
               setResetOpen(true);
             }}
             aria-haspopup="dialog"
+            className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5"
           >
             <Trash2 size={16} />
-            Bầu cử lại
+            <span className="hidden sm:inline">Bầu cử lại</span>
           </Button>
           <Button
             variant="secondary"
+            aria-label="Danh sách ứng viên"
             onClick={() => router.push("/import-file")}
+            className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5"
           >
             <Users size={16} />
-            Danh sách
+            <span className="hidden sm:inline">Danh sách</span>
           </Button>
-          <Button variant="ghost" onClick={logout} aria-label="Đăng xuất">
+          <Button variant="ghost" onClick={logout} aria-label="Đăng xuất" className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5">
             <LogOut size={17} />
             <span className="hidden sm:inline">Thoát</span>
           </Button>

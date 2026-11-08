@@ -264,6 +264,9 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 
 .appearance-controls { display: inline-flex; flex-shrink: 0; align-items: center; gap: .25rem; }
+@media (max-width: 639px) {
+  .glasscn-header .palette-option { width: 1.5rem; height: 1.5rem; }
+}
 .theme-control--floating { position: absolute; z-index: 5; right: 1rem; top: 1rem; }
 .palette-control { display: inline-flex; align-items: center; gap: .125rem; border-radius: 999px; padding: .125rem; }
 .palette-option {
