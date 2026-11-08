@@ -37,34 +37,34 @@
 
 :root, :root[data-theme="light"] {
   color-scheme: light;
-  --app-ink: #26382f;
-  --app-muted: #56675c;
-  --app-moss: #347a54;
+  --app-ink: #111111;
+  --app-muted: #555555;
+  --app-moss: #111111;
   --app-on-moss: #ffffff;
-  --app-leaf: #73a982;
-  --app-chart-start: rgba(101, 171, 123, .58);
-  --app-chart-mid: rgba(190, 174, 119, .5);
-  --app-chart-end: rgba(211, 158, 91, .46);
+  --app-leaf: #666666;
+  --app-chart-start: rgba(17, 17, 17, .72);
+  --app-chart-mid: rgba(17, 17, 17, .48);
+  --app-chart-end: rgba(17, 17, 17, .24);
   --app-chart-border: rgba(255, 255, 255, .82);
-  --app-chart-shadow: rgba(141, 66, 129, .18);
-  --app-cream: #f7f7f2;
-  --app-gold: #a97938;
+  --app-chart-shadow: rgba(0, 0, 0, .16);
+  --app-cream: #ffffff;
+  --app-gold: #111111;
   --app-page-color: #ffffff;
   --glass-panel: rgba(255, 255, 255, .24);
-  --glass-fallback: #f8fbf7;
+  --glass-fallback: #ffffff;
   --glass-border: rgba(255, 255, 255, .62);
   --glass-specular: rgba(255, 255, 255, .68);
-  --app-line: rgba(47, 82, 57, .2);
-  --app-control-border: rgba(47, 82, 57, .42);
-  --app-focus: #43885d;
-  --app-danger: #9f3028;
-  --app-danger-bg: #fff0ec;
-  --modal-submit: #347a54;
-  --modal-cancel: #a97938;
-  --modal-delete: #b42318;
-  --app-shadow: 0 18px 50px rgba(46, 74, 53, .13);
+  --app-line: rgba(0, 0, 0, .2);
+  --app-control-border: rgba(0, 0, 0, .32);
+  --app-focus: #111111;
+  --app-danger: #111111;
+  --app-danger-bg: #f2f2f2;
+  --modal-submit: #111111;
+  --modal-cancel: #555555;
+  --modal-delete: #111111;
+  --app-shadow: 0 18px 50px rgba(0, 0, 0, .13);
   --liquid-glass-rim-light: rgba(255, 255, 255, .28);
-  --liquid-glass-rim-dark: rgba(31, 57, 39, .14);
+  --liquid-glass-rim-dark: rgba(0, 0, 0, .14);
   --liquid-glass-rim-width: .75px;
   --radius: .875rem;
 
@@ -90,33 +90,33 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --app-ink: #edf5ef;
-  --app-muted: #bdcfc2;
-  --app-moss: #a5d4b0;
-  --app-on-moss: #17251c;
-  --app-leaf: #c2dba7;
-  --app-chart-start: rgba(139, 205, 156, .6);
-  --app-chart-mid: rgba(211, 195, 133, .52);
-  --app-chart-end: rgba(238, 192, 119, .48);
-  --app-chart-border: rgba(255, 243, 255, .42);
-  --app-chart-shadow: rgba(92, 150, 105, .2);
-  --app-cream: #1c2921;
-  --app-gold: #f0cf83;
-  --app-page-color: #111111;
-  --glass-panel: rgba(231, 239, 250, .085);
-  --glass-fallback: #202b24;
-  --glass-border: rgba(232, 241, 255, .2);
-  --glass-specular: rgba(232, 241, 255, .3);
-  --app-line: rgba(214, 235, 219, .22);
-  --app-control-border: rgba(225, 240, 228, .42);
-  --app-focus: #a5d4b0;
-  --app-danger: #ffc2b8;
-  --app-danger-bg: #502a26;
-  --modal-submit: #a5d4b0;
-  --modal-cancel: #f0cf83;
-  --modal-delete: #ffb2a9;
+  --app-ink: #f5f5f5;
+  --app-muted: #bdbdbd;
+  --app-moss: #f5f5f5;
+  --app-on-moss: #111111;
+  --app-leaf: #cccccc;
+  --app-chart-start: rgba(255, 255, 255, .76);
+  --app-chart-mid: rgba(255, 255, 255, .5);
+  --app-chart-end: rgba(255, 255, 255, .25);
+  --app-chart-border: rgba(255, 255, 255, .42);
+  --app-chart-shadow: rgba(0, 0, 0, .24);
+  --app-cream: #111111;
+  --app-gold: #ffffff;
+  --app-page-color: #000000;
+  --glass-panel: rgba(255, 255, 255, .085);
+  --glass-fallback: #111111;
+  --glass-border: rgba(255, 255, 255, .2);
+  --glass-specular: rgba(255, 255, 255, .3);
+  --app-line: rgba(255, 255, 255, .22);
+  --app-control-border: rgba(255, 255, 255, .42);
+  --app-focus: #ffffff;
+  --app-danger: #f5f5f5;
+  --app-danger-bg: #222222;
+  --modal-submit: #f5f5f5;
+  --modal-cancel: #bdbdbd;
+  --modal-delete: #f5f5f5;
   --app-shadow: 0 18px 55px rgba(0, 0, 0, .32);
-  --liquid-glass-rim-light: rgba(235, 247, 238, .2);
+  --liquid-glass-rim-light: rgba(255, 255, 255, .2);
   --liquid-glass-rim-dark: rgba(0, 0, 0, .22);
 }
 
@@ -139,7 +139,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   outline: 2px solid var(--app-focus);
   outline-offset: 3px;
 }
-::selection { background: color-mix(in srgb, var(--app-gold) 30%, transparent); }
+::selection { background: color-mix(in srgb, var(--app-ink) 20%, transparent); }
 
 /* Existing content uses opacity utilities for secondary text. Keep that
    hierarchy readable on the composed light and dark glass surfaces. */

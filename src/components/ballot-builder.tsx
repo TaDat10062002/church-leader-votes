@@ -179,7 +179,7 @@ export default function BallotBuilder({ candidates, error, setError, sending, on
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
       <Card glassVariant="liquid-refract" className="ballot-actions fixed inset-x-2 bottom-2 z-20 p-2.5 pb-[calc(env(safe-area-inset-bottom)+.625rem)] sm:relative sm:inset-auto sm:mx-auto sm:mt-6 sm:max-w-2xl sm:p-4">
-        {error && <p role="alert" className="mx-auto mb-2 max-w-3xl rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 sm:mb-3">{error}</p>}
+        {error && <p role="alert" className="mx-auto mb-2 max-w-3xl rounded-xl bg-[var(--app-danger-bg)] px-4 py-2.5 text-sm text-[var(--app-danger)] sm:mb-3">{error}</p>}
         <div className="mb-2 flex items-center justify-between gap-3 sm:hidden">
           <div className="min-w-0">
             <p className="text-xs font-semibold text-ink">{t("ballot")}</p>

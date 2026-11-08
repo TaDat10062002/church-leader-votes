@@ -217,7 +217,7 @@ export default function Dashboard() {
       {error && (
         <p
           role="alert"
-          className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="mt-5 rounded-xl bg-[var(--app-danger-bg)] px-4 py-3 text-sm text-[var(--app-danger)]"
         >
           {error}
         </p>
@@ -364,7 +364,7 @@ export default function Dashboard() {
           {resetError && (
             <p
               role="alert"
-              className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700"
+              className="mt-4 rounded-xl bg-[var(--app-danger-bg)] px-4 py-3 text-sm text-[var(--app-danger)]"
             >
               {resetError}
             </p>

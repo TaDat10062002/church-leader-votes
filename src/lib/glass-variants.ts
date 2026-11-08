@@ -34,10 +34,10 @@ export const glassVariantStyles: Record<FrostGlassVariant, string> = {
     // 2) Base translucent fill (acts as the panel's "tint").
     "bg-white/[0.025] dark:bg-white/[0.012]",
 
-    // 3) Layered radial-gradient sheen + warm bottom tint + vertical wash.
+    // 3) Layered neutral sheen + vertical wash.
     //    Underscores represent spaces inside Tailwind arbitrary values.
-    "[background-image:radial-gradient(120%_85%_at_15%_8%,rgba(255,255,255,0.20)_0%,rgba(255,255,255,0.06)_38%,rgba(255,255,255,0)_70%),radial-gradient(110%_80%_at_85%_100%,rgba(255,210,230,0.035)_0%,rgba(255,255,255,0)_60%),linear-gradient(180deg,rgba(255,255,255,0.075)_0%,rgba(255,255,255,0.025)_100%)]",
-    "dark:[background-image:radial-gradient(120%_85%_at_15%_8%,rgba(255,255,255,0.075)_0%,rgba(255,255,255,0.02)_40%,rgba(255,255,255,0)_70%),radial-gradient(110%_80%_at_85%_100%,rgba(120,170,255,0.035)_0%,rgba(0,0,0,0)_60%),linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(0,0,0,0.055)_100%)]",
+    "[background-image:radial-gradient(120%_85%_at_15%_8%,rgba(255,255,255,0.20)_0%,rgba(255,255,255,0.06)_38%,rgba(255,255,255,0)_70%),radial-gradient(110%_80%_at_85%_100%,rgba(255,255,255,0.035)_0%,rgba(255,255,255,0)_60%),linear-gradient(180deg,rgba(255,255,255,0.075)_0%,rgba(255,255,255,0.025)_100%)]",
+    "dark:[background-image:radial-gradient(120%_85%_at_15%_8%,rgba(255,255,255,0.075)_0%,rgba(255,255,255,0.02)_40%,rgba(255,255,255,0)_70%),radial-gradient(110%_80%_at_85%_100%,rgba(255,255,255,0.035)_0%,rgba(0,0,0,0)_60%),linear-gradient(180deg,rgba(255,255,255,0.025)_0%,rgba(0,0,0,0.055)_100%)]",
     "[background-size:200%_200%,180%_180%,100%_100%]",
     "[background-repeat:no-repeat]",
 
@@ -46,8 +46,8 @@ export const glassVariantStyles: Record<FrostGlassVariant, string> = {
     //    - inset fish-eye glow at the bottom (lensing artifact)
     //    - thin inset side rails
     //    - outer contact shadow + broader halo (panel feels floating)
-    "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),inset_0_-12px_24px_-10px_rgba(255,255,255,0.12),inset_1px_0_0_0_rgba(255,255,255,0.1),inset_-1px_0_0_0_rgba(255,255,255,0.08),0_24px_60px_-18px_rgba(15,23,42,0.18),0_8px_24px_-8px_rgba(15,23,42,0.12)]",
-    "dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),inset_0_-14px_28px_-10px_rgba(180,210,255,0.07),inset_1px_0_0_0_rgba(255,255,255,0.06),inset_-1px_0_0_0_rgba(255,255,255,0.04),0_28px_70px_-18px_rgba(0,0,0,0.38),0_10px_28px_-10px_rgba(0,0,0,0.28)]",
+    "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.3),inset_0_-12px_24px_-10px_rgba(255,255,255,0.12),inset_1px_0_0_0_rgba(255,255,255,0.1),inset_-1px_0_0_0_rgba(255,255,255,0.08),0_24px_60px_-18px_rgba(0,0,0,0.18),0_8px_24px_-8px_rgba(0,0,0,0.12)]",
+    "dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),inset_0_-14px_28px_-10px_rgba(255,255,255,0.07),inset_1px_0_0_0_rgba(255,255,255,0.06),inset_-1px_0_0_0_rgba(255,255,255,0.04),0_28px_70px_-18px_rgba(0,0,0,0.38),0_10px_28px_-10px_rgba(0,0,0,0.28)]",
 
     // 5) Hairline border for the chamfer's outer edge.
     "border border-white/[0.24] dark:border-white/[0.07]",

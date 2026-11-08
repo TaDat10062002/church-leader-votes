@@ -133,19 +133,19 @@ function chartOption(
   orientation: DashboardChartOrientation,
   locale: Locale,
 ): EChartsOption {
-  const ink = cssVariable(element, "--app-ink", "#26382f");
-  const chartStart = cssVariable(element, "--app-chart-start", "rgba(101,171,123,.58)");
-  const chartMid = cssVariable(element, "--app-chart-mid", "rgba(190,174,119,.5)");
-  const chartEnd = cssVariable(element, "--app-chart-end", "rgba(211,158,91,.46)");
+  const ink = cssVariable(element, "--app-ink", "#111111");
+  const chartStart = cssVariable(element, "--app-chart-start", "rgba(17,17,17,.72)");
+  const chartMid = cssVariable(element, "--app-chart-mid", "rgba(17,17,17,.48)");
+  const chartEnd = cssVariable(element, "--app-chart-end", "rgba(17,17,17,.24)");
   const chartBorder = cssVariable(element, "--app-chart-border", "rgba(255,255,255,.72)");
-  const chartShadow = cssVariable(element, "--app-chart-shadow", "rgba(46,74,53,.16)");
-  const line = cssVariable(element, "--app-line", "rgba(47, 82, 57, .2)");
+  const chartShadow = cssVariable(element, "--app-chart-shadow", "rgba(0,0,0,.16)");
+  const line = cssVariable(element, "--app-line", "rgba(0,0,0,.2)");
   const glassPanel = cssVariable(
     element,
     "--glass-panel",
     "rgba(255,255,255,.2)",
   );
-  const glassFallback = cssVariable(element, "--glass-fallback", "#f8fbf7");
+  const glassFallback = cssVariable(element, "--glass-fallback", "#ffffff");
   const glassBorder = cssVariable(
     element,
     "--glass-border",
@@ -154,7 +154,7 @@ function chartOption(
   const shadow = cssVariable(
     element,
     "--app-shadow",
-    "0 18px 50px rgba(70,43,84,.14)",
+    "0 18px 50px rgba(0,0,0,.14)",
   );
   const swapDelay = reducedMotion ? 0 : 400;
   const swapDuration = reducedMotion ? 0 : 800;
