@@ -6,20 +6,20 @@ All application glass now comes from [glasscn-components](https://glasscn-compon
 
 Sources were fetched and compared on 2026-11-08 against upstream commit [`15aa50012e6b7e3c84861e66c41f2b911237c685`](https://github.com/kostyniuk/glasscn-components/tree/15aa50012e6b7e3c84861e66c41f2b911237c685). The checked-in LiquidGlass renderer, glass variants, Button/Card primitives, Input, Badge, Item and Separator matched upstream before app adaptations, apart from the existing utility formatting and renamed imports. The MIT notice is retained in `src/components/ui/glasscn/LICENSE`.
 
-| Registry item | Upstream file at the pinned commit | Local source |
-| --- | --- | --- |
-| `@glasscn/liquid-glass` | `components/ui/glasscn/liquid-glass.tsx` | `src/components/ui/glasscn/liquid-glass.tsx` |
-| `@glasscn/glass-variants` | `lib/glass-variants.ts` | `src/lib/glass-variants.ts` |
-| `@glasscn/glass-card` | `components/ui/glasscn/glass-card.tsx` | Same under `src/` |
-| `@glasscn/glass-button` | `components/ui/glasscn/glass-button.tsx` | Same under `src/` |
-| `@glasscn/glass-input` | `components/ui/glasscn/glass-input.tsx` | Same under `src/` |
-| `@glasscn/glass-badge` | `components/ui/glasscn/glass-badge.tsx` | Same under `src/` |
-| `@glasscn/glass-icon` | `components/ui/glasscn/glass-icon.tsx` | Same under `src/` |
-| `@glasscn/glass-item` | `components/ui/glasscn/glass-item.tsx` | Same under `src/` |
-| `@glasscn/glass-scrim-card` | `components/ui/glasscn/glass-scrim-card.tsx` | Same under `src/` |
-| `@glasscn/button`, `@glasscn/card` | `components/ui/button.tsx`, `card.tsx` | `src/components/ui/button-base.tsx`, `card-base.tsx` |
-| `@glasscn/input`, `@glasscn/badge`, `@glasscn/item`, `@glasscn/separator` | Corresponding file under `components/ui/` | Corresponding file under `src/components/ui/` |
-| `@glasscn/utils` | `lib/utils.ts` | `src/lib/utils.ts` |
+| Registry item                                                             | Upstream file at the pinned commit           | Local source                                         |
+| ------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| `@glasscn/liquid-glass`                                                   | `components/ui/glasscn/liquid-glass.tsx`     | `src/components/ui/glasscn/liquid-glass.tsx`         |
+| `@glasscn/glass-variants`                                                 | `lib/glass-variants.ts`                      | `src/lib/glass-variants.ts`                          |
+| `@glasscn/glass-card`                                                     | `components/ui/glasscn/glass-card.tsx`       | Same under `src/`                                    |
+| `@glasscn/glass-button`                                                   | `components/ui/glasscn/glass-button.tsx`     | Same under `src/`                                    |
+| `@glasscn/glass-input`                                                    | `components/ui/glasscn/glass-input.tsx`      | Same under `src/`                                    |
+| `@glasscn/glass-badge`                                                    | `components/ui/glasscn/glass-badge.tsx`      | Same under `src/`                                    |
+| `@glasscn/glass-icon`                                                     | `components/ui/glasscn/glass-icon.tsx`       | Same under `src/`                                    |
+| `@glasscn/glass-item`                                                     | `components/ui/glasscn/glass-item.tsx`       | Same under `src/`                                    |
+| `@glasscn/glass-scrim-card`                                               | `components/ui/glasscn/glass-scrim-card.tsx` | Same under `src/`                                    |
+| `@glasscn/button`, `@glasscn/card`                                        | `components/ui/button.tsx`, `card.tsx`       | `src/components/ui/button-base.tsx`, `card-base.tsx` |
+| `@glasscn/input`, `@glasscn/badge`, `@glasscn/item`, `@glasscn/separator` | Corresponding file under `components/ui/`    | Corresponding file under `src/components/ui/`        |
+| `@glasscn/utils`                                                          | `lib/utils.ts`                               | `src/lib/utils.ts`                                   |
 
 These files are declared in the upstream [registry manifest](https://github.com/kostyniuk/glasscn-components/blob/15aa50012e6b7e3c84861e66c41f2b911237c685/registry.json). To inspect an upstream file, append its table path to the pinned commit's tree URL. Typical registry installation is `npx shadcn add @glasscn/glass-card @glasscn/glass-button @glasscn/glass-input`; review the result before applying an update because the app owns adapted source. Runtime dependencies include `@base-ui/react`, `class-variance-authority`, `clsx` and `tailwind-merge`, resolved in the lockfile. There is no standalone glasscn npm runtime package.
 
@@ -35,15 +35,15 @@ These files are declared in the upstream [registry manifest](https://github.com/
 
 ## Material policy and coverage
 
-| UI role | Material |
-| --- | --- |
-| Header and prominent floating action area | `liquid-refract`, limited to these prominent surfaces |
-| Main cards, statistics, login and thanks | `liquid` CSS |
-| Repeated candidates, ballot slots and ranking rows | `subtle` or `frosted` |
-| Buttons and inputs | `liquid`; secondary small controls may use `clear`/`subtle` |
-| Status chips, decorative icon surfaces, palette and switch | `clear`/`subtle` on the correct semantic element |
-| Dialogs, deleted-candidate drawer and error surfaces | `frosted`/readable tinted surface with an isolating backdrop |
-| Charts | Glass container/controls; ECharts content and tooltip use shared app tokens |
+| UI role                                                    | Material                                                                    |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Header and prominent floating action area                  | `liquid-refract`, limited to these prominent surfaces                       |
+| Main cards, statistics, login and thanks                   | `liquid` CSS                                                                |
+| Repeated candidates, ballot slots and ranking rows         | `subtle` or `frosted`                                                       |
+| Buttons and inputs                                         | `liquid`; secondary small controls may use `clear`/`subtle`                 |
+| Status chips, decorative icon surfaces, palette and switch | `clear`/`subtle` on the correct semantic element                            |
+| Dialogs, deleted-candidate drawer and error surfaces       | `frosted`/readable tinted surface with an isolating backdrop                |
+| Charts                                                     | Glass container/controls; ECharts content and tooltip use shared app tokens |
 
 The `liquid` material uses a near-clear tint: 2.5% white in light mode and 1.2% in dark mode, with sheen layers kept deliberately faint. Refractive surfaces use a 10% light / 2.5% dark base. Dialogs and sheets use translucent fallback-color fills (24% light / 34% dark) over the blurred backdrop, including the deleted-candidate sheet on `/import-file`. Opaque fallbacks remain for browsers or preferences that disable transparency so text stays readable.
 
