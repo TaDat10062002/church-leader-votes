@@ -18,7 +18,7 @@ export function GlassHeader({
     >
       <GlassSurface
         glassVariant="liquid-refract"
-        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 rounded-full px-2 py-2 sm:flex-wrap sm:gap-3 sm:px-4 sm:py-3"
+        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 rounded-full px-2 py-1.5 sm:flex-wrap sm:gap-3 sm:px-4 sm:py-2.5"
       >
         {children}
         <ThemeControl />

@@ -56,9 +56,34 @@ export function ThemeControl({ className }: { className?: string }) {
         </AnimatePresence>
       </motion.span>
   </motion.button>
-    <div className={glassClassName("subtle", "flex items-center gap-0.5 rounded-full p-0.5")} role="group" aria-label={t("language")}>
-      <button type="button" aria-label={t("languageVi")} aria-pressed={locale === "vi"} onClick={() => setLocale("vi")} className="rounded-full px-2 py-1 text-[10px] font-semibold text-ink aria-pressed:bg-white/60 sm:text-xs">VI</button>
-      <button type="button" aria-label={t("languageZhTw")} aria-pressed={locale === "zh-TW"} onClick={() => setLocale("zh-TW")} className="rounded-full px-2 py-1 text-[10px] font-semibold text-ink aria-pressed:bg-white/60 sm:text-xs">繁中</button>
+    <div className={glassClassName("subtle", "locale-switch")} role="group" aria-label={t("language")}>
+      <motion.span
+        aria-hidden="true"
+        className="locale-switch-thumb"
+        initial={false}
+        animate={{ x: locale === "zh-TW" ? 44 : 0 }}
+        transition={reduceMotion ? { duration: 0 } : {
+          type: "spring",
+          stiffness: 520,
+          damping: 34,
+          mass: 0.55,
+        }}
+      >
+        {!reduceMotion && (
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={locale}
+              className="locale-switch-glint"
+              initial={{ x: "-140%", opacity: 0 }}
+              animate={{ x: "320%", opacity: [0, 0.65, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.65, ease: "easeInOut" }}
+            />
+          </AnimatePresence>
+        )}
+      </motion.span>
+      <button type="button" aria-label={t("languageVi")} aria-pressed={locale === "vi"} onClick={() => setLocale("vi")} className="locale-switch-option">VI</button>
+      <button type="button" aria-label={t("languageZhTw")} aria-pressed={locale === "zh-TW"} onClick={() => setLocale("zh-TW")} className="locale-switch-option">繁中</button>
     </div>
   </div>;
 }

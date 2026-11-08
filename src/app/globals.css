@@ -222,6 +222,86 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 
 .appearance-controls { display: inline-flex; flex-shrink: 0; align-items: center; gap: .25rem; }
+.locale-switch {
+  position: relative;
+  display: inline-flex;
+  width: 5.625rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--app-ink) 16%, transparent);
+  border-radius: 999px;
+  padding: 0;
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--app-ink) 10%, transparent),
+    0 1px 2px color-mix(in srgb, var(--app-ink) 6%, transparent);
+}
+.locale-switch-thumb {
+  position: absolute;
+  z-index: 0;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border: 1px solid color-mix(in srgb, var(--app-page-color) 22%, transparent);
+  border-radius: 999px;
+  background: var(--app-ink);
+  box-shadow: 0 2px 5px color-mix(in srgb, var(--app-ink) 24%, transparent),
+    0 0 12px color-mix(in srgb, var(--app-ink) 16%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--app-page-color) 28%, transparent);
+  overflow: hidden;
+  pointer-events: none;
+}
+.locale-switch-glint,
+.segmented-switch-glint {
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: 0;
+  width: 38%;
+  border-radius: inherit;
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+.locale-switch-glint {
+  background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--app-page-color) 58%, transparent), transparent);
+}
+.segmented-switch-thumb { overflow: hidden; }
+.segmented-switch-glint {
+  background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--foreground) 14%, transparent), transparent);
+}
+.locale-switch-option {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: .25rem;
+  color: var(--app-muted);
+  font-size: .6875rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease,
+    box-shadow .18s ease, transform .18s ease;
+}
+.locale-switch-option:hover:not([aria-pressed="true"]) {
+  color: var(--app-ink);
+  background: color-mix(in srgb, var(--app-ink) 7%, transparent);
+}
+.locale-switch-option[aria-pressed="true"] {
+  color: var(--app-page-color);
+  background: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  .locale-switch-option, .locale-switch-thumb { transition: none; }
+}
 .theme-control--floating { position: absolute; z-index: 5; right: 1rem; top: 1rem; }
 .icon-switch-control {
   position: relative;
