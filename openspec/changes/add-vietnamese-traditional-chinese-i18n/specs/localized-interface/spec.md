@@ -58,9 +58,21 @@ The system SHALL expose the selected locale through the document language and us
 - **WHEN** a user views a formatted date, time, or number
 - **THEN** the value uses conventions for the selected language
 
-### Requirement: User supplied election content is preserved
-The system SHALL NOT translate or modify candidate names or other user supplied election content when changing the interface language.
+### Requirement: Candidate names are stored and displayed for the selected language
+The system SHALL preserve each candidate's Traditional Chinese and Vietnamese names as separate user supplied values. The voter and results interfaces SHALL display only the name matching the selected interface language: Traditional Chinese for `zh-TW` and Vietnamese for `vi`.
 
-#### Scenario: User changes language while viewing election data
-- **WHEN** a user changes the interface language while candidate or other user supplied election content is visible
-- **THEN** the interface labels change language while that election content remains unchanged
+#### Scenario: User views candidates in Traditional Chinese
+- **WHEN** a user views candidate names with the `zh-TW` interface selected
+- **THEN** the interface displays each candidate's Traditional Chinese name and does not display the Vietnamese name
+
+#### Scenario: User views candidates in Vietnamese
+- **WHEN** a user views candidate names with the `vi` interface selected
+- **THEN** the interface displays each candidate's Vietnamese name and does not display the Traditional Chinese name
+
+#### Scenario: User switches the interface language while viewing candidates
+- **WHEN** a user changes between `vi` and `zh-TW`
+- **THEN** candidate names switch to the corresponding stored language while the underlying name values remain unchanged
+
+#### Scenario: Administrator imports a bilingual roster
+- **WHEN** an administrator uploads an Excel roster with Traditional Chinese name, Vietnamese name, and image columns
+- **THEN** the importer maps each name into its corresponding candidate field and maps the image into the candidate image field

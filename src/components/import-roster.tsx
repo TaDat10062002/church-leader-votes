@@ -30,6 +30,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import type { CandidateDraft } from "@/lib/types";
+import { candidateName } from "@/lib/candidate-name";
 import { useLocale } from "@/components/locale/locale-provider";
 import { apiErrorMessage } from "@/lib/i18n";
 import {
@@ -287,12 +288,12 @@ export default function ImportRoster() {
                           className="h-12 w-12 shrink-0 rounded-full object-cover"
                         />
                         <span className="min-w-0 flex-1 break-words text-sm font-medium text-ink">
-                          {draft.candidate.name}
+                          {candidateName(draft.candidate, locale)}
                         </span>
                         <Button
                           variant="secondary"
                           className="shrink-0 px-3 modal-action-submit"
-                          aria-label={t("restoreCandidate", { name: draft.candidate.name })}
+                          aria-label={t("restoreCandidate", { name: candidateName(draft.candidate, locale) })}
                           onClick={() => restore(draft.id)}
                         >
                           <RotateCcw size={15} />
@@ -340,7 +341,7 @@ export default function ImportRoster() {
                 <Card glassVariant="subtle" className="group relative p-3 text-center transition-shadow duration-200 hover:shadow-soft sm:p-4">
                   <Button
                     variant="ghost"
-                    aria-label={t("removeCandidateNamed", { name: draft.candidate.name })}
+                    aria-label={t("removeCandidateNamed", { name: candidateName(draft.candidate, locale) })}
                     onClick={() => remove(draft.id)}
                     className="absolute right-2 top-2 grid size-11 min-h-0 place-items-center rounded-full p-0 text-ink/65 transition hover:text-[var(--app-danger)]"
                   >
@@ -352,7 +353,7 @@ export default function ImportRoster() {
                     className="mx-auto h-20 w-20 rounded-full border-4 border-cream object-cover sm:h-24 sm:w-24"
                   />
                   <p className="mt-3 line-clamp-2 min-h-10 font-semibold text-ink">
-                    {draft.candidate.name}
+                    {candidateName(draft.candidate, locale)}
                   </p>
                   <span className="mt-2 inline-flex items-center gap-1 text-xs text-moss">
                     <Check size={13} />

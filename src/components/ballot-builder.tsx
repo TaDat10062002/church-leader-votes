@@ -10,6 +10,7 @@ import { GlassChip } from "@/components/ui/glass-chip";
 import { GlassIconButton } from "@/components/ui/glass-icon-button";
 import { glassClassName } from "@/lib/glass-variants";
 import type { Candidate } from "@/lib/types";
+import { candidateName } from "@/lib/candidate-name";
 import { useLocale } from "@/components/locale/locale-provider";
 
 type Props = {
@@ -31,7 +32,8 @@ function CandidateOption({
   slotIndex: number;
   onSelect: () => void;
 }) {
-  const { t, number } = useLocale();
+  const { locale, t, number } = useLocale();
+  const name = candidateName(candidate, locale);
   const selected = slotIndex >= 0;
 
   return <button
@@ -39,7 +41,7 @@ function CandidateOption({
     onClick={onSelect}
     disabled={selected}
     aria-pressed={selected}
-    aria-label={`${candidate.name}${selected ? t("candidateSelectedAt", { slot: number(slotIndex + 1) }) : t("tapToSelect")}`}
+    aria-label={`${name}${selected ? t("candidateSelectedAt", { slot: number(slotIndex + 1) }) : t("tapToSelect")}`}
     className={glassClassName("subtle", `group flex min-h-[5.25rem] min-w-0 touch-manipulation flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-center outline-none transition active:scale-[.98] focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-100 ${selected ? "border-moss/45 bg-moss/10" : "hover:border-moss/40 hover:bg-moss/[.06]"}`)}
   >
     <span className="relative block h-10 w-10 shrink-0 sm:h-12 sm:w-12">
@@ -48,7 +50,7 @@ function CandidateOption({
         {selected ? number(slotIndex + 1) : <Check size={11} />}
       </span>
     </span>
-    <span className="w-full break-words text-xs font-semibold leading-4 text-ink">{candidate.name}</span>
+    <span className="w-full break-words text-xs font-semibold leading-4 text-ink">{name}</span>
     <span className="sr-only">{t("candidate", { index: number(index + 1) })}{selected ? t("candidateSelected") : ""}</span>
   </button>;
 }
@@ -62,11 +64,12 @@ function BallotSlot({
   candidate?: Candidate;
   onRemove: () => void;
 }) {
-  const { t, number } = useLocale();
+  const { locale, t, number } = useLocale();
+  const name = candidate ? candidateName(candidate, locale) : "";
   return <GlassSurface
     glassVariant="subtle"
     role="group"
-    aria-label={`${t("ballotSlot", { index: number(index + 1) })}${candidate ? `, ${candidate.name}` : t("slotEmpty")}`}
+    aria-label={`${t("ballotSlot", { index: number(index + 1) })}${candidate ? `, ${name}` : t("slotEmpty")}`}
     className={`relative flex min-h-[5.25rem] min-w-0 flex-col justify-between rounded-xl border p-1.5 text-left transition sm:min-h-[5.5rem] sm:p-2 ${candidate ? "border-moss/35 bg-moss/10" : "border-ink/15 border-dashed bg-white/15"}`}
   >
     <div className="flex items-center justify-between gap-1">
@@ -74,19 +77,19 @@ function BallotSlot({
       {candidate ? <GlassIconButton
         type="button"
         onClick={onRemove}
-        aria-label={t("removeCandidate", { name: candidate.name, index: number(index + 1) })}
+        aria-label={t("removeCandidate", { name, index: number(index + 1) })}
         className="grid size-11 shrink-0 place-items-center rounded-full text-ink/75 hover:text-[var(--app-danger)] focus-visible:ring-2 focus-visible:ring-moss"
       ><X size={15} aria-hidden="true" /></GlassIconButton> : <span className="size-11" aria-hidden="true" />}
     </div>
     {candidate ? <div className="flex min-w-0 items-center gap-1.5 pb-0.5 sm:gap-2">
       <img src={candidate.image_url} alt="" className="h-7 w-7 shrink-0 rounded-full object-cover sm:h-8 sm:w-8" />
-      <span className="min-w-0 break-words text-xs font-semibold leading-4 text-ink">{candidate.name}</span>
+      <span className="min-w-0 break-words text-xs font-semibold leading-4 text-ink">{name}</span>
     </div> : <span className="pb-1 text-[11px] leading-4 text-ink/75 sm:text-xs">{t("emptySlot")}</span>}
   </GlassSurface>;
 }
 
 export default function BallotBuilder({ candidates, error, setError, sending, onSubmit }: Props) {
-  const { t, number } = useLocale();
+  const { locale, t, number } = useLocale();
   const [slots, setSlots] = useState<Array<string | null>>(() => Array(9).fill(null));
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [ballotOpen, setBallotOpen] = useState(false);
@@ -116,7 +119,7 @@ export default function BallotBuilder({ candidates, error, setError, sending, on
     if (await onSubmit(selectedIds)) setSlots(Array(9).fill(null));
   }
 
-  const selectedNames = selectedIds.map((id) => byId.get(id)?.name).filter((name): name is string => Boolean(name));
+  const selectedNames = selectedIds.map((id) => byId.get(id)).filter((candidate): candidate is Candidate => Boolean(candidate)).map((candidate) => candidateName(candidate, locale));
   const ballotSlots = slots.map((id, index) => <BallotSlot
     key={index}
     index={index}

@@ -32,9 +32,9 @@ describe("ballot drag-and-drop", () => {
 describe("result aggregation", () => {
   it("counts selections and uses Vietnamese name order to break ties", () => {
     const candidates = [
-      { id: "b", name: "Bình", image_url: "b.png" },
-      { id: "a", name: "An", image_url: "a.png" },
-      { id: "c", name: "Chi", image_url: "c.png" },
+      { id: "b", name_vi: "Bình", name_zh: "王二", image_url: "b.png" },
+      { id: "a", name_vi: "An", name_zh: "王一", image_url: "a.png" },
+      { id: "c", name_vi: "Chi", name_zh: "王三", image_url: "c.png" },
     ];
     expect(aggregateResults(candidates, ["b", "a", "a", "c"])).toEqual([
       { ...candidates[1], total: 2 }, { ...candidates[0], total: 1 }, { ...candidates[2], total: 1 },

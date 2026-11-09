@@ -15,13 +15,14 @@ export async function parseRoster(buffer: Buffer): Promise<CandidateDraft[]> {
   const sheet = workbook.worksheets[0];
   if (!sheet) throw new RosterParseError("WORKBOOK_SHEET_MISSING");
   const header = (value: ExcelJS.CellValue) => String(value ?? "").trim().toLocaleLowerCase("vi");
-  let nameCol = 0; let imageCol = 0;
+  let nameZhCol = 0; let nameViCol = 0; let imageCol = 0;
   sheet.getRow(1).eachCell((cell, col) => {
     const value = header(cell.value);
-    if (value === "họ tên" || value === "姓名") nameCol = col;
+    if (["họ tên tiếng hoa", "中文姓名", "姓名"].includes(value)) nameZhCol = col;
+    if (["họ tên tiếng việt", "越南文姓名"].includes(value)) nameViCol = col;
     if (value === "hình ảnh" || value === "照片") imageCol = col;
   });
-  if (!nameCol || !imageCol) throw new RosterParseError("ROSTER_COLUMNS_MISSING");
+  if (!nameZhCol || !nameViCol || !imageCol) throw new RosterParseError("ROSTER_COLUMNS_MISSING");
 
   const imageByRow = new Map<number, string>();
   const workbookWithMedia = workbook as unknown as { getImage(id: number | string): { buffer: Buffer; extension: string } };
@@ -41,15 +42,16 @@ export async function parseRoster(buffer: Buffer): Promise<CandidateDraft[]> {
   const candidates: CandidateDraft[] = [];
   for (let rowIndex = 2; rowIndex <= sheet.rowCount; rowIndex++) {
     const row = sheet.getRow(rowIndex);
-    const name = String(row.getCell(nameCol).text || row.getCell(nameCol).value || "").trim();
+    const name_zh = String(row.getCell(nameZhCol).text || row.getCell(nameZhCol).value || "").trim();
+    const name_vi = String(row.getCell(nameViCol).text || row.getCell(nameViCol).value || "").trim();
     const rawImage = row.getCell(imageCol).value;
     let image = imageByRow.get(rowIndex) ?? "";
     if (!image && rawImage && typeof rawImage === "object" && "hyperlink" in rawImage) image = String((rawImage as { hyperlink: string }).hyperlink);
     if (!image && typeof rawImage === "string") image = rawImage.trim();
-    if (!name && !image) continue;
-    if (!name || !image) { problems.push({ code: "ROSTER_ROW_REQUIRED", values: { row: rowIndex, field: !name ? "name" : "image" } }); continue; }
+    if (!name_zh && !name_vi && !image) continue;
+    if (!name_zh || !name_vi || !image) { problems.push({ code: "ROSTER_ROW_REQUIRED", values: { row: rowIndex, field: !name_zh ? "name_zh" : !name_vi ? "name_vi" : "image" } }); continue; }
     if (!image.startsWith("data:image/") && !/^https?:\/\//i.test(image)) { problems.push({ code: "ROSTER_ROW_IMAGE_INVALID", values: { row: rowIndex } }); continue; }
-    candidates.push({ name, image });
+    candidates.push({ name_zh, name_vi, image });
   }
   if (problems.length) throw new RosterParseError("ROSTER_ROW_ERRORS", { problems: problems.slice(0, 8) });
   if (!candidates.length) throw new RosterParseError("ROSTER_NO_CANDIDATES");

@@ -90,8 +90,8 @@ test("dashboard chart orientation and theme changes preserve visible rankings on
   });
   const image = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%237c9d72'/%3E%3C/svg%3E";
   const results = [
-    { id: "chart-a", name: "Nguyễn An", image_url: image, total: 12 },
-    { id: "chart-b", name: "Trần Bình", image_url: image, total: 7 },
+    { id: "chart-a", name_vi: "Nguyễn An", name_zh: "王小明", image_url: image, total: 12 },
+    { id: "chart-b", name_vi: "Trần Bình", name_zh: "陳小明", image_url: image, total: 7 },
   ];
   await page.route("**/api/admin/results", (route) => route.fulfill({ json: { election: { id: "chart-election" }, results } }));
   await page.goto("/admin");
@@ -113,5 +113,9 @@ test("dashboard chart orientation and theme changes preserve visible rankings on
   await expect(rankings.getByText("Trần Bình", { exact: true })).toBeVisible();
   await expect(rankings.getByText("12", { exact: true })).toBeVisible();
   await expect(rankings.getByText("7", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "繁體中文", exact: true }).click();
+  await expect(page.getByText("王小明", { exact: true })).toBeVisible();
+  await expect(page.getByText("陳小明", { exact: true })).toBeVisible();
+  await expect(page.getByText("Nguyễn An", { exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

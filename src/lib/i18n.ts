@@ -81,7 +81,7 @@ const vi = {
   importHeading: "Tải danh sách ứng viên",
   importDescription: "Danh sách vẫn là bản tạm cho đến khi bạn bấm bắt đầu. Hãy kiểm tra ảnh và họ tên trước khi công bố.",
   importExcel: "Import file Excel",
-  importExcelDescription: "File .xlsx có cột “Họ tên” và “Hình ảnh” (ảnh nhúng hoặc URL).",
+  importExcelDescription: "File .xlsx có cột họ tên tiếng Hoa, họ tên tiếng Việt và hình ảnh (ảnh nhúng hoặc URL).",
   downloadTemplate: "Tải Excel mẫu",
   processing: "Đang xử lý…",
   chooseExcel: "Chọn file Excel",
@@ -143,9 +143,9 @@ const vi = {
   templateHowTo: "Cách dùng",
   templateInstructions: "Hướng dẫn",
   templateRequired: "Cột bắt buộc",
-  templateRequiredDescription: "Giữ nguyên tên hai cột ở hàng đầu: Họ tên và Hình ảnh.",
+  templateRequiredDescription: "Giữ nguyên ba cột ở hàng đầu: Họ tên tiếng Hoa, Họ tên tiếng Việt và Hình ảnh.",
   templateEachCandidate: "Mỗi ứng viên",
-  templateEachCandidateDescription: "Nhập họ tên ở cột Họ tên; điền URL ảnh http(s) ở cột Hình ảnh hoặc chèn ảnh vào đúng ô Hình ảnh.",
+  templateEachCandidateDescription: "Nhập cả hai họ tên; điền URL ảnh http(s) ở cột Hình ảnh hoặc chèn ảnh vào đúng ô Hình ảnh.",
   templateImageFormat: "Định dạng ảnh",
   templateImageFormatDescription: "Ảnh nhúng hỗ trợ JPG, PNG hoặc WEBP. Ảnh URL phải truy cập được từ trình duyệt.",
   templateSave: "Lưu file",
@@ -166,8 +166,10 @@ const vi = {
   apiErrorXlsxLimit: "Chỉ hỗ trợ file .xlsx tối đa 10 MB.",
   apiErrorWorkbook: "Không đọc được workbook. Hãy kiểm tra file .xlsx và thử lại.",
   apiErrorSheet: "File Excel không có sheet dữ liệu.",
-  apiErrorColumns: "File cần có hai cột bắt buộc: Họ tên và Hình ảnh.",
+  apiErrorColumns: "File cần có ba cột: Họ tên tiếng Hoa, Họ tên tiếng Việt và Hình ảnh.",
   fieldName: "họ tên",
+  fieldNameZh: "họ tên tiếng Hoa",
+  fieldNameVi: "họ tên tiếng Việt",
   fieldImage: "hình ảnh",
   apiErrorRowImage: "Dòng {row}: chỉ hỗ trợ ảnh JPG, PNG hoặc WEBP.",
   apiErrorRowMissing: "Dòng {row}: thiếu {field}.",
@@ -175,7 +177,7 @@ const vi = {
   apiErrorRowImageUrl: "Dòng {row}: hình ảnh cần là ảnh nhúng hoặc URL http(s).",
   apiErrorNoCandidates: "Không tìm thấy ứng viên trong file.",
   apiErrorStartCandidates: "Danh sách ứng viên không hợp lệ.",
-  apiErrorStartRequired: "Cần ít nhất một ứng viên có đủ họ tên và hình ảnh.",
+  apiErrorStartRequired: "Cần ít nhất một ứng viên có đủ tên tiếng Hoa, tên tiếng Việt và hình ảnh.",
   apiErrorImageLarge: "Ảnh của {name} vượt quá 5 MB.",
   apiErrorImageUrl: "URL hình ảnh của {name} không hợp lệ.",
   apiErrorElectionOpen: "Đang có kỳ bầu chọn mở. Hãy đóng kỳ hiện tại trước.",
@@ -266,7 +268,7 @@ const zhTW: Record<MessageKey, string> = {
   importHeading: "上傳候選人名單",
   importDescription: "按下開始前，名單仍為草稿。公布前請確認照片與姓名。",
   importExcel: "匯入 Excel 檔案",
-  importExcelDescription: ".xlsx 檔案需包含「姓名」與「照片」欄（嵌入圖片或網址）。",
+  importExcelDescription: ".xlsx 檔案需包含「中文姓名」、「越南文姓名」與「照片」欄（嵌入圖片或網址）。",
   downloadTemplate: "下載 Excel 範本",
   processing: "處理中…",
   chooseExcel: "選擇 Excel 檔案",
@@ -328,9 +330,9 @@ const zhTW: Record<MessageKey, string> = {
   templateHowTo: "項目",
   templateInstructions: "說明",
   templateRequired: "必要欄位",
-  templateRequiredDescription: "請保留第一列的兩個欄名：姓名與照片。",
+  templateRequiredDescription: "請保留第一列的三個欄名：中文姓名、越南文姓名與照片。",
   templateEachCandidate: "每位候選人",
-  templateEachCandidateDescription: "在「姓名」欄輸入姓名；在「照片」欄填入 http(s) 圖片網址，或將圖片插入「照片」儲存格。",
+  templateEachCandidateDescription: "輸入中文及越南文姓名；在「照片」欄填入 http(s) 圖片網址，或將圖片插入「照片」儲存格。",
   templateImageFormat: "圖片格式",
   templateImageFormatDescription: "嵌入圖片支援 JPG、PNG 或 WEBP。圖片網址必須可由瀏覽器存取。",
   templateSave: "儲存檔案",
@@ -351,8 +353,10 @@ const zhTW: Record<MessageKey, string> = {
   apiErrorXlsxLimit: "僅支援不超過 10 MB 的 .xlsx 檔案。",
   apiErrorWorkbook: "無法讀取活頁簿，請確認 .xlsx 檔案後再試一次。",
   apiErrorSheet: "Excel 檔案沒有資料工作表。",
-  apiErrorColumns: "檔案必須包含「姓名」與「照片」兩個欄位。",
+  apiErrorColumns: "檔案必須包含「中文姓名」、「越南文姓名」與「照片」三個欄位。",
   fieldName: "姓名",
+  fieldNameZh: "中文姓名",
+  fieldNameVi: "越南文姓名",
   fieldImage: "照片",
   apiErrorRowImage: "第 {row} 列：僅支援 JPG、PNG 或 WEBP 圖片。",
   apiErrorRowMissing: "第 {row} 列：缺少{field}。",
@@ -360,7 +364,7 @@ const zhTW: Record<MessageKey, string> = {
   apiErrorRowImageUrl: "第 {row} 列：圖片必須為嵌入圖片或 http(s) 網址。",
   apiErrorNoCandidates: "檔案中找不到候選人。",
   apiErrorStartCandidates: "候選人名單無效。",
-  apiErrorStartRequired: "至少需要一位資料完整（姓名與照片）的候選人。",
+  apiErrorStartRequired: "至少需要一位資料完整（中文姓名、越南文姓名與照片）的候選人。",
   apiErrorImageLarge: "{name} 的圖片超過 5 MB。",
   apiErrorImageUrl: "{name} 的圖片網址無效。",
   apiErrorElectionOpen: "目前已有進行中的選舉，請先關閉該選舉。",
@@ -434,7 +438,11 @@ export function apiErrorMessage(locale: Locale, code: unknown, values?: Record<s
     return translate(locale, "apiErrorRows", { details });
   }
   if (code === "ROSTER_ROW_REQUIRED" && values?.field) {
-    values = { ...values, field: translate(locale, values.field === "name" ? "fieldName" : "fieldImage") };
+    const field = values.field === "name_zh" ? "fieldNameZh" : values.field === "name_vi" ? "fieldNameVi" : values.field === "name" ? "fieldName" : "fieldImage";
+    values = { ...values, field: translate(locale, field) };
+  }
+  if ((code === "IMAGE_TOO_LARGE" || code === "IMAGE_URL_INVALID") && values?.name_zh && values?.name_vi) {
+    values = { ...values, name: locale === "zh-TW" ? values.name_zh : values.name_vi };
   }
   const key = typeof code === "string" ? apiErrorMessages[code as ApiErrorCode] : undefined;
   return translate(locale, key ?? "apiErrorInvalid", values);

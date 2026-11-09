@@ -16,7 +16,8 @@ begin
   if exists (select 1 from public.elections where status = 'opened') then raise exception 'Empty roster created an active election'; end if;
 
   select public.start_election(jsonb_agg(jsonb_build_object(
-    'name', 'Smoke candidate ' || n,
+    'name_zh', '候選人 ' || n,
+    'name_vi', 'Smoke candidate ' || n,
     'image_url', 'https://example.invalid/' || n || '.png'
   ) order by n)) into v_election
   from generate_series(1, 10) n;

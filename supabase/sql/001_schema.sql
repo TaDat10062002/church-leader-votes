@@ -18,7 +18,8 @@ create unique index if not exists elections_one_open_idx on public.elections ((s
 create table if not exists public.candidates (
   id uuid primary key default gen_random_uuid(),
   election_id uuid not null references public.elections(id) on delete cascade,
-  name text not null check (length(trim(name)) > 0),
+  name_zh text not null check (length(trim(name_zh)) > 0),
+  name_vi text not null check (length(trim(name_vi)) > 0),
   image_url text not null check (length(trim(image_url)) > 0),
   display_order integer not null default 0,
   created_at timestamptz not null default now(),
@@ -74,7 +75,7 @@ begin
   end if;
   if exists (
     select 1 from jsonb_array_elements(p_candidates) as candidate(value)
-    where nullif(trim(candidate.value->>'name'), '') is null or nullif(trim(candidate.value->>'image_url'), '') is null
+    where nullif(trim(candidate.value->>'name_zh'), '') is null or nullif(trim(candidate.value->>'name_vi'), '') is null or nullif(trim(candidate.value->>'image_url'), '') is null
   ) then
     raise exception 'CANDIDATE_NAME_AND_IMAGE_REQUIRED' using errcode = '22023';
   end if;
@@ -83,8 +84,8 @@ begin
   end if;
 
   insert into public.elections(status) values ('opened') returning id into v_election_id;
-  insert into public.candidates(election_id, name, image_url, display_order)
-  select v_election_id, trim(c->>'name'), trim(c->>'image_url'), ordinality::integer
+  insert into public.candidates(election_id, name_zh, name_vi, image_url, display_order)
+  select v_election_id, trim(c->>'name_zh'), trim(c->>'name_vi'), trim(c->>'image_url'), ordinality::integer
   from jsonb_array_elements(p_candidates) with ordinality as rows(c, ordinality);
   return v_election_id;
 end;
@@ -136,6 +137,6 @@ grant execute on function public.start_election(jsonb) to service_role;
 grant execute on function public.cast_vote(uuid, uuid[]) to service_role;
 
 -- Aggregate query used by the server result route:
--- select c.id, c.name, c.image_url, count(s.id)::integer as total
+-- select c.id, c.name_zh, c.name_vi, c.image_url, count(s.id)::integer as total
 -- from public.candidates c left join public.vote_selections s on s.candidate_id = c.id
--- where c.election_id = :election_id group by c.id order by total desc, c.name asc;
+-- where c.election_id = :election_id group by c.id order by total desc, c.name_vi asc;

@@ -11,10 +11,11 @@ See proposal.md for motivation and specs/localized-interface/spec.md for the beh
 - Use one validated locale value consistently in server rendering, client UI, API errors, metadata, and generated workbooks.
 - Keep translation coverage maintainable and type checked as copy changes.
 - Make language changes immediate and preserve the current route.
+- Preserve both candidate names independently and select the displayed name from the active interface locale.
 
 **Non-Goals:**
 
-- Add locale-prefixed routes, automatic browser-language detection, or translated user supplied election records.
+- Add locale-prefixed routes, automatic browser-language detection, or automatic translation of user supplied election records.
 - Translate Supabase/database diagnostics or server logs that are not presented as application copy.
 - Add a third language or a translation management service.
 
@@ -28,13 +29,16 @@ See proposal.md for motivation and specs/localized-interface/spec.md for the beh
 
 4. **Make locale available to shared controls and every page surface.** Place the language selector alongside the existing theme control, and let the shared locale provider serve all route content, including controls rendered directly on pages without the shared app header. Update the root document `lang`, localized metadata, accessible labels, chart labels, and generated copy from the same locale state.
 
+5. **Store candidate names by language and map them at import and display boundaries.** The Excel roster has three data columns: Traditional Chinese name, Vietnamese name, and image. The parser maps the two name columns to separate candidate fields (`name_zh` and `name_vi`) and the image column to the existing image field. Election creation and candidate read APIs carry both names. Candidate-facing voter and results components choose `name_zh` for `zh-TW` and `name_vi` for `vi`; they show only the selected-language value, not both names together. Changing locale changes which stored value is displayed and never rewrites either name.
+
 ## Risks / Trade-offs
 
 - [Reading a cookie in the root layout makes locale-sensitive output request-specific] → Keep personalized pages and metadata uncached across users; preserve private/no-store behavior for generated workbooks and API responses.
 - [A missing translation key could expose fallback-language copy] → Keep dictionary keys aligned through shared TypeScript types and review translation coverage whenever application copy is added.
 - [Client locale state and the cookie could drift] → Validate cookie values on the server and update the provider and cookie together when the language control changes.
 - [Chinese copy may wrap differently from Vietnamese in compact controls] → Review narrow screens and retain existing wrapping and overflow behavior when translating interface labels.
+- [Existing candidate rows have only `name`, whose language is not recorded because roster template headings depended on the interface locale] → The administrator will clear the old election data before migration. The migration refuses to run while legacy candidate rows remain; it does not delete or relabel them. New imports require both names.
 
 ## Migration Plan
 
-No database or election data migration is required. Deploy the locale dictionaries and provider with Vietnamese as the no-cookie fallback, then roll back by reverting the application release; existing election records and routes remain compatible.
+After the administrator clears existing election data, apply the database migration for language-specific candidate names and update the roster and election APIs in the same release. The migration aborts if the old `name` column still has candidate rows. Deploy with Vietnamese as the no-cookie fallback; rollback by reverting the application release and database migration only if no new bilingual records have been created, otherwise retain the added columns for compatibility.

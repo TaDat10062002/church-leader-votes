@@ -17,7 +17,8 @@ export async function GET(request: Request) {
 
   const roster = workbook.addWorksheet(t("copiedTemplateTitle"));
   roster.columns = [
-    { header: locale === "vi" ? "Họ tên" : "姓名", key: "name", width: 34 },
+    { header: locale === "vi" ? "Họ tên tiếng Hoa" : "中文姓名", key: "name_zh", width: 34 },
+    { header: locale === "vi" ? "Họ tên tiếng Việt" : "越南文姓名", key: "name_vi", width: 34 },
     { header: locale === "vi" ? "Hình ảnh" : "照片", key: "image", width: 56 },
   ];
   roster.views = [{ state: "frozen", ySplit: 1 }];
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
   roster.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
   roster.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF426B53" } };
   roster.getRow(1).alignment = { vertical: "middle" };
-  roster.autoFilter = "A1:B1";
+  roster.autoFilter = "A1:C1";
 
   const guide = workbook.addWorksheet(t("templateGuideTitle"));
   guide.columns = [{ width: 28 }, { width: 100 }];

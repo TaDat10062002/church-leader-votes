@@ -27,6 +27,7 @@ import {
 import type { ResultRow } from "@/lib/types";
 import { shouldRefreshResults } from "@/lib/results";
 import { useLocale } from "@/components/locale/locale-provider";
+import { candidateName } from "@/lib/candidate-name";
 import { apiErrorMessage } from "@/lib/i18n";
 
 type Results = { election: { id: string } | null; results: ResultRow[] };
@@ -322,7 +323,7 @@ export default function Dashboard() {
                     className="h-11 w-11 rounded-full object-cover"
                   />
                   <span className="min-w-0 flex-1 break-words text-sm font-semibold">
-                    {row.name}
+                    {candidateName(row, locale)}
                   </span>
                   <GlassChip className="shrink-0 rounded-lg px-3 py-2 text-sm font-bold">
                     {number(row.total)}

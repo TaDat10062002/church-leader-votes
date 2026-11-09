@@ -4,7 +4,7 @@ export function aggregateResults(candidates: Candidate[], candidateIds: string[]
   const counts = new Map<string, number>();
   for (const id of candidateIds) counts.set(id, (counts.get(id) ?? 0) + 1);
   return candidates.map((candidate) => ({ ...candidate, total: counts.get(candidate.id) ?? 0 }))
-    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, "vi"));
+    .sort((a, b) => b.total - a.total || a.name_vi.localeCompare(b.name_vi, "vi"));
 }
 
 export function shouldRefreshResults(reason: "vote-recorded" | "subscribed" | "focus") {

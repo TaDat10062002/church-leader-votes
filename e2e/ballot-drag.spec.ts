@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 const image = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%237c9d72'/%3E%3C/svg%3E";
-const candidate = (id: string, name: string) => ({ id, name, image_url: image, display_order: Number(id) });
+const candidate = (id: string, name: string) => ({ id, name_vi: name, name_zh: name, image_url: image, display_order: Number(id) });
 
 async function prepareVotePage(page: Page) {
   await page.route("**/api/elections/active", (route) => route.fulfill({

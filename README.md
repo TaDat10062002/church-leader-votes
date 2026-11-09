@@ -4,13 +4,13 @@ A mobile-first church election app built with Next.js App Router and Supabase. A
 
 ## Languages
 
-The interface supports Vietnamese and Traditional Chinese. Vietnamese is the default; use the language control beside the appearance controls to switch languages. The selection is stored in a browser cookie and applies across routes and reloads. Candidate names and other election data remain as entered.
+The interface supports Vietnamese and Traditional Chinese. Vietnamese is the default; use the language control beside the appearance controls to switch languages. The selection is stored in a browser cookie and applies across routes and reloads. Each candidate has separate Vietnamese and Traditional Chinese names, and the interface displays the name for the selected language.
 
 ## Local setup
 
 1. Install Node.js 20 or later, then install dependencies with `npm install`.
 2. Copy `.env.example` to `.env.local` and fill in the Supabase project URL, public anon key, server service-role key, admin passcode, and a long random session secret. The example passcode is `1234`; replace it before deployment. Never prefix the service-role key or admin secrets with `NEXT_PUBLIC_`.
-3. In the Supabase SQL Editor, run `supabase/sql/001_schema.sql`. This creates the election schema, RLS protections, atomic start/vote RPCs, and the public `candidate-images` Storage bucket. Optionally run `supabase/sql/002_smoke_test.sql`; its fixture changes are rolled back.
+3. In the Supabase SQL Editor, run the setup scripts described in [Supabase setup](supabase/README.md), including `supabase/sql/007_candidate_bilingual_names.sql`. Existing single-name candidate rows must be cleared before migration 007; it stops without deleting them if any remain.
 4. In Supabase project settings, ensure Realtime is enabled. After a vote commits, the server sends a REST Broadcast using `httpSend` to the public channel named `election-<election UUID>` with the `vote-recorded` event; the event contains only the election ID and never ballot selections. No table replication/publication is required for this Broadcast design.
 5. Start the app with `npm run dev`. Open `/admin` to enter the configured PIN, then use `/import-file` to import a roster. The voter page is `/vote`; the protected results dashboard is `/dashboard`.
 
@@ -29,7 +29,7 @@ Set the same variables in the deployment provider's server environment. Keep the
 
 ## Workbook and images
 
-The import page includes a **Tải Excel mẫu** download with the required columns and a short instruction sheet. Import the first worksheet of a `.xlsx` workbook. The first row must include `Họ tên` and `Hình ảnh` columns. Each non-empty candidate row needs a name and either a JPG/PNG/WEBP image embedded and anchored in its `Hình ảnh` cell or an `http(s)` image URL. Blank rows are ignored. Workbooks over 10 MB and embedded images over 5 MB are rejected. Candidates remain provisional in the browser until Start; embedded image files are uploaded to the `candidate-images` public bucket immediately before the database creates the election and candidate rows.
+The import page includes a **Tải Excel mẫu** download with the required columns and a short instruction sheet. Import the first worksheet of a `.xlsx` workbook. The first row must include `Họ tên tiếng Hoa`, `Họ tên tiếng Việt`, and `Hình ảnh` (or the corresponding localized template headings). Each non-empty candidate row needs both names and either a JPG/PNG/WEBP image embedded and anchored in its image cell or an `http(s)` image URL. Blank rows are ignored. Workbooks over 10 MB and embedded images over 5 MB are rejected. Candidates remain provisional in the browser until Start; embedded image files are uploaded to the `candidate-images` public bucket immediately before the database creates the election and candidate rows.
 
 ## Verification and build
 
@@ -41,6 +41,6 @@ adaptations, and browser fallbacks.
 - `npm run build` creates the production build.
 - `npm run test:e2e` runs browser interaction tests against a running production server at `http://127.0.0.1:4173`; these tests stub election and vote APIs and do not write to Supabase. Set `PLAYWRIGHT_EXECUTABLE_PATH` if Playwright's bundled browser is unavailable.
 
-To close an active election manually, run `update public.elections set status = 'closed', closed_at = now() where status = 'open';` in the Supabase SQL Editor. Keep the vote tables if the results need to be retained.
+To close an active election manually, run `update public.elections set status = 'closed', closed_at = now() where status = 'opened';` in the Supabase SQL Editor. Keep the vote tables if the results need to be retained.
 
 Anonymous voting intentionally does not enforce one ballot per person. Anyone who can access the voter page can submit another valid ballot.

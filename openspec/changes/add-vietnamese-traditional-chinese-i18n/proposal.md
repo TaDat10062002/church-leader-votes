@@ -9,7 +9,8 @@ The application currently presents its interface in Vietnamese only, which makes
 - Add Vietnamese (`vi`) and Traditional Chinese (`zh-TW`) translations for application generated content across voting, confirmation, administrator login, roster import, and results.
 - Let users select a language and remember that choice in a cookie across routes and page reloads; use Vietnamese when no valid preference is saved.
 - Keep the document language and localized metadata aligned with the selected language, and localize accessible labels and generated Excel template content.
-- Preserve candidate names and other user supplied election data as entered.
+- Import candidate rosters from separate Traditional Chinese name, Vietnamese name, and image columns, storing both names as user supplied data.
+- Display only the candidate name matching the selected interface language (`name_zh` for `zh-TW`, `name_vi` for `vi`).
 
 ## Capabilities
 
@@ -25,4 +26,4 @@ None.
 
 - Next.js App Router layout and all user facing pages and components, including the theme controls, voter ballot, thank-you and closed-election states, administrator login, roster import, and results dashboard.
 - Client/server boundaries for loading the saved language, HTML `lang` and metadata, accessible labels, date/number formatting, and generated Excel templates.
-- No election schema or candidate data changes are expected. A new runtime dependency is not assumed; the implementation can use typed in-project translation dictionaries unless investigation finds a concrete limitation.
+- Candidate persistence, roster parsing, election creation, active-election and results responses, and voter/results UI must support both language-specific names. A database migration is required. A new runtime dependency is not assumed; the implementation can use typed in-project translation dictionaries unless investigation finds a concrete limitation.

@@ -10,7 +10,7 @@ test("glass controls preserve roster restore, dialog focus and cancellation on m
   page.on("pageerror", (error) => errors.push(error.message));
   await page.route("**/api/admin/results", (route) => route.fulfill({ json: { election: null, results: [] } }));
   await page.route("**/api/admin/parse-excel", (route) => route.fulfill({
-    json: { candidates: [{ name: "Nguyễn An", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%237c9d72'/%3E%3C/svg%3E" }] },
+    json: { candidates: [{ name_vi: "Nguyễn An", name_zh: "王小明", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%237c9d72'/%3E%3C/svg%3E" }] },
   }));
   let starts = 0;
   await page.route("**/api/admin/start", (route) => { starts++; return route.fulfill({ json: { ok: true } }); });

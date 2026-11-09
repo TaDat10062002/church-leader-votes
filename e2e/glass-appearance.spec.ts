@@ -10,7 +10,7 @@ async function mockElection(page: Page) {
         id: "appearance-election",
         status: "opened",
         candidates: [
-          { id: "appearance-candidate", name: "Nguyễn An", image_url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%23426b53'/%3E%3C/svg%3E", display_order: 1 },
+          { id: "appearance-candidate", name_vi: "Nguyễn An", name_zh: "王小明", image_url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%23426b53'/%3E%3C/svg%3E", display_order: 1 },
         ],
       },
     },

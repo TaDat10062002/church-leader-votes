@@ -17,7 +17,7 @@ export async function GET() {
     if (election.status === "closed") {
       return NextResponse.json({ election: { id: election.id, status: election.status } });
     }
-    const { data: candidates, error: candidatesError } = await supabase.from("candidates").select("id,name,image_url,display_order").eq("election_id", election.id).order("display_order");
+    const { data: candidates, error: candidatesError } = await supabase.from("candidates").select("id,name_zh,name_vi,image_url,display_order").eq("election_id", election.id).order("display_order");
     if (candidatesError) throw candidatesError;
     return NextResponse.json({ election: { id: election.id, status: election.status, candidates: candidates ?? [] } });
   } catch (error) {

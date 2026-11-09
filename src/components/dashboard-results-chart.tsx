@@ -15,6 +15,7 @@ import type { EChartsOption } from "echarts";
 import type { ResultRow } from "@/lib/types";
 import { glassClassName } from "@/lib/glass-variants";
 import { useLocale } from "@/components/locale/locale-provider";
+import { candidateName } from "@/lib/candidate-name";
 import { formatNumber, translate, type Locale } from "@/lib/i18n";
 
 registerEChartsModules([BarChart, AriaComponent, GridComponent, TooltipComponent, CanvasRenderer]);
@@ -171,7 +172,7 @@ function chartOption(
   const denseDesktopLabelLines = denseDesktopLabels
     ? Math.max(
         1,
-        ...results.map((row) => wrapLabel(row.name, 8).split("\n").length),
+        ...results.map((row) => wrapLabel(candidateName(row, locale), 8).split("\n").length),
       )
     : 0;
 
@@ -210,10 +211,11 @@ function chartOption(
               formatter: (candidateId: string | number) => {
                 const row = rowsById.get(String(candidateId));
                 if (!row) return "";
-                if (denseDesktopLabels) return wrapLabel(row.name, 8);
-                return row.name.length > nameLimit
-                  ? `${row.name.slice(0, nameLimit - 1)}...`
-                  : row.name;
+                const name = candidateName(row, locale);
+                if (denseDesktopLabels) return wrapLabel(name, 8);
+                return name.length > nameLimit
+                  ? `${name.slice(0, nameLimit - 1)}...`
+                  : name;
               },
             },
             animationDuration: 0,
@@ -258,7 +260,7 @@ function chartOption(
               lineHeight: 12,
               formatter: (candidateId: string | number) => {
                 const row = rowsById.get(String(candidateId));
-                return row ? wrapLabel(row.name, 20) : "";
+                return row ? wrapLabel(candidateName(row, locale), 20) : "";
               },
             },
             animationDuration: 0,
@@ -280,7 +282,7 @@ function chartOption(
         const item = Array.isArray(params) ? params[0] : params;
         const row = rowsById.get(String(item?.name ?? ""));
         if (!row) return "";
-        return `<strong>${escapeHtml(row.name)}</strong><br/><span>${escapeHtml(formatNumber(locale, row.total))} ${escapeHtml(translate(locale, "chartSelections"))}</span>`;
+        return `<strong>${escapeHtml(candidateName(row, locale))}</strong><br/><span>${escapeHtml(formatNumber(locale, row.total))} ${escapeHtml(translate(locale, "chartSelections"))}</span>`;
       },
       axisPointer: { type: "shadow", shadowStyle: { color: glassPanel } },
     },

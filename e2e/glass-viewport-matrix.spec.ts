@@ -25,13 +25,13 @@ for (const viewport of viewports) {
 
       await page.route("**/api/admin/results", (route) => route.fulfill({ json: {
         election: { id: "matrix-election", status: "opened" },
-        results: [{ id: "matrix-candidate", name: "Nguyễn An", image_url: "", total: 3 }],
+        results: [{ id: "matrix-candidate", name_vi: "Nguyễn An", name_zh: "王小明", image_url: "", total: 3 }],
       } }));
       await page.route("**/api/elections/active", (route) => route.fulfill({ json: {
         election: {
           id: "matrix-election",
           status: "opened",
-          candidates: [{ id: "matrix-candidate", name: "Nguyễn An", image_url: "", display_order: 1 }],
+          candidates: [{ id: "matrix-candidate", name_vi: "Nguyễn An", name_zh: "王小明", image_url: "", display_order: 1 }],
         },
       } }));
 

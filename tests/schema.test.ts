@@ -21,9 +21,13 @@ describe("Supabase PostgreSQL schema", () => {
       const schema = await readFile(path.join(process.cwd(), "supabase/sql/001_schema.sql"), "utf8");
       const smoke = await readFile(path.join(process.cwd(), "supabase/sql/002_smoke_test.sql"), "utf8");
       const reset = await readFile(path.join(process.cwd(), "supabase/sql/003_reset_election.sql"), "utf8");
+      const statusMigration = await readFile(path.join(process.cwd(), "supabase/sql/004_election_status_enum.sql"), "utf8");
       const realtimeAccess = await readFile(path.join(process.cwd(), "supabase/sql/005_election_realtime_access.sql"), "utf8");
+      const bilingualMigration = await readFile(path.join(process.cwd(), "supabase/sql/007_candidate_bilingual_names.sql"), "utf8");
       await db.exec(schema);
+      await db.exec(statusMigration);
       await db.exec(realtimeAccess);
+      await db.exec(bilingualMigration);
       await db.exec(smoke);
       await db.exec(reset);
       const grants = await db.query<{ anon: boolean; authenticated: boolean; service_role: boolean }>(`
@@ -56,8 +60,10 @@ describe("Supabase PostgreSQL schema", () => {
       expect(readPolicy.rows[0].count).toBe(1);
 
       const election = await db.query<{ id: string }>(`
-        select public.start_election('[{"name":"Reset candidate","image_url":"https://example.invalid/candidate.png"}]'::jsonb) as id
+        select public.start_election('[{"name_zh":"王一","name_vi":"Reset candidate","image_url":"https://example.invalid/candidate.png"}]'::jsonb) as id
       `);
+      const names = await db.query<{ name_zh: string; name_vi: string }>("select name_zh, name_vi from public.candidates");
+      expect(names.rows[0]).toEqual({ name_zh: "王一", name_vi: "Reset candidate" });
       const candidate = await db.query<{ id: string }>("select id from public.candidates");
       await db.query("select public.cast_vote($1, $2::uuid[])", [election.rows[0].id, [candidate.rows[0].id]]);
 
@@ -75,7 +81,7 @@ describe("Supabase PostgreSQL schema", () => {
       }
 
       const rollbackElection = await db.query<{ id: string }>(`
-        select public.start_election('[{"name":"Rollback candidate","image_url":"https://example.invalid/candidate.png"}]'::jsonb) as id
+        select public.start_election('[{"name_zh":"王二","name_vi":"Rollback candidate","image_url":"https://example.invalid/candidate.png"}]'::jsonb) as id
       `);
       const rollbackCandidate = await db.query<{ id: string }>("select id from public.candidates");
       await db.query("select public.cast_vote($1, $2::uuid[])", [rollbackElection.rows[0].id, [rollbackCandidate.rows[0].id]]);
@@ -94,6 +100,32 @@ describe("Supabase PostgreSQL schema", () => {
       }
 
       await db.exec("drop trigger reject_candidate_delete on public.candidates; drop function public.reject_candidate_delete(); select public.reset_election()");
+    } finally {
+      await db.close();
+    }
+  });
+
+  it("blocks migration while legacy candidates exist and installs bilingual names after they are cleared", async () => {
+    const db = new PGlite({ extensions: { pgcrypto } });
+    try {
+      await db.exec(`
+        create extension if not exists pgcrypto;
+        create role anon; create role authenticated; create role service_role;
+        create table public.elections (id uuid primary key default gen_random_uuid(), status text not null);
+        create table public.candidates (id uuid primary key default gen_random_uuid(), election_id uuid, name text not null, image_url text not null, display_order integer);
+        insert into public.candidates(name, image_url) values ('Legacy name', 'https://example.org/a.png');
+      `);
+      const migration = await readFile(path.join(process.cwd(), "supabase/sql/007_candidate_bilingual_names.sql"), "utf8");
+      await expect(db.exec(migration)).rejects.toThrow("LEGACY_CANDIDATES_REQUIRE_CLEARANCE");
+      await db.exec("rollback");
+      const legacy = await db.query<{ name: string }>("select name from public.candidates");
+      expect(legacy.rows).toEqual([{ name: "Legacy name" }]);
+      await db.exec("delete from public.candidates");
+      await db.exec(migration);
+      await db.exec(migration);
+      await db.query("select public.start_election($1::jsonb)", [JSON.stringify([{ name_zh: "王小明", name_vi: "Nguyễn An", image_url: "https://example.org/a.png" }])]);
+      const saved = await db.query<{ name_zh: string; name_vi: string }>("select name_zh, name_vi from public.candidates");
+      expect(saved.rows).toEqual([{ name_zh: "王小明", name_vi: "Nguyễn An" }]);
     } finally {
       await db.close();
     }

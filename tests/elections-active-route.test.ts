@@ -21,12 +21,12 @@ describe("active election route", () => {
 
   it("returns the latest opened election and its candidates", async () => {
     const electionQuery = query({ data: { id: "election-1", status: "opened" }, error: null });
-    const candidatesQuery = query({ data: [{ id: "candidate-1", name: "A", image_url: "a.png" }], error: null });
+    const candidatesQuery = query({ data: [{ id: "candidate-1", name_zh: "王", name_vi: "A", image_url: "a.png" }], error: null });
     mocks.from.mockImplementation((table: string) => table === "elections" ? electionQuery : candidatesQuery);
 
     const response = await GET();
     expect(await response.json()).toEqual({ election: {
-      id: "election-1", status: "opened", candidates: [{ id: "candidate-1", name: "A", image_url: "a.png" }],
+      id: "election-1", status: "opened", candidates: [{ id: "candidate-1", name_zh: "王", name_vi: "A", image_url: "a.png" }],
     } });
     expect(electionQuery.order).toHaveBeenCalledWith("started_at", { ascending: false });
     expect(electionQuery.limit).toHaveBeenCalledWith(1);
