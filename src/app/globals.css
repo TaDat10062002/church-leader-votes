@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-ink: var(--app-ink);
@@ -37,7 +37,7 @@
   --shadow-soft: var(--app-shadow);
 }
 
-:root, :root[data-theme="light"] {
+:root {
   color-scheme: light;
   --app-ink: #111111;
   --app-muted: #555555;
@@ -90,7 +90,7 @@
   --ring: var(--app-focus);
 }
 
-:root[data-theme="dark"] {
+:root.dark {
   color-scheme: dark;
   --app-ink: #f5f5f5;
   --app-muted: #bdbdbd;
@@ -144,7 +144,6 @@ body {
   min-height: 100dvh;
   background-color: var(--app-page-color);
   color: var(--app-ink);
-  transition: background-color .36s ease, color .36s ease;
 }
 
 button, input, select, textarea { font: inherit; }
@@ -160,18 +159,11 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 :is(.text-ink\/45, .text-ink\/50, .text-ink\/55, .text-ink\/60, .text-ink\/65) {
   color: var(--app-muted);
 }
-.text-ink, .text-moss, .text-leaf, .text-cream, .text-gold {
-  transition: color .36s ease;
-}
-
 /* The registry supplies the blur, sheen and bevel. These hooks connect that
    material to application colors and also cover native semantic controls. */
 .glasscn-material {
   --glasscn-fallback: var(--glass-fallback);
   border-color: var(--glass-border);
-  transition-property: background-color, color, border-color, box-shadow;
-  transition-duration: .28s;
-  transition-timing-function: ease;
 }
 .glasscn-variant-liquid-refract { background-color: var(--glass-panel); }
 .dashboard-chart-glass {
@@ -202,7 +194,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   background-color: color-mix(in srgb, var(--glass-fallback) 24%, transparent);
   border-color: var(--glass-border);
 }
-:root[data-theme="dark"] .glass-overlay-panel {
+:root.dark .glass-overlay-panel {
   background-color: color-mix(in srgb, var(--glass-fallback) 34%, transparent);
 }
 .modal-backdrop, .native-modal::backdrop {
@@ -210,8 +202,8 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
-:root[data-theme="dark"] .modal-backdrop,
-:root[data-theme="dark"] .native-modal::backdrop {
+:root.dark .modal-backdrop,
+:root.dark .native-modal::backdrop {
   background-color: rgba(4, 9, 9, .6);
 }
 [role="alert"] {
@@ -303,6 +295,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   .locale-switch-option, .locale-switch-thumb { transition: none; }
 }
 .theme-control--floating { position: absolute; z-index: 5; right: 1rem; top: 1rem; }
+.theme-control-placeholder { display: inline-block; width: 2.5rem; height: 1.625rem; flex: 0 0 auto; }
 .icon-switch-control {
   position: relative;
   z-index: 2;
@@ -351,15 +344,6 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 .icon-switch-mode-icon--left { left: .3125rem; }
 .icon-switch-mode-icon--right { right: .3125rem; }
-.theme-reveal {
-  position: fixed;
-  z-index: -1;
-  border-radius: 50%;
-  pointer-events: none;
-  background-color: var(--app-page-color);
-  will-change: transform;
-}
-
 @media (width < 40rem) {
   .ballot-actions { bottom: max(.75rem, env(safe-area-inset-bottom)); }
 }
@@ -410,10 +394,17 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  body, .glasscn-material, .glasscn-material *, .icon-switch-thumb, .text-ink, .text-moss, .text-leaf, .text-cream, .text-gold {
+  body, .glasscn-material, .glasscn-material *, .icon-switch-thumb {
     transition-duration: 0s !important;
     animation: none !important;
   }
-  .theme-reveal { display: none; }
   .thanks-card, .sheet-right[data-state="open"] { animation: none; }
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-magicui-theme-vt="active"]::view-transition-group(root) {
+  animation-duration: var(--magicui-theme-toggle-vt-duration, 500ms);
 }

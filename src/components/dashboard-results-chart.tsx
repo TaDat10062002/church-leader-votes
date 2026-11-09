@@ -9,7 +9,7 @@ import {
   GridComponent,
   TooltipComponent,
 } from "echarts/components";
-import { graphic, init, use, type EChartsType } from "echarts/core";
+import { graphic, init, use as registerEChartsModules, type EChartsType } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import type { EChartsOption } from "echarts";
 import type { ResultRow } from "@/lib/types";
@@ -17,7 +17,7 @@ import { glassClassName } from "@/lib/glass-variants";
 import { useLocale } from "@/components/locale/locale-provider";
 import { formatNumber, translate, type Locale } from "@/lib/i18n";
 
-use([BarChart, AriaComponent, GridComponent, TooltipComponent, CanvasRenderer]);
+registerEChartsModules([BarChart, AriaComponent, GridComponent, TooltipComponent, CanvasRenderer]);
 
 type DashboardResultsChartProps = {
   results: ResultRow[];

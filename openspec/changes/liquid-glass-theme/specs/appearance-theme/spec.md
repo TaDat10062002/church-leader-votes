@@ -2,61 +2,80 @@
 
 ## Purpose
 
-Cho phép người dùng sử dụng ứng dụng bầu chọn với giao diện sáng hoặc tối, mặc định theo thiết bị và có thể lưu lựa chọn riêng giữa các lần truy cập.
+Lets users choose a light or dark appearance, follow the device setting until they make an explicit choice, and switch themes without a flash, hydration warning, or sluggish page-wide animation.
 
 ## ADDED Requirements
 
-### Requirement: Chọn giao diện theo thiết lập thiết bị
-Khi người dùng chưa lưu lựa chọn giao diện, ứng dụng SHALL dùng thiết lập sáng hoặc tối hiện tại của thiết bị và đồng bộ giao diện khi thiết lập đó thay đổi.
+### Requirement: Manage and persist the effective theme
+The system SHALL support light, dark, and system theme choices, use the system preference when no explicit choice is saved, and persist an explicit user choice across reloads and navigation.
 
-#### Scenario: Lần truy cập đầu dùng giao diện sáng của thiết bị
-- **WHEN** người dùng chưa lưu lựa chọn giao diện và thiết bị đang đặt giao diện sáng
-- **THEN** ứng dụng hiển thị giao diện sáng
+#### Scenario: First visit follows the system preference
+- **WHEN** a user has no saved theme choice
+- **THEN** the system resolves the effective theme from the current device preference
 
-#### Scenario: Lần truy cập đầu dùng giao diện tối của thiết bị
-- **WHEN** người dùng chưa lưu lựa chọn giao diện và thiết bị đang đặt giao diện tối
-- **THEN** ứng dụng hiển thị giao diện tối
+#### Scenario: Explicit choice takes precedence
+- **WHEN** a user selects light or dark and later reloads or changes the device preference
+- **THEN** the system retains the saved explicit theme
 
-#### Scenario: Thiết lập thiết bị thay đổi khi chưa có lựa chọn riêng
-- **WHEN** thiết lập giao diện của thiết bị thay đổi và người dùng chưa lưu lựa chọn riêng
-- **THEN** ứng dụng chuyển sang giao diện mới được thiết bị ưu tiên
+### Requirement: Reveal a user-selected theme from the toggle
+When a user activates the theme toggle and the browser supports View Transitions, the system SHALL reveal the new theme from the center of the toggle over approximately 500 ms.
 
-### Requirement: Chuyển giao diện bằng nút toggle
-Ứng dụng SHALL cung cấp trên các trang người dùng một nút toggle hai trạng thái sáng/tối. Nút SHALL công bố giao diện hiện tại bằng nhãn truy cập được và ngữ nghĩa switch. Mỗi lần kích hoạt SHALL chuyển ngay sang giao diện đối diện. Tùy chọn này SHALL độc lập với trạng thái luồng nghiệp vụ.
+#### Scenario: Pointer activation starts at the toggle center
+- **WHEN** a user activates the theme toggle with a pointer in a browser supporting View Transitions
+- **THEN** the new theme is revealed from the center of the toggle over approximately 500 ms
 
-#### Scenario: Người dùng bật/tắt giao diện
-- **WHEN** người dùng kích hoạt nút toggle
-- **THEN** ứng dụng chuyển sang giao diện đối diện và công bố trạng thái mới của nút
+#### Scenario: Keyboard activation starts at the toggle center
+- **WHEN** a user activates the theme toggle from the keyboard in a browser supporting View Transitions
+- **THEN** the new theme is revealed from the center of the toggle over approximately 500 ms
 
-### Requirement: Ghi nhớ lựa chọn giao diện
-Khi người dùng bật/tắt giao diện, ứng dụng SHALL lưu chế độ sáng hoặc tối đã chọn và duy trì chế độ đó qua điều hướng, tải lại và thay đổi thiết lập thiết bị.
+### Requirement: Change theme immediately when reveal motion is unavailable or reduced
+The system SHALL apply the selected theme immediately without a visible reveal when View Transitions are unsupported or the user requests reduced motion.
 
-#### Scenario: Lựa chọn đã lưu được ưu tiên hơn thiết bị
-- **WHEN** người dùng quay lại với lựa chọn sáng hoặc tối đã lưu, kể cả khi thiết lập thiết bị khác lựa chọn đó
-- **THEN** ứng dụng hiển thị giao diện đã lưu
+#### Scenario: Browser does not support View Transitions
+- **WHEN** a user changes theme in a browser without `document.startViewTransition`
+- **THEN** the selected theme takes effect immediately without animation
 
-### Requirement: Giữ thay đổi giao diện độc lập với trạng thái của luồng nghiệp vụ
-Việc đổi giao diện SHALL NOT làm thay đổi trạng thái hiện có của phiếu bầu, danh sách ứng viên, xác thực, kỳ bầu chọn hoặc kết quả.
+#### Scenario: User requests reduced motion
+- **WHEN** the operating system or browser requests reduced motion
+- **THEN** the selected theme takes effect without a visible reveal
 
-#### Scenario: Cử tri đổi giao diện khi đang chọn phiếu
-- **WHEN** cử tri đã chọn ứng viên và đổi giao diện
-- **THEN** các ứng viên đã chọn và trạng thái của phiếu vẫn được giữ nguyên
+### Requirement: Apply the saved theme before the first visible render
+On reload, the system SHALL apply the saved theme or resolved system theme before the first visible render and SHALL NOT produce a theme flash or hydration warning.
 
-#### Scenario: Quản trị viên đổi giao diện khi đang nhập danh sách
-- **WHEN** quản trị viên có ứng viên tạm trong danh sách chờ hoặc danh sách đã xóa và đổi giao diện
-- **THEN** nội dung của hai danh sách vẫn được giữ nguyên
+#### Scenario: Reload with a saved dark theme
+- **WHEN** a user reloads the application with dark theme saved
+- **THEN** the first visible page uses dark theme without a flash or hydration warning
 
-### Requirement: Chuyển giao diện bằng hiệu ứng động
-Khi giao diện hiệu lực thay đổi, ứng dụng SHALL chuyển mượt màu nền và màu các bề mặt. Khi người dùng kích hoạt nút toggle, ứng dụng SHALL mở giao diện mới bằng Circular Reveal bắt đầu tại tâm nút. Ứng dụng SHALL tôn trọng tùy chọn giảm chuyển động của hệ điều hành.
+#### Scenario: Reload while following system theme
+- **WHEN** a user reloads without an explicit choice while the device prefers dark theme
+- **THEN** the first visible page uses dark theme without a flash or hydration warning
 
-#### Scenario: Người dùng bật/tắt giao diện
-- **WHEN** người dùng kích hoạt nút toggle sáng/tối
-- **THEN** giao diện mới mở rộng theo hình tròn từ tâm nút, đồng thời nền và bề mặt chuyển sang bảng màu mới một cách mượt mà
+### Requirement: Keep theme animation work bounded
+During a user-initiated reveal, the system SHALL animate the reveal with `clip-path` and SHALL NOT run a page-wide CSS color transition at the same time.
 
-#### Scenario: Thiết lập giao diện thiết bị thay đổi
-- **WHEN** thiết bị đổi chế độ sáng/tối và người dùng chưa lưu lựa chọn riêng
-- **THEN** nền và các bề mặt chuyển mượt sang giao diện mới mà không chạy Circular Reveal
+#### Scenario: Theme changes during a reveal
+- **WHEN** a theme change is revealed
+- **THEN** the reveal uses `clip-path` and page-wide color transitions do not run concurrently
 
-#### Scenario: Người dùng bật chế độ giảm chuyển động
-- **WHEN** hệ điều hành yêu cầu giảm chuyển động
-- **THEN** ứng dụng bỏ Circular Reveal và đổi giao diện tức thì
+### Requirement: Ignore additional activations during a reveal
+The system SHALL ignore further theme-toggle activations while a View Transition is in progress and SHALL accept activations again after that transition settles.
+
+#### Scenario: User activates the toggle repeatedly
+- **WHEN** a user activates the theme toggle while a reveal is already running
+- **THEN** the additional activation is ignored and the theme state remains consistent
+
+#### Scenario: Transition has settled
+- **WHEN** the active View Transition finishes or fails
+- **THEN** the system accepts a subsequent theme-toggle activation
+
+## REMOVED Requirements
+
+### Requirement: Manage theme through a custom ThemeProvider and useTheme API
+The application SHALL expose its theme state through the self-written theme provider and its `useTheme` API.
+
+#### Scenario: Application reads the theme through the custom API
+- **WHEN** an application component needs to read or change the theme
+- **THEN** it uses the self-written `ThemeProvider` and `useTheme` API
+
+**Reason**: The custom provider duplicates theme persistence and system preference handling and contributes to maintenance and initialization problems.
+**Migration**: Replace it with `next-themes`, use `resolvedTheme` for the effective theme, migrate all consumers, and remove the custom provider and hook. Consumers of the old `useTheme` API must update to the `next-themes` API.

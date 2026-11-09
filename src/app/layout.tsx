@@ -25,7 +25,7 @@ export default async function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(()=>{const r=document.documentElement;let p=null;try{p=localStorage.getItem("appearance-theme")}catch{}const t=p==="light"||p==="dark"?p:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");r.dataset.theme=t;r.style.colorScheme=t;r.dataset.reducedTransparency=matchMedia("(prefers-reduced-transparency: reduce)").matches?"reduce":"no-preference";r.dataset.backdropSupported=String(typeof CSS!=="undefined"&&typeof CSS.supports==="function"&&(CSS.supports("backdrop-filter","blur(1px)")||CSS.supports("-webkit-backdrop-filter","blur(1px)")))})()`,
+            __html: `(()=>{const r=document.documentElement;r.dataset.reducedTransparency=matchMedia("(prefers-reduced-transparency: reduce)").matches?"reduce":"no-preference";r.dataset.backdropSupported=String(typeof CSS!=="undefined"&&typeof CSS.supports==="function"&&(CSS.supports("backdrop-filter","blur(1px)")||CSS.supports("-webkit-backdrop-filter","blur(1px)")))})()`,
           }}
         />
       </head>

@@ -2,35 +2,32 @@
 
 ## Why
 
-Dự án đã có các thành phần WebsiteGlass, nhưng cách dùng hiệu ứng kính chưa đồng nhất giữa trang bỏ phiếu, quản trị, nhập danh sách và bảng điều khiển; ứng dụng cũng đang cố định ở giao diện sáng. Một hệ thống giao diện thống nhất sẽ mở rộng Liquid Glass cho toàn ứng dụng và cho phép người dùng chọn giao diện sáng hoặc tối phù hợp.
+The existing circular theme reveal is visibly laggy, and the custom theme provider is difficult to maintain. Theme initialization can also flash the wrong appearance before the page settles, so the theme state and first render need a more reliable approach.
 
 ## What Changes
 
-- Dùng nút toggle sáng/tối hai trạng thái; theo thiết bị cho đến lần bật/tắt đầu tiên, sau đó lưu chế độ người dùng chọn.
-- Tăng độ trong suốt mặc định của các bề mặt Liquid Glass để hậu cảnh hiện rõ hơn, đồng thời giữ độ đọc bằng viền, phản quang và màu chữ; chế độ giảm độ trong suốt vẫn dùng nền đục hơn.
-- Giảm độ trắng và độ nổi của viền kính, hạ tint mặc định để các bề mặt trong suốt hơn.
-- Cho phép chọn một trong hai bảng màu nhấn: xanh lá hiện tại hoặc xanh navy dịu; lưu lựa chọn độc lập với giao diện sáng/tối.
-
-- Mở rộng giao diện dựa trên WebsiteGlass cho các điều khiển dùng chung, thẻ, lớp phủ và bề mặt riêng của từng trang trong toàn ứng dụng.
-- Bổ sung giao diện sáng và tối đồng bộ; mặc định theo cài đặt thiết bị, đồng thời có công tắc để người dùng chọn và ghi nhớ giao diện.
-- Thêm chuyển theme bằng hiệu ứng Circular Reveal từ tâm công tắc, kết hợp chuyển màu nền và màu giao diện mượt; tôn trọng tùy chọn giảm chuyển động của hệ điều hành.
-- Định nghĩa màu kính, đường viền, màu chữ, bóng đổ và bề mặt dự phòng theo từng giao diện để nội dung trên lớp trong suốt vẫn dễ đọc.
-- Định nghĩa hai bảng màu nhấn dùng chung cho toàn ứng dụng mà không thay đổi lựa chọn sáng/tối.
-- Giữ khả năng hiển thị dự phòng trên trình duyệt không hỗ trợ khúc xạ và hỗ trợ cài đặt giảm độ trong suốt.
-- Giữ nguyên mọi quy tắc nghiệp vụ và hành vi trạng thái hiện có; không đổi logic hoặc hợp đồng của bộ xử lý API trong route. Các trạng thái trình bày cục bộ (giao diện sáng/tối và bảng màu nhấn) được lưu riêng, không tham gia luồng bầu chọn.
+- Replace the custom theme provider with `next-themes`, configured with `attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`, and `resolvedTheme` for the effective appearance.
+- **BREAKING**: Replace the project's custom `useTheme` API with the `next-themes` API. Update all consumers and remove the old provider; callers relying on the old API must migrate.
+- Add Magic UI's `AnimatedThemeToggler` with `npx shadcn@latest add @magicui/animated-theme-toggler` and use its circular View Transition reveal instead of implementing the reveal handler and `clip-path` animation by hand. Configure a 500 ms duration and connect it to `next-themes`.
+- Use the component's immediate fallback when View Transitions are unavailable and configure zero-duration transitions when reduced motion is requested.
+- Prevent a flash of the wrong theme and hydration warnings during initial load.
+- Use the theme control and Sun/Moon icons provided by Magic UI; do not add a separate Framer Motion animation or a handwritten page transition.
 
 ## Capabilities
 
 ### New Capabilities
-- `appearance-theme`: Chọn giao diện sáng hoặc tối ban đầu theo thiết bị, cho phép người dùng đổi giao diện và ghi nhớ lựa chọn.
-- `liquid-glass-ui`: Hiển thị các bề mặt tương tác trong ứng dụng bằng hiệu ứng Liquid Glass đồng nhất, thích ứng theo giao diện.
+
+- `appearance-theme`: Choose and persist a light or dark appearance, follow system appearance when no explicit choice exists, and change themes with a responsive circular reveal.
+- `liquid-glass-ui`: Present consistent Liquid Glass surfaces across the application, adapting them to the current appearance.
 
 ### Modified Capabilities
-- Không có.
+
+- None.
 
 ## Impact
 
-- Ảnh hưởng đến bố cục gốc, kiểu hiển thị toàn cục và các thành phần giao diện dùng chung trong `src/components/ui`.
-- Ảnh hưởng đến bề mặt của trang bỏ phiếu, nhập danh sách, quản trị và bảng điều khiển, bao gồm biểu đồ, hộp thoại và bảng trượt.
-- Tái sử dụng mã WebsiteGlass và cấu hình React/Tailwind hiện có; bổ sung gói Motion làm dependency lúc chạy cho hiệu ứng chuyển theme.
-- Bộ xử lý API trong route và các chuyển trạng thái hiện hữu của phiếu bầu, danh sách ứng viên, xác thực, kỳ bầu chọn và kết quả nằm ngoài phạm vi thay đổi.
+- Theme state and provider integration in the root application layout and theme provider; replace custom `useTheme` imports throughout the application.
+- Magic UI theme toggle integration and global theme CSS for View Transition pseudo-elements and removal or scoping of global color transitions.
+- Next.js document initialization and hydration behavior in `src/app/layout.tsx`; an inline `<head>` initialization script is only relevant if the application is moved to Vite.
+- Dependencies and generated component files from the Magic UI shadcn registry command, including its required icon dependency, plus `next-themes` for theme state.
+- No changes to voting, administration, or API business behavior.

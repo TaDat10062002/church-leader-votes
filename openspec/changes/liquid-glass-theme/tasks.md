@@ -30,3 +30,44 @@
 - [x] 5.1 Giảm độ đục của viền trắng và hạ tint mặc định của các bề mặt Liquid Glass; giữ phản quang tiết chế, độ đọc rõ và fallback đục hơn cho chế độ giảm độ trong suốt.
 - [x] 5.2 Thêm lựa chọn xanh lá hiện tại và xanh navy dịu vào giao diện; lưu lựa chọn riêng với sáng/tối, khởi tạo màu trước khi vẽ trang và áp dụng nhất quán cho màu nhấn, viền và sắc kính.
 - [x] 5.3 Rà soát các trang với cả hai giao diện, hai bảng màu và chế độ giảm độ trong suốt; xác nhận lựa chọn còn hiệu lực sau điều hướng/tải lại, kính nhìn xuyên rõ và luồng nghiệp vụ không đổi.
+
+## 6. Audit hiệu năng chuyển theme
+
+- [x] 6.1 Đo và ghi lại thời gian xử lý click cùng frame rate và thời lượng reveal hiện tại trên trang đại diện; lưu số liệu nền để so sánh sau migration sang Magic UI.
+- [x] 6.2 Kiểm tra transition màu toàn cục, số component đăng ký `useTheme`, và chi phí snapshot từ `backdrop-filter`, blur, canvas hoặc WebGL; ghi phát hiện và cách xử lý cho từng nguyên nhân có tác động.
+
+## 7. Chuyển quản lý theme sang next-themes
+
+- [x] 7.1 Cài `next-themes` và cấu hình provider với `attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`; xác nhận theme system/light/dark và `resolvedTheme` hoạt động.
+- [x] 7.2 Chuyển mọi import consumer từ `useTheme` tự viết sang `next-themes`, xóa provider/hook cũ và xác nhận không còn tham chiếu cũ bằng tìm kiếm toàn repo.
+
+## 8. Ngăn flash và hydration warning
+
+- [x] 8.1 Tích hợp khởi tạo theme của `next-themes` vào root layout Next.js, thêm `suppressHydrationWarning` tại `<html>` và chỉ render icon phụ thuộc theme sau `mounted`; xác nhận bố cục nút không dịch chuyển.
+- [x] 8.2 Tải lại trang với theme dark đã lưu và với theme system; xác nhận theme đúng ngay từ lần render hiển thị đầu, không flash và không có hydration warning trong console.
+
+## 9. Tối ưu handler View Transition
+
+- [x] 9.1 Cài component bằng `npx shadcn@latest add @magicui/animated-theme-toggler`; xác nhận component được thêm vào đường dẫn UI của dự án và các dependency của registry được giải quyết.
+- [x] 9.2 Nối component với `next-themes` qua `theme` lấy từ `resolvedTheme` và `onThemeChange` lấy từ `setTheme`; xác nhận provider nhận và lưu lựa chọn sáng/tối.
+- [x] 9.3 Cấu hình `variant="circle"`, `duration={500}` và origin mặc định ở tâm nút; xác nhận reveal tròn đúng thời lượng khi kích hoạt bằng pointer và bàn phím.
+- [x] 9.4 Giữ CSS View Transition do component cung cấp, bỏ transition màu toàn trang cạnh tranh và cấu hình duration bằng 0 khi bật reduced motion; xác nhận giảm chuyển động không có reveal nhìn thấy được.
+- [x] 9.5 Xác nhận fallback tích hợp của component đổi theme tức thì khi thiếu View Transitions và bỏ qua bấm thêm trong lúc transition đang chạy; kiểm tra theme vẫn đồng bộ sau khi transition hoàn tất hoặc lỗi.
+
+## 10. Hoàn thiện ThemeToggle
+
+- [x] 10.1 Thay các nút toggle hiện có bằng component Magic UI dùng chung trên các trang bỏ phiếu, nhập danh sách, bảng điều khiển, đăng nhập và xác nhận; xác nhận các vị trí đều dùng cùng component.
+- [x] 10.2 Chỉ render toggle sau `mounted`, giữ kích thước chỗ trống ổn định và cung cấp nhãn truy cập phù hợp; xác nhận icon Sun/Moon và trạng thái truy cập được khớp với `resolvedTheme`.
+- [x] 10.3 AnimatePresence chuyen icon Sun/Moon va whileTap tren nut theme; xac nhan motion chi danh cho icon/nut va tat khi reduced motion.
+
+## 11. Kiểm thử thủ công theme
+
+- [ ] 11.1 Kiểm tra Chrome, Safari và Firefox: reload khi đang dark, lựa chọn system, đổi theme bằng pointer và bàn phím, bấm liên tục, và reduced motion; ghi kết quả từng trình duyệt.
+  Chrome and WebKit passed dark reload, system dark/light, pointer and Space toggles, rapid clicks (single flip), reduced motion, and zero hydration warnings. Playwright Firefox launch timed out after 30 seconds. Safari is unavailable on this Windows host; WebKit was tested as an engine proxy, not as Safari.
+- [x] 11.2 Đo lại hiệu năng sau tối ưu trên các trang đại diện; ghi frame rate và xác nhận mục tiêu xấp xỉ 60fps trong reveal.
+  Chrome (headless, 1280x800): /thanks 96.0% of sampled frames <=16.67ms, p95 14.0ms; /vote 98.7%, p95 7.1ms.
+
+## 12. Kiểm tra chất lượng và OpenSpec
+
+- [x] 12.1 Chạy `tsc` và lint; ghi kết quả và xử lý lỗi phát sinh từ migration theme.
+- [x] 12.2 Chạy `openspec validate liquid-glass-theme --strict`; xác nhận change hợp lệ.
