@@ -6,3 +6,10 @@ node_modules/
 coverage/
 playwright-report/
 test-results/
+/docs/
+/.agents/
+/e2e/
+/openspec/
+/supabase/
+/test/
+/chuch-leader-vote.code-workspace
