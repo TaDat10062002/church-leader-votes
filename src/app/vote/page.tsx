@@ -47,7 +47,9 @@ export default function VotePage() {
         setElection(data.election);
       } catch (e) {
         setError(
-          e instanceof Error ? e.message : translateRef.current("cannotLoadCandidates"),
+          e instanceof Error
+            ? e.message
+            : translateRef.current("cannotLoadCandidates"),
         );
       } finally {
         if (requestId === snapshotRequest.current) setLoading(false);
@@ -56,7 +58,7 @@ export default function VotePage() {
     [],
   );
   useEffect(() => {
-    void loadElection();
+    // void loadElection();
     const client = getSupabaseBrowser();
     if (!client) return;
     return subscribeToElectionChanges(client, () => {

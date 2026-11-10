@@ -41,6 +41,7 @@ import {
   type DeletedDraft,
   type ProvisionalDraft,
 } from "@/lib/roster-state";
+import Image from "next/image";
 
 type RosterState = { waiting: ProvisionalDraft[]; deleted: DeletedDraft[] };
 
@@ -72,14 +73,13 @@ export default function ImportRoster() {
         body: form,
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(apiErrorMessage(locale, data.code, data.values));
+      if (!response.ok)
+        throw new Error(apiErrorMessage(locale, data.code, data.values));
       setRoster({
         waiting: createProvisionalDrafts(data.candidates as CandidateDraft[]),
         deleted: [],
       });
-      setMessage(
-        t("importedCount", { count: number(data.candidates.length) }),
-      );
+      setMessage(t("importedCount", { count: number(data.candidates.length) }));
     } catch (e) {
       setError(e instanceof Error ? e.message : t("cannotReadFile"));
     } finally {
@@ -119,12 +119,11 @@ export default function ImportRoster() {
         body: JSON.stringify({ candidates: toCandidateDrafts(roster.waiting) }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(apiErrorMessage(locale, data.code, data.values));
+      if (!response.ok)
+        throw new Error(apiErrorMessage(locale, data.code, data.values));
       router.push("/dashboard");
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : t("cannotStartElection"),
-      );
+      setError(e instanceof Error ? e.message : t("cannotStartElection"));
     } finally {
       setBusy(false);
     }
@@ -166,7 +165,11 @@ export default function ImportRoster() {
           <ArrowLeft size={17} />
           <span className="hidden sm:inline">{t("adminTitle")}</span>
         </a>
-        <GlassChip role="img" aria-label={t("importStep")} className="grid size-10 shrink-0 place-items-center rounded-full bg-moss/10 text-xs font-bold text-moss sm:flex sm:size-auto sm:justify-center sm:px-3 sm:py-1.5 sm:text-center">
+        <GlassChip
+          role="img"
+          aria-label={t("importStep")}
+          className="grid size-10 shrink-0 place-items-center rounded-full bg-moss/10 text-xs font-bold text-moss sm:flex sm:size-auto sm:justify-center sm:px-3 sm:py-1.5 sm:text-center"
+        >
           <Users size={16} aria-hidden="true" className="sm:hidden" />
           <span className="hidden sm:inline">{t("importStep")}</span>
         </GlassChip>
@@ -178,9 +181,7 @@ export default function ImportRoster() {
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
           {t("importHeading")}
         </h1>
-        <p className="mt-3 text-ink/60">
-          {t("importDescription")}
-        </p>
+        <p className="mt-3 text-ink/60">{t("importDescription")}</p>
       </div>
       <Card className="mt-8 p-5 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -206,7 +207,10 @@ export default function ImportRoster() {
             <a
               href="/api/admin/template"
               download
-              className={glassClassName("clear", "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-moss/5")}
+              className={glassClassName(
+                "clear",
+                "inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-ink transition hover:border-moss/40 hover:bg-moss/5",
+              )}
             >
               <FileDown size={17} />
               {t("downloadTemplate")}
@@ -221,13 +225,21 @@ export default function ImportRoster() {
             </Button>
           </div>
         </div>
-        <div className={glassClassName("subtle", "mt-5 rounded-xl border-dashed border-moss/25 px-4 py-5 text-center text-sm text-ink/65 sm:py-7")}>
+        <div
+          className={glassClassName(
+            "subtle",
+            "mt-5 rounded-xl border-dashed border-moss/25 px-4 py-5 text-center text-sm text-ink/65 sm:py-7",
+          )}
+        >
           {t("embeddedImageNote")}
         </div>
       </Card>
       {(message || error) && (
         <div
-          className={glassClassName("frosted", `mt-5 rounded-xl px-4 py-3 text-sm ${error ? "text-[var(--app-danger)]" : "bg-moss/10 text-moss"}`)}
+          className={glassClassName(
+            "frosted",
+            `mt-5 rounded-xl px-4 py-3 text-sm ${error ? "text-[var(--app-danger)]" : "bg-moss/10 text-moss"}`,
+          )}
           role={error ? "alert" : "status"}
         >
           {error || message}
@@ -236,17 +248,19 @@ export default function ImportRoster() {
       <section className="mt-8">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold text-ink">{t("waitingList")}</h2>
-            <p className="mt-1 text-sm text-ink/65">
-              {t("savedWhenStarted")}
-            </p>
+            <h2 className="text-xl font-semibold text-ink">
+              {t("waitingList")}
+            </h2>
+            <p className="mt-1 text-sm text-ink/65">{t("savedWhenStarted")}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
                   variant="secondary"
-                  aria-label={t("deletedCandidatesCount", { count: number(deleted.length) })}
+                  aria-label={t("deletedCandidatesCount", {
+                    count: number(deleted.length),
+                  })}
                 >
                   <RotateCcw size={16} />
                   {t("deletedCandidates")}{" "}
@@ -266,7 +280,12 @@ export default function ImportRoster() {
                   </SheetDescription>
                 </SheetHeader>
                 {deleted.length === 0 ? (
-                  <div className={glassClassName("subtle", "grid min-h-48 place-items-center rounded-xl border-dashed border-moss/25 px-5 text-center text-sm text-ink/65")}>
+                  <div
+                    className={glassClassName(
+                      "subtle",
+                      "grid min-h-48 place-items-center rounded-xl border-dashed border-moss/25 px-5 text-center text-sm text-ink/65",
+                    )}
+                  >
                     {t("noDeletedCandidates")}
                   </div>
                 ) : (
@@ -280,9 +299,12 @@ export default function ImportRoster() {
                       <motion.li
                         key={draft.id}
                         variants={listItemVariants}
-                        className={glassClassName("subtle", "flex items-center gap-3 rounded-xl p-3")}
+                        className={glassClassName(
+                          "subtle",
+                          "flex items-center gap-3 rounded-xl p-3",
+                        )}
                       >
-                        <img
+                        <Image
                           src={draft.candidate.image}
                           alt=""
                           className="h-12 w-12 shrink-0 rounded-full object-cover"
@@ -293,7 +315,9 @@ export default function ImportRoster() {
                         <Button
                           variant="secondary"
                           className="shrink-0 px-3 modal-action-submit"
-                          aria-label={t("restoreCandidate", { name: candidateName(draft.candidate, locale) })}
+                          aria-label={t("restoreCandidate", {
+                            name: candidateName(draft.candidate, locale),
+                          })}
                           onClick={() => restore(draft.id)}
                         >
                           <RotateCcw size={15} />
@@ -312,7 +336,10 @@ export default function ImportRoster() {
           </div>
         </div>
         {waiting.length === 0 ? (
-          <Card glassVariant="frosted" className="grid min-h-52 place-items-center border-dashed p-7 text-center shadow-none">
+          <Card
+            glassVariant="frosted"
+            className="grid min-h-52 place-items-center border-dashed p-7 text-center shadow-none"
+          >
             <div>
               <ImagePlus className="mx-auto text-moss/50" size={32} />
               <p className="mt-3 font-medium">{t("noCandidates")}</p>
@@ -338,16 +365,21 @@ export default function ImportRoster() {
                 variants={listItemVariants}
                 onAnimationStart={() => followListLoading(draft.id)}
               >
-                <Card glassVariant="subtle" className="group relative p-3 text-center transition-shadow duration-200 hover:shadow-soft sm:p-4">
+                <Card
+                  glassVariant="subtle"
+                  className="group relative p-3 text-center transition-shadow duration-200 hover:shadow-soft sm:p-4"
+                >
                   <Button
                     variant="ghost"
-                    aria-label={t("removeCandidateNamed", { name: candidateName(draft.candidate, locale) })}
+                    aria-label={t("removeCandidateNamed", {
+                      name: candidateName(draft.candidate, locale),
+                    })}
                     onClick={() => remove(draft.id)}
                     className="absolute right-2 top-2 grid size-11 min-h-0 place-items-center rounded-full p-0 text-ink/65 transition hover:text-[var(--app-danger)]"
                   >
                     <Trash2 size={16} />
                   </Button>
-                  <img
+                  <Image
                     src={draft.candidate.image}
                     alt=""
                     className="mx-auto h-20 w-20 rounded-full border-4 border-cream object-cover sm:h-24 sm:w-24"
@@ -373,7 +405,9 @@ export default function ImportRoster() {
           {waiting.length
             ? t("willPublish", { count: number(waiting.length) })
             : t("importBeforeStart")}
-          {deleted.length > 0 ? ` ${t("deletedSummary", { count: number(deleted.length) })}` : ""}
+          {deleted.length > 0
+            ? ` ${t("deletedSummary", { count: number(deleted.length) })}`
+            : ""}
         </p>
         <DialogPrimitive.Root open={confirmOpen} onOpenChange={setConfirmOpen}>
           <DialogPrimitive.Trigger asChild>
@@ -400,7 +434,9 @@ export default function ImportRoster() {
                   {t("confirmStartElection")}
                 </DialogPrimitive.Title>
                 <DialogPrimitive.Description className="mt-3 text-sm leading-6 text-ink/65">
-                  {t("startElectionDescription", { count: number(waiting.length) })}
+                  {t("startElectionDescription", {
+                    count: number(waiting.length),
+                  })}
                 </DialogPrimitive.Description>
                 <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
                   <DialogPrimitive.Close asChild>

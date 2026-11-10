@@ -29,6 +29,7 @@ import { shouldRefreshResults } from "@/lib/results";
 import { useLocale } from "@/components/locale/locale-provider";
 import { candidateName } from "@/lib/candidate-name";
 import { apiErrorMessage } from "@/lib/i18n";
+import Image from "next/image";
 
 type Results = { election: { id: string } | null; results: ResultRow[] };
 
@@ -69,7 +70,9 @@ export default function Dashboard() {
       setUpdated(new Date());
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : translateRef.current("cannotLoadResults"),
+        e instanceof Error
+          ? e.message
+          : translateRef.current("cannotLoadResults"),
       );
     } finally {
       setLoading(false);
@@ -131,11 +134,7 @@ export default function Dashboard() {
       setResetOpen(false);
       router.replace("/import-file");
     } catch (e) {
-      setResetError(
-        e instanceof Error
-          ? e.message
-          : t("cannotResetElection"),
-      );
+      setResetError(e instanceof Error ? e.message : t("cannotResetElection"));
     } finally {
       setResetBusy(false);
     }
@@ -143,7 +142,11 @@ export default function Dashboard() {
   return (
     <main className="mx-auto min-h-dvh max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
       <GlassHeader className="flex flex-nowrap items-center justify-between gap-2 sm:flex-wrap sm:gap-3">
-        <a href="/dashboard" aria-label={t("dashboard")} className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <a
+          href="/dashboard"
+          aria-label={t("dashboard")}
+          className="flex shrink-0 items-center gap-2 sm:gap-3"
+        >
           <GlassChip className="grid size-9 shrink-0 place-items-center rounded-full bg-moss/10 text-moss sm:size-10">
             <Church size={19} />
           </GlassChip>
@@ -179,7 +182,12 @@ export default function Dashboard() {
             <Users size={16} />
             <span className="hidden sm:inline">{t("candidateListShort")}</span>
           </Button>
-          <Button variant="ghost" onClick={logout} aria-label={t("logout")} className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5">
+          <Button
+            variant="ghost"
+            onClick={logout}
+            aria-label={t("logout")}
+            className="min-h-0 size-10 rounded-full p-0 sm:min-h-11 sm:size-auto sm:rounded-2xl sm:px-5"
+          >
             <LogOut size={17} />
             <span className="hidden sm:inline">{t("logout")}</span>
           </Button>
@@ -193,18 +201,14 @@ export default function Dashboard() {
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             {t("voteSummary")}
           </h1>
-          <p className="mt-2 text-sm text-ink/65">
-            {t("chartAutoUpdate")}
-          </p>
+          <p className="mt-2 text-sm text-ink/65">{t("chartAutoUpdate")}</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-ink/65">
           <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-leaf opacity-60 motion-reduce:animate-none" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-moss" />
           </span>
-          {updated
-            ? t("updatedAt", { time: time(updated) })
-            : t("connecting")}
+          {updated ? t("updatedAt", { time: time(updated) }) : t("connecting")}
           <Button
             variant="ghost"
             onClick={refresh}
@@ -250,7 +254,9 @@ export default function Dashboard() {
               <GlassChip className="grid h-9 w-9 place-items-center rounded-xl bg-gold/20 text-ink">
                 <Vote size={18} />
               </GlassChip>
-              <p className="mt-4 text-2xl font-semibold">{number(totalSelections)}</p>
+              <p className="mt-4 text-2xl font-semibold">
+                {number(totalSelections)}
+              </p>
               <p className="mt-1 text-xs text-ink/65">{t("validSelections")}</p>
             </Card>
             <Card className="col-span-2 p-4 sm:col-span-1 sm:p-5">
@@ -260,12 +266,13 @@ export default function Dashboard() {
               <p className="mt-4 flex items-center gap-2 text-lg font-semibold">
                 {t("realtime")} <ArrowUpRight size={16} />
               </p>
-              <p className="mt-1 text-xs text-ink/65">
-                {t("totalsUpdating")}
-              </p>
+              <p className="mt-1 text-xs text-ink/65">{t("totalsUpdating")}</p>
             </Card>
           </div>
-          <Card glassVariant="liquid-refract" className="dashboard-chart-glass mt-5 overflow-hidden p-4 sm:p-6">
+          <Card
+            glassVariant="liquid-refract"
+            className="dashboard-chart-glass mt-5 overflow-hidden p-4 sm:p-6"
+          >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="font-semibold text-ink">
@@ -289,13 +296,15 @@ export default function Dashboard() {
               <div className="mt-5 overflow-x-auto lg:overflow-x-hidden">
                 <div
                   className="w-full min-w-[var(--candidate-chart-width)] lg:min-w-0"
-                  style={{
-                    "--candidate-chart-width": `${chartOrientation === "vertical" ? Math.max(620, data.results.length * 112) : 620}px`,
-                    height:
-                      chartOrientation === "vertical"
-                        ? 390
-                        : Math.max(390, data.results.length * 42),
-                  } as CSSProperties}
+                  style={
+                    {
+                      "--candidate-chart-width": `${chartOrientation === "vertical" ? Math.max(620, data.results.length * 112) : 620}px`,
+                      height:
+                        chartOrientation === "vertical"
+                          ? 390
+                          : Math.max(390, data.results.length * 42),
+                    } as CSSProperties
+                  }
                 >
                   <DashboardResultsChart
                     results={data.results}
@@ -313,13 +322,18 @@ export default function Dashboard() {
             <h2 className="mb-3 font-semibold">{t("currentRanking")}</h2>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {data.results.map((row, index) => (
-                <Card key={row.id} glassVariant="subtle" className="flex items-center gap-3 p-3">
+                <Card
+                  key={row.id}
+                  glassVariant="subtle"
+                  className="flex items-center gap-3 p-3"
+                >
                   <span className="w-7 shrink-0 text-center text-sm font-bold text-ink/65">
                     {number(index + 1)}
                   </span>
-                  <img
+                  <Image
                     src={row.image_url}
                     alt=""
+                    fill
                     className="h-11 w-11 rounded-full object-cover"
                   />
                   <span className="min-w-0 flex-1 break-words text-sm font-semibold">

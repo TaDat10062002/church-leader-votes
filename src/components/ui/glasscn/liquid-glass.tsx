@@ -148,7 +148,6 @@ export const LiquidGlass = forwardRef<HTMLDivElement, LiquidGlassProps>(
       // strong edge refraction, thick curved bezel, light blur, vivid backdrop.
       blur = 1.5,
       refraction = 55,
-      mapSize: _mapSize,
       bezel = 0.5,
       saturation = 1.6,
       glare = true,
