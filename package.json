@@ -2,6 +2,9 @@
   "name": "church-leadership-voting",
   "version": "1.0.0",
   "private": true,
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
