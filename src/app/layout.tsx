@@ -22,9 +22,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body>
-        <LocaleProvider initialLocale={locale}>
-          {children}
-        </LocaleProvider>
+        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
       </body>
     </html>
   );

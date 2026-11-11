@@ -9,6 +9,8 @@ export const ELECTION_RESULTS_TAG = "election-results";
 // Writes through the app invalidate these snapshots; the TTL covers external changes.
 export const getCachedActiveElection = unstable_cache(
   async () => {
+    const start = performance.now();
+
     const supabase = getSupabaseAdmin();
     const { data: election, error } = await supabase
       .from("elections")
@@ -31,6 +33,9 @@ export const getCachedActiveElection = unstable_cache(
       .eq("election_id", election.id)
       .order("display_order");
     if (candidatesError) throw candidatesError;
+
+    console.log(`[DB QUERY] ${Math.round(performance.now() - start)}ms`);
+
     return {
       election: {
         id: election.id,
