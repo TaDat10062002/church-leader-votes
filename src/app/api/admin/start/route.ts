@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { apiError, requireAdmin } from "@/lib/http";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { ACTIVE_ELECTION_TAG, ELECTION_RESULTS_TAG, invalidateElectionCache } from "@/lib/election-cache";
 
 export const runtime = "nodejs";
 type Draft = { name_zh?: string; name_vi?: string; image?: string };
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
     }
     const { data: electionId, error } = await supabase.rpc("start_election", { p_candidates: rows });
     if (error) throw error;
+    invalidateElectionCache(ACTIVE_ELECTION_TAG, ELECTION_RESULTS_TAG);
     return NextResponse.json({ ok: true, electionId });
   } catch (error) {
     if (uploadedPaths.length) await supabase.storage.from("candidate-images").remove(uploadedPaths);

@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/sheet";
 import type { CandidateDraft } from "@/lib/types";
 import { candidateName } from "@/lib/candidate-name";
+import { canOptimizeCandidateImage } from "@/lib/candidate-image";
 import { useLocale } from "@/components/locale/locale-provider";
 import { apiErrorMessage } from "@/lib/i18n";
 import {
@@ -42,6 +43,7 @@ import {
   type ProvisionalDraft,
 } from "@/lib/roster-state";
 import Image from "next/image";
+import { parseRosterFile, startElection as startElectionAction } from "@/app/actions";
 
 type RosterState = { waiting: ProvisionalDraft[]; deleted: DeletedDraft[] };
 
@@ -68,13 +70,10 @@ export default function ImportRoster() {
     try {
       const form = new FormData();
       form.set("file", file);
-      const response = await fetch("/api/admin/parse-excel", {
-        method: "POST",
-        body: form,
-      });
-      const data = await response.json();
+      const response = await parseRosterFile(form);
       if (!response.ok)
-        throw new Error(apiErrorMessage(locale, data.code, data.values));
+        throw new Error(apiErrorMessage(locale, response.code, response.values));
+      const data = response.data;
       setRoster({
         waiting: createProvisionalDrafts(data.candidates as CandidateDraft[]),
         deleted: [],
@@ -113,14 +112,9 @@ export default function ImportRoster() {
     setBusy(true);
     setError("");
     try {
-      const response = await fetch("/api/admin/start", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ candidates: toCandidateDrafts(roster.waiting) }),
-      });
-      const data = await response.json();
+      const response = await startElectionAction(toCandidateDrafts(roster.waiting));
       if (!response.ok)
-        throw new Error(apiErrorMessage(locale, data.code, data.values));
+        throw new Error(apiErrorMessage(locale, response.code, response.values));
       router.push("/dashboard");
     } catch (e) {
       setError(e instanceof Error ? e.message : t("cannotStartElection"));
@@ -307,6 +301,9 @@ export default function ImportRoster() {
                         <Image
                           src={draft.candidate.image}
                           alt=""
+                          width={48}
+                          height={48}
+                          unoptimized={!canOptimizeCandidateImage(draft.candidate.image)}
                           className="h-12 w-12 shrink-0 rounded-full object-cover"
                         />
                         <span className="min-w-0 flex-1 break-words text-sm font-medium text-ink">
@@ -381,6 +378,9 @@ export default function ImportRoster() {
                   </Button>
                   <Image
                     src={draft.candidate.image}
+                    width={96}
+                    height={96}
+                    unoptimized={!canOptimizeCandidateImage(draft.candidate.image)}
                     alt=""
                     className="mx-auto h-20 w-20 rounded-full border-4 border-cream object-cover sm:h-24 sm:w-24"
                   />

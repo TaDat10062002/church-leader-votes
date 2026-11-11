@@ -28,27 +28,30 @@ import type { ResultRow } from "@/lib/types";
 import { shouldRefreshResults } from "@/lib/results";
 import { useLocale } from "@/components/locale/locale-provider";
 import { candidateName } from "@/lib/candidate-name";
+import { canOptimizeCandidateImage } from "@/lib/candidate-image";
 import { apiErrorMessage } from "@/lib/i18n";
 import Image from "next/image";
+import { getResults, logoutAdmin, resetElection } from "@/app/actions";
 
 type Results = { election: { id: string } | null; results: ResultRow[] };
 
-export default function Dashboard() {
+export default function Dashboard({ initial }: { initial: Awaited<ReturnType<typeof getResults>> }) {
   const router = useRouter();
   const { locale, t, number, time } = useLocale();
   const localeRef = useRef(locale);
   const translateRef = useRef(t);
   localeRef.current = locale;
   translateRef.current = t;
-  const [data, setData] = useState<Results>({ election: null, results: [] });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<Results>(initial.ok ? initial.data : { election: null, results: [] });
+  const [error, setError] = useState(initial.ok ? "" : apiErrorMessage(locale, initial.code));
+  const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState<Date | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const [resetBusy, setResetBusy] = useState(false);
   const [resetError, setResetError] = useState("");
   const [chartOrientation, setChartOrientation] =
     useState<DashboardChartOrientation>("vertical");
+  const electionId = data.election?.id;
   const resetDialog = useRef<HTMLDialogElement>(null);
   const supabase = useMemo(() => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -57,15 +60,14 @@ export default function Dashboard() {
   }, []);
   const refresh = useCallback(async () => {
     try {
-      const response = await fetch("/api/admin/results", { cache: "no-store" });
-      const json = await response.json();
-      if (response.status === 401) {
+      const response = await getResults();
+      if (!response.ok && response.status === 401) {
         router.replace("/vote");
         return;
       }
       if (!response.ok)
-        throw new Error(apiErrorMessage(localeRef.current, json.code));
-      setData(json);
+        throw new Error(apiErrorMessage(localeRef.current, response.code));
+      setData(response.data);
       setError("");
       setUpdated(new Date());
     } catch (e) {
@@ -79,55 +81,60 @@ export default function Dashboard() {
     }
   }, [router]);
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
-  useEffect(() => {
     const dialog = resetDialog.current;
     if (!dialog) return;
     if (resetOpen && !dialog.open) dialog.showModal();
     else if (!resetOpen && dialog.open) dialog.close();
   }, [resetOpen]);
   useEffect(() => {
-    if (!data.election || !supabase) return;
+    if (!electionId || !supabase) return;
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
     const channel = supabase
-      .channel(`election-${data.election.id}`)
+      .channel(`election-${electionId}`)
       .on("broadcast", { event: "vote-recorded" }, () => {
-        if (shouldRefreshResults("vote-recorded")) void refresh();
+        if (shouldRefreshResults("vote-recorded")) {
+          clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => void refresh(), 1000);
+        }
       })
       .subscribe((status) => {
         if (status === "SUBSCRIBED" && shouldRefreshResults("subscribed"))
           void refresh();
       });
-    const onFocus = () => {
-      if (shouldRefreshResults("focus")) void refresh();
-    };
-    window.addEventListener("focus", onFocus);
     return () => {
-      window.removeEventListener("focus", onFocus);
+      clearTimeout(refreshTimer);
       void supabase.removeChannel(channel);
     };
-  }, [data.election?.id, refresh, supabase]);
+  }, [electionId, refresh, supabase]);
+  useEffect(() => {
+    const onFocus = () => {
+      if (document.visibilityState === "visible" && shouldRefreshResults("focus")) void refresh();
+    };
+    const timer = window.setInterval(onFocus, 15_000);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [refresh]);
   const totalSelections = data.results.reduce((sum, row) => sum + row.total, 0);
 
   async function logout() {
-    await fetch("/api/admin/session", { method: "DELETE" });
+    await logoutAdmin();
     router.replace("/vote");
   }
   async function confirmReset() {
     setResetBusy(true);
     setResetError("");
     try {
-      const response = await fetch("/api/admin/reset", { method: "POST" });
-      const result = (await response.json().catch(() => null)) as {
-        code?: string;
-      } | null;
-      if (response.status === 401) {
+      const response = await resetElection();
+      if (!response.ok && response.status === 401) {
         router.replace("/vote");
         return;
       }
       if (!response.ok)
         throw new Error(
-          apiErrorMessage(locale, result?.code || "ELECTION_RESET_FAILED"),
+          apiErrorMessage(locale, response.code || "ELECTION_RESET_FAILED"),
         );
       setData({ election: null, results: [] });
       setUpdated(null);
@@ -332,8 +339,10 @@ export default function Dashboard() {
                   </span>
                   <Image
                     src={row.image_url}
+                    unoptimized={!canOptimizeCandidateImage(row.image_url)}
                     alt=""
-                    fill
+                    width={44}
+                    height={44}
                     className="h-11 w-11 rounded-full object-cover"
                   />
                   <span className="min-w-0 flex-1 break-words text-sm font-semibold">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Check, LoaderCircle, RotateCcw, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { GlassIconButton } from "@/components/ui/glass-icon-button";
 import { glassClassName } from "@/lib/glass-variants";
 import type { Candidate } from "@/lib/types";
 import { candidateName } from "@/lib/candidate-name";
+import { canOptimizeCandidateImage } from "@/lib/candidate-image";
 import { useLocale } from "@/components/locale/locale-provider";
 import Image from "next/image";
 
@@ -22,16 +23,14 @@ type Props = {
   onSubmit: (candidateIds: string[]) => Promise<boolean>;
 };
 
-function CandidateOption({
+const CandidateOption = memo(function CandidateOption({
   candidate,
   index,
   slotIndex,
-  onSelect,
 }: {
   candidate: Candidate;
   index: number;
   slotIndex: number;
-  onSelect: () => void;
 }) {
   const { locale, t, number } = useLocale();
   const name = candidateName(candidate, locale);
@@ -40,7 +39,7 @@ function CandidateOption({
   return (
     <button
       type="button"
-      onClick={onSelect}
+      data-candidate-id={candidate.id}
       disabled={selected}
       aria-pressed={selected}
       aria-label={`${name}${selected ? t("candidateSelectedAt", { slot: number(slotIndex + 1) }) : t("tapToSelect")}`}
@@ -52,8 +51,10 @@ function CandidateOption({
       <span className="relative block h-10 w-10 shrink-0 sm:h-12 sm:w-12">
         <Image
           src={candidate.image_url}
+          unoptimized={!canOptimizeCandidateImage(candidate.image_url)}
           alt=""
           fill
+          sizes="(min-width: 640px) 48px, 40px"
           className={`h-full w-full rounded-full border-2 object-cover ${selected ? "border-moss" : "border-[var(--glass-border)]"}`}
         />
         <span
@@ -72,7 +73,7 @@ function CandidateOption({
       </span>
     </button>
   );
-}
+});
 
 function BallotSlot({
   index,
@@ -118,8 +119,10 @@ function BallotSlot({
         <div className="flex min-w-0 items-center gap-1.5 pb-0.5 sm:gap-2">
           <Image
             src={candidate.image_url}
+            unoptimized={!canOptimizeCandidateImage(candidate.image_url)}
             alt=""
-            fill
+            width={32}
+            height={32}
             className="h-7 w-7 shrink-0 rounded-full object-cover sm:h-8 sm:w-8"
           />
           <span className="min-w-0 break-words text-xs font-semibold leading-4 text-ink">
@@ -217,14 +220,23 @@ export default function BallotBuilder({
             {t("candidateCount", { count: number(candidates.length) })}
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 sm:gap-2.5 lg:grid-cols-5 lg:gap-3">
+        <div
+          className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 sm:gap-2.5 lg:grid-cols-5 lg:gap-3"
+          onClick={(event) => {
+            const button = (event.target as Element).closest<HTMLButtonElement>(
+              "button[data-candidate-id]",
+            );
+            if (button && event.currentTarget.contains(button) && !button.disabled) {
+              selectCandidate(button.dataset.candidateId!);
+            }
+          }}
+        >
           {candidates.map((candidate, index) => (
             <CandidateOption
               key={candidate.id}
               candidate={candidate}
               index={index}
               slotIndex={slotByCandidate.get(candidate.id) ?? -1}
-              onSelect={() => selectCandidate(candidate.id)}
             />
           ))}
         </div>

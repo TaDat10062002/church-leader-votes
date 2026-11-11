@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { validateBallot } from "@/lib/ballot";
 import { apiError } from "@/lib/http";
+import { ELECTION_RESULTS_TAG, invalidateElectionCache } from "@/lib/election-cache";
 
 export async function POST(request: Request) {
   let body: { electionId?: string; candidateIds?: string[] };
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
         .find((candidateCode) => error.message.includes(candidateCode));
       return apiError(code ?? "VOTE_SAVE_FAILED", code ? 400 : 503);
     }
+    invalidateElectionCache(ELECTION_RESULTS_TAG);
     try {
       const notification = await supabase.channel(`election-${body.electionId}`).httpSend(
         "vote-recorded",
