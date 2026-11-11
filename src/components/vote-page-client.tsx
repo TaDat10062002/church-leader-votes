@@ -102,24 +102,24 @@ export default function VotePageClient({ initial }: { initial: Awaited<ReturnTyp
           <GlassChip className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-moss">
             <Church size={19} aria-hidden="true" />
           </GlassChip>
-          <span className="hidden sm:block">
+          <span className="block">
             <span className="block text-sm font-semibold text-ink">
               {t("church")}
             </span>
-            <span className="block text-[11px] text-ink/75">
+            <span className="hidden text-xs text-ink/75 sm:block">
               {t("voteTitle")}
             </span>
           </span>
         </a>
       </GlassHeader>
-      <section className="mx-auto mt-4 max-w-4xl text-center sm:mt-12">
+      <section className="mx-auto mt-8 max-w-4xl text-center sm:mt-12">
         <GlassChip className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.14em] text-ink sm:text-xs">
           <Vote size={14} aria-hidden="true" /> {t("ballotBadge")}
         </GlassChip>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-ink sm:mt-4 sm:text-4xl lg:text-5xl">
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:mt-4 sm:text-4xl">
           {t("voteHeading")}
         </h1>
-        <p className="mx-auto mt-1.5 max-w-2xl text-xs leading-5 text-ink/75 sm:mt-3 sm:text-base sm:leading-6">
+        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-ink/75 sm:mt-3 sm:text-base">
           {t("voteInstructions")}
         </p>
       </section>

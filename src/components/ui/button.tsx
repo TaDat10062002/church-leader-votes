@@ -10,7 +10,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button({ cla
   const primitiveVariant = variant === "primary" ? "default" : variant === "danger" ? "destructive" : variant;
   return <GlassButton ref={ref} type={type} glassVariant={variant === "ghost" ? "subtle" : "liquid"}
     variant={primitiveVariant} className={cn(
-      "glasscn-button min-h-11 gap-2 rounded-2xl px-5 py-2.5 text-sm font-semibold whitespace-normal",
+      "glasscn-button min-h-11 gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold whitespace-normal",
       `glasscn-button-${variant}`, className,
     )} {...props} />;
 });

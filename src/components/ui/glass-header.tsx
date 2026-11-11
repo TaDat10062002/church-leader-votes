@@ -11,14 +11,14 @@ export function GlassHeader({
   return (
     <header
       className={cn(
-        "glasscn-header sticky top-3 z-40 isolate w-full min-w-0 rounded-full",
+        "glasscn-header sticky top-2 z-40 w-full min-w-0",
         className,
       )}
       {...props}
     >
       <GlassSurface
         glassVariant="liquid-refract"
-        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 rounded-full px-2 py-1.5 sm:flex-wrap sm:gap-3 sm:px-4 sm:py-2.5"
+        className="flex w-full min-w-0 items-center justify-between gap-3 rounded-xl px-4 py-3 sm:px-5"
       >
         {children}
         <ThemeControl />

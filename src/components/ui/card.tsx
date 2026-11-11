@@ -5,5 +5,5 @@ import { GlassCard, type GlassCardProps } from "@/components/ui/glasscn/glass-ca
 import { cn } from "@/lib/utils";
 
 export const Card = forwardRef<HTMLDivElement, GlassCardProps>(function Card({ className, ...props }, ref) {
-  return <GlassCard ref={ref} className={cn("rounded-3xl", className)} {...props} />;
+  return <GlassCard ref={ref} className={cn("rounded-xl shadow-sm", className)} {...props} />;
 });

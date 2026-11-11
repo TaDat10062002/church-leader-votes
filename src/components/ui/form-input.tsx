@@ -39,7 +39,7 @@ export function FormInput({
         glassVariant="liquid"
         surfaceClassName={cn("w-full rounded-2xl transition-shadow", focused && "ring-2 ring-moss/30")}
         className={cn(
-          "h-12 rounded-2xl border-0 bg-transparent px-4 text-base text-ink outline-none placeholder:text-ink/45 focus-visible:border-0 focus-visible:ring-0",
+          "h-12 rounded-xl border border-input bg-white px-4 text-base text-ink outline-none placeholder:text-ink/45 focus-visible:border-moss focus-visible:ring-2 focus-visible:ring-moss/20",
           icon && "pl-12",
           inputClassName,
         )}

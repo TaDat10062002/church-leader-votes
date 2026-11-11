@@ -45,16 +45,16 @@ const CandidateOption = memo(function CandidateOption({
       aria-label={`${name}${selected ? t("candidateSelectedAt", { slot: number(slotIndex + 1) }) : t("tapToSelect")}`}
       className={glassClassName(
         "subtle",
-        `group flex min-h-[5.25rem] min-w-0 touch-manipulation flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-center outline-none transition active:scale-[.98] focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-100 ${selected ? "border-moss/45 bg-moss/10" : "hover:border-moss/40 hover:bg-moss/[.06]"}`,
+        `group flex min-h-[7rem] min-w-0 touch-manipulation flex-col items-center justify-center gap-2 rounded-xl px-2 py-3 text-center outline-none transition-colors focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-100 ${selected ? "border-moss bg-blue-50" : "hover:border-moss/40 hover:bg-slate-50"}`,
       )}
     >
-      <span className="relative block h-10 w-10 shrink-0 sm:h-12 sm:w-12">
+      <span className="relative block h-12 w-12 shrink-0 sm:h-14 sm:w-14">
         <Image
           src={candidate.image_url}
           unoptimized={!canOptimizeCandidateImage(candidate.image_url)}
           alt=""
           fill
-          sizes="(min-width: 640px) 48px, 40px"
+          sizes="(min-width: 640px) 56px, 48px"
           className={`h-full w-full rounded-full border-2 object-cover ${selected ? "border-moss" : "border-[var(--glass-border)]"}`}
         />
         <span
@@ -64,7 +64,7 @@ const CandidateOption = memo(function CandidateOption({
           {selected ? number(slotIndex + 1) : <Check size={11} />}
         </span>
       </span>
-      <span className="w-full break-words text-xs font-semibold leading-4 text-ink">
+      <span className="w-full break-words text-sm font-semibold leading-5 text-ink">
         {name}
       </span>
       <span className="sr-only">
@@ -206,13 +206,13 @@ export default function BallotBuilder({
 
   return (
     <>
-      <Card className="mx-auto mt-4 max-w-5xl p-2.5 sm:mt-7 sm:p-5 lg:max-w-6xl">
+      <Card className="mx-auto mt-6 max-w-5xl p-4 sm:mt-8 sm:p-6 lg:max-w-6xl">
         <div className="mb-2 flex items-end justify-between gap-2 sm:mb-3">
           <div>
-            <h2 className="text-sm font-semibold text-ink sm:text-base">
+            <h2 className="text-base font-semibold text-ink sm:text-lg">
               {t("candidateList")}
             </h2>
-            <p className="mt-0.5 text-[11px] text-ink/75 sm:text-xs">
+            <p className="mt-1 text-sm text-ink/75">
               {t("tapToAdd")}
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function BallotBuilder({
           </span>
         </div>
         <div
-          className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 sm:gap-2.5 lg:grid-cols-5 lg:gap-3"
+          className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-5"
           onClick={(event) => {
             const button = (event.target as Element).closest<HTMLButtonElement>(
               "button[data-candidate-id]",
